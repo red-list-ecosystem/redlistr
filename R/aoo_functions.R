@@ -1,9 +1,19 @@
 
-createGrid <- function(ecosystem.data, resolution = 10000){
-  # Make an Area of Occupancy (AOO) grid with the same extent as input raster file.
-  # Soecufsize input (in m) and  output a raster with different gridID values for each grid square.
+#' Create an area of occupancy (AOO) grid.
+#' 
+#' @param ecosystem.data A raster dataset of an ecosystem or species 
+#' distribution 
+#' @param grid.size A number specifying the dimension of a single axis of the 
+#' grid square (in metres)
+#' @return A regular grid raster with extent \code{ecosystem.data} and grid size 
+#' \code{grid.size}. Each grid square has a unique identification number
+#' @examples
+#' add(raster1, 10000) # a 10-km grid with extent of raster1
+#' add(raster1, 2000) # a 2-km grid with extent of raster1
+
+createGrid <- function(ecosystem.data, grid.size = 10000){
   grid <- raster(ecosystem.data)
-  res(grid) <- resolution
+  res(grid) <- grid.size
   grid[] <- 1:(ncell(grid))
   return (grid)
 }
