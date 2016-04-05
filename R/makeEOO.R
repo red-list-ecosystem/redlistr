@@ -18,16 +18,9 @@ makeEOO <- function (ecosystem.data){
   return(EOO.polygon)
 }
 
-E00.function <- function( r ) {
-  # uses rgeos package
-  ps <- rasterToPoints(r, spatial = TRUE)
-  n = gConvexHull(ps)
-  return (n)
-}
-
-getAreaEOO <- function(EOO.polygon){
-  # Returns the area of the makeEOO output (spatialpolygons object)
-  EOO.aream2 <- sapply(slot(EOO.polygon, "polygons"), slot, "area")  # get the area from the slots in the polygon dataset
-  EOO.areakm2 <- EOO.aream2/1000000
-  return(EOO.areakm2)
-}
+# E00.function <- function( r ) {
+#   # uses rgeos package
+#   ps <- rasterToPoints(r, spatial = TRUE)
+#   n = gConvexHull(ps)
+#   return (n)
+# }
