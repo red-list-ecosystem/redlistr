@@ -26,7 +26,7 @@
 #' @seealso \code{\link{getArea}}, \code{\link{getPRD}}, \code{\link{getARD}},
 #' \code{\link{getARC}}
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#' Rodríguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+#' Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #' List of Ecosystems Categories and Criteria, Version 1.0. Gland, Switzerland:
 #' IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
 #' @examples
