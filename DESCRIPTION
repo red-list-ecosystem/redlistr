@@ -3,15 +3,17 @@ Title: Tools for the IUCN Red List of Ecosystems and Species
 Version: 1.0.0
 Authors@R: c(
   person("Nicholas", "Murray", email = "murr.nick@gmail.com", role = c("cre","aut")))
-Description: A toolbox for calculating the metrics required for assessing
-    species under the International Union for Conservation of Nature (IUCN) Red List
-    of Threatened Species and ecosystems under the IUCN Red List of Ecosystems. See
-    the IUCN website for detailed guidelines on assessing the criteria, assessments,
-    and other information.
+Description: redlistr is a toolbox created by members of the International
+    Union for Conservation of Nature (IUCN) Red List of Ecosystems
+    Committee for Scientific Standards. Primarily, it is a set of tools suitable
+    for calculating the metrics required for assessing species under the  both
+    the Red List of Threatened Species and the Red List of Ecosystems categories
+    and criteria. See the IUCN website for detailed guidelines on assessing the
+    criteria and other information.
 Imports:
     raster, rgeos
 Depends:
     R (>= 3.2.4)
-License: GPL-2
+License: GPL (>=2)
 LazyData: true
 RoxygenNote: 5.0.1
