@@ -35,7 +35,7 @@ getAOO <- function (ecosystem.data, grid, one.percent.rule = TRUE) {
     AOO.number <- sum(zonal.data$AOO)
   }
   if (one.percent.rule == FALSE){
-    zonal.data$AOO <- zonal.data$area # >1km2 for 1pc AOO
+    zonal.data$AOO <- zonal.data$area>0 # >1km2 for 1pc AOO
     AOO.number <- sum(zonal.data$AOO)
   }
   return(AOO.number)
