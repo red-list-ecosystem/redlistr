@@ -35,7 +35,7 @@ getAOO <- function (ecosystem.data, grid, one.percent.rule = TRUE) {
     AOO.number <- sum(zonal.data$AOO)
   }
   if (one.percent.rule == FALSE){
-    zonal.data$AOO <- zonal.data$area # >1km2 for 1pc AOO
+    zonal.data$AOO <- zonal.data$area > 0 # >1km2 for 1pc AOO
     AOO.number <- sum(zonal.data$AOO)
   }
   return(AOO.number)
@@ -43,3 +43,7 @@ getAOO <- function (ecosystem.data, grid, one.percent.rule = TRUE) {
 
 # TODO: change the 1% rule to a number between 0 and 1 specifying how much of the grid cell must be occupied before being selected for AOO
 # TODO: can we get a raster or vector output of the final AOO? Should be possible by passing the grid cell IDs here and selecting the grid cells from the grid object
+
+ecosystem.data = rast
+grid = grid.rast
+one.percent.rule = FALSE
