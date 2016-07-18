@@ -15,7 +15,7 @@ getAreaChange(A.t1, A.t2)
 Returns the difference between these two areas
 }
 \description{
-\code{getAreaChange} reports the difference two araes.
+\code{getAreaChange} reports the difference two areas.
 }
 \examples{
 getAreaChange(100,80)

@@ -1,6 +1,6 @@
 #' Area Change.
 #'
-#' \code{getAreaChange} reports the difference two araes.
+#' \code{getAreaChange} reports the difference two areas.
 #'
 #' @param A.t1 Area at t1
 #' @param A.t2 Area at t2
