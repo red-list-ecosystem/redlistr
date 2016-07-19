@@ -1,0 +1,150 @@
+---
+title: "Introduction to the 'redlistr' package"
+author: "Nicholas J. Murray"
+date: "`July 25, 2016"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to the 'redlistr' package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+
+- Never uses retina figures
+- Has a smaller default figure size
+- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+
+## 1. Introduction
+
+This document provides an introduction to conducting assessments for the IUCN Red List of Ecosystems in \R. Assessments of ecosystems under the IUCN Red List of Ecosystems criteria require calculation of standardised metrics that were developed to objectively assess risk to ecosystem (Keith et al, 2013). The redlistr package was developed to assist in the calculation of these metrics, which include establishing the two standard measures of the size of an ecosystems' geographic distribution , as measured by the Area of Occupancy (AOO) and Extent of Occurrence (EOO). As many of these measures are also useful for assessing species under the IUCN Red List of Threatened Species criteria, we expect this package will also be useful for assessors conducting species assessments.
+
+In conducting an assessment with this package, we assume that you are familiar with IUCN red listing protocols. In particular, you should consult the IUCN guidelines for both of the red lists, which are the definitive sources of all information required to ensure consistent application of IUCN criteria (IUCN, 2015; Bland et al 2016). In addition, the papers by Keith et al (2013) and Rodriguez et al (2015) are particularly useful for navigating the IUCN Red List of Ecosystems criteria. A range of important resources, including software tools and guiding material is available on the IUCN Red List of Ecosystems website (www.iucnrle.org). There is also plenty of handy material for assessing species available on the IUCN Red List of Threatened Species website (http://www.iucnredlist.org).
+
+We also assume that you are reasonably familiar with the /R programming language, and have some experience in conducting analyses of vector and raster data within the /R environment. Of particular use will be familiarity with the 'Raster', 'sp' and 'rgeos' packages. This is certainly not a prerequisite, but this package is built upon many of the functions available in these three packages. 
+
+Last, this is a work in progress and we aim to continually add new functions to newer versions of package. Suggestions are welcomed, as would be offers for collaborative development.
+
+## 2. Importing data
+
+In this introduction, we will be focusing mainly on the redlistr tools aimed at assessing the spatial criteria of the IUCN Red List of Ecosystems. These criteria assess the change in the extent of an ecosystem over time (Criterion A) and properties of the geographic distribution size (Criterion B). Both of these criteria require the use of maps of ecosystem distributions. 
+
+Most distribution maps of ecosystems and species will be provided in raster of vector (shapefile) format. We will use the excellent 'raster' and 'sp' packages to import data, to enable us to begin to use the functions in the redlistr package
+
+```{r}
+# install.packages(c("raster", "sp", "rgeos"))
+library(raster)
+library(sp)
+library(rgeos)
+```
+
+Import the data files that you will analyse. In our case, we will use a very simple ecosystem distribution dataset that was provided in raster format.The file shows the distribution of an ecosystem, where a raster value of 1 denotes presence of a distribution. In some cases, you may be using classified maps that contain many ecosystems, in which case you can use the huge functionality of the raster package to extract a single binary raster suitable for ingestion into a redlistr analyses.
+
+```{r}
+r1 <- raster("C:\\_NickMurray\\Murray_Git\\RLE-Tools\\Data\\t1.tif") #t1 = 1990
+r2 <- raster("C:\\_NickMurray\\Murray_Git\\RLE-Tools\\Data\\t2.tif") #t2 = 2012
+```
+
+You will note that we have imported two rasters. Raster 1 (r1) represents the distribution of an ecosystem at time 1 (t1, 1990) and raster 2 (r2) represents the distribution of the same ecosystem at time 2 (t2, 2012). We can plot the data to view the two distributions. Note that at t2 the ecosystem is smaller than at t1, due to uniform land clearing around the ecosystem boundaries. We simulated this process for simplicity here.
+
+```{r, fig.show='hold'}
+plot (r1, col = "grey30", legend = FALSE, main = "Ecosystem Distribution")
+plot (r2, add = T, col = "darkorange", legend = FALSE)
+```
+
+At this stage it is also important to check that data are at least in the right location. This can be acheived by simply plotting the map and checking the coordinates, or check the distribution maps against satellite images. This can be acheived using packages such as ggmap, plotgooglemaps, googleVis etc. It is also important to check that the data are suitable for the task at hand. 
+
+## 3. Basic information
+
+We can now use some of features of redlistr to get some basic information on the ecosystem. However, before proceeing it is wise to check that the data have the same grain size (resolution), and spatial properties (spatial extent, origin and projection). This can be acheived using features from the 'raster' package, such as aggregate, resample and projectRaster.
+
+Below we check the projections of the data to ensure they are consistent:
+
+```{r}
+crs(r1)
+crs(r2) # no projection
+crs(r2) <- crs(r1)
+crs(r2) # same projection
+```
+
+Now we can begin to use redlistr, first we load it.
+
+```{r}
+# install.packages ("redlistr")
+library(redlistr) # loads the redlistr package
+```
+
+Start with getting the area of the dataset, noting there has been loss of the ecosystem over the time. Note that area is calculated using the pixel count method, where the number of pixels multiplied by the area of each pixel is used to determine the area of the ecosystem, which is provided in square kilometres. We can also check the resolution of the data (in metres).
+
+```{r}
+a.r1 <- getArea(r1)
+a.r1 #km2
+a.r2 <- getArea(r2)
+a.r2 #km2
+resolution = getCellWidth(r1) #m
+```
+
+The result: at time 1 (1990) the ecosystem was `r area.r1` km2 and at time 2 (2012) the ecosystem was `r area.r2` km2.
+
+## 3. Assessing Criterion A (area change)
+
+The IUCN Red List of Ecosystems criterion A requires estimates of the extent of change over time. This is typically calculated over a 50 year time period (past, present or future) or against an historical baseline (Bland et al 2016). The first step towards acheiving this change estimate over a fixed time frame is to assess the amount of change observed in your data.
+
+How much area has been lost between t1 and t2?
+
+```{r}
+area.lost <- getAreaChange (a.r1, a.r2)
+area.lost # 301.63 km2
+```
+
+A change estimate can also be acheived by passing the input raster datasets directly to a 'redlistr' function. An analogue function is also provided (getAreaChangefromShp) in the case of using vector (shapefile) data.
+
+```{r}
+area.change <- getAreaChangefromRast (r1,r2)
+area.change #301.63 km2
+```
+
+We can visualise this change using an image differencing function. This function creates a new raster of all areas that have been lost between t1 and t2.
+
+```{r}
+dif.rast <- differenceRaster (r1,r2)
+plot(dif.rast, col = "dark red", legend = FALSE)
+```
+
+
+
+In the Red List of Ecosystems, two methods are suggested to determine the rate of decline of an ecosystem, each of which assumes a different functional form of the decline (IUCN, 2015).  The proportional rate of decline (PRD) is a fraction of the previous year's remaining area, while the absolute rate of decline (ARD) is a constant fraction of the area of the ecosystem at the beginning of the decline (IUCN, 2015). These rates of decline allow the use of two or more data points to extrapolate to the full 50 year timeframe required in an assessment. The annual rate of change (ARC) uses a compound interest law to determine the instantaneous rate of change (Puryvaud 2004). For further information about the choice of each of these methods to extrapolate refer to the IUCN Red List of Ecosystems guidelines (Bland et al 2016).
+
+```{r}
+
+# absolute rate of decline
+ard <- getARD (a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+ard # 13.7 km2 lost per year
+
+# proportional rate of decline
+prd <- getPRD (a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+prd # 4.1% per year annual decline in area
+
+# absolute rate of change 
+arc <-  getARC (a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+arc # -4.2% rate of change in area
+```
+
+We provide one single function for calculating all of these, which returns a dataframe of the results.
+
+```{r}
+change.stats <- getDeclineStats (a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+change.stats
+```
+
+Now it is possible to extrapolate, using only two estimates of an ecosystems' area, to the full 50 year period required for a Red List of Ecosystems assessment. 
+
+```{r}
+extrapolated.area <- futureAreaEstimate(a.r1, year.t1 = 1990, PRD = prd, ARD = ard, ARC = arc, nYears = 50)
+extrapolated.area
+```
+
+This tells us that 50 years from our first estimate in year `r extrapolated.area$forecast.year` km2 , all things aside, we expect this ecosystem to have declined by `r extrapolated.area$prd`%. It is important to note that this relatively simple exercise is founded on assumptions that should be fully understood before submitting your ecosystem assessment to the IUCN Red List of Ecosystems Committee for Scientific Standards. Please see the guidelines (Bland et al 2016) for more information.
+
+## 4. Assessing Criterion B (distribution size)
+

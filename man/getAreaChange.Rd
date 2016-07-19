@@ -12,10 +12,11 @@ getAreaChange(A.t1, A.t2)
 \item{A.t2}{Area at t2}
 }
 \value{
-Returns the difference between these two areas
+Returns the difference between two areas.
 }
 \description{
-\code{getAreaChange} reports the difference two areas.
+\code{getAreaChange} reports the difference two areas. Probably the simplest
+function every created (Change = A.t1 - A.t2)
 }
 \examples{
 getAreaChange(100,80)

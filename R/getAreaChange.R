@@ -4,7 +4,7 @@
 #'
 #' @param A.t1 Area at t1
 #' @param A.t2 Area at t2
-#' @return Returns the difference between these two areas
+#' @return Returns the difference between two areas.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}
 #' @seealso \code{\link{getAreaChangefromRast}}
 #' \code{\link{getAreaChangefromShp}}
