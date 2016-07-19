@@ -38,14 +38,20 @@ library(sp)
 library(rgeos)
 ```
 
-Import the data files that you will analyse. In our case, we will use a very simple ecosystem distribution dataset that was provided in raster format.The file shows the distribution of an ecosystem, where a raster value of 1 denotes presence of a distribution. In some cases, you may be using classified maps that contain many ecosystems, in which case you can use the huge functionality of the raster package to extract a single binary raster suitable for ingestion into a redlistr analyses.
+Import the data files that you will analyse. In our case, we will use a base dataset called volcano to represent a very simple ecosystem distribution dataset.The rasters now represent the distribution of an ecosystem, where a raster value of 1 denotes its presence. You will note that we generate two rasters. Raster 1 (r1) represents the distribution of an ecosystem at time 1 (t1, 1990) and raster 2 (r2) represents the distribution of the same ecosystem at time 2 (t2, 2012).
+
+To import your own data, you can use the 'raster' function in the 'raster' package, which can handle many different types of georeferenced spatial data. In some cases, you may be using classified maps that contain many ecosystems, in which case you can use the huge functionality of the raster package to extract a single binary raster suitable for ingestion into a redlistr analyses.
 
 ```{r}
-r1 <- raster("C:\\_NickMurray\\Murray_Git\\RLE-Tools\\Data\\t1.tif") #t1 = 1990
-r2 <- raster("C:\\_NickMurray\\Murray_Git\\RLE-Tools\\Data\\t2.tif") #t2 = 2012
+image(volcano) # we use this base dataset to create 2 rasters of different sizes below
+r1 <- raster(ifelse((volcano<130), NA, 1), crs = "+proj=longlat +datum=WGS84") #t1 = 1990
+ext <- extent(0,6100,0,8700) # set the extent of raster r1, 100m resolution
+extent(r1) <- ext
+r2 <- raster(ifelse((volcano<145), NA, 1)) #t2 = 2012
+extent(r2) <- ext
 ```
 
-You will note that we have imported two rasters. Raster 1 (r1) represents the distribution of an ecosystem at time 1 (t1, 1990) and raster 2 (r2) represents the distribution of the same ecosystem at time 2 (t2, 2012). We can plot the data to view the two distributions. Note that at t2 the ecosystem is smaller than at t1, due to uniform land clearing around the ecosystem boundaries. We simulated this process for simplicity here.
+We can plot the data to view the two distributions. Note that at t2 the ecosystem is smaller than at t1, due to uniform land clearing around the ecosystem boundaries. We simulated this process for simplicity here.
 
 ```{r, fig.show='hold'}
 plot (r1, col = "grey30", legend = FALSE, main = "Ecosystem Distribution")
@@ -61,15 +67,17 @@ We can now use some of features of redlistr to get some basic information on the
 Below we check the projections of the data to ensure they are consistent:
 
 ```{r}
-crs(r1)
+crs(r1,asText=TRUE)
 crs(r2) # no projection
 crs(r2) <- crs(r1)
 crs(r2) # same projection
 ```
 
-Now we can begin to use redlistr, first we load it.
+Now we can begin to use redlistr, first we load it from github, using the devtools package.
 
 ```{r}
+# library(devtools)
+# install_github('nick-murray/redlistr')
 # install.packages ("redlistr")
 library(redlistr) # loads the redlistr package
 ```
@@ -86,9 +94,11 @@ resolution = getCellWidth(r1) #m
 
 The result: at time 1 (1990) the ecosystem was `r area.r1` km2 and at time 2 (2012) the ecosystem was `r area.r2` km2.
 
-## 3. Assessing Criterion A (area change)
+## 3. Assessing Criterion A
 
 The IUCN Red List of Ecosystems criterion A requires estimates of the extent of change over time. This is typically calculated over a 50 year time period (past, present or future) or against an historical baseline (Bland et al 2016). The first step towards acheiving this change estimate over a fixed time frame is to assess the amount of change observed in your data.
+
+### 3a. Area change
 
 How much area has been lost between t1 and t2?
 
@@ -104,14 +114,15 @@ area.change <- getAreaChangefromRast (r1,r2)
 area.change #301.63 km2
 ```
 
-We can visualise this change using an image differencing function. This function creates a new raster of all areas that have been lost between t1 and t2.
+We can visualise this change using an image differencing function. This function creates a new raster of all areas that have been lost between t1 and t2. Note that an accuracy assessment of this change map can 
 
 ```{r}
 dif.rast <- differenceRaster (r1,r2)
 plot(dif.rast, col = "dark red", legend = FALSE)
+getArea(dif.rast)
 ```
 
-
+### 3a. Rate of change
 
 In the Red List of Ecosystems, two methods are suggested to determine the rate of decline of an ecosystem, each of which assumes a different functional form of the decline (IUCN, 2015).  The proportional rate of decline (PRD) is a fraction of the previous year's remaining area, while the absolute rate of decline (ARD) is a constant fraction of the area of the ecosystem at the beginning of the decline (IUCN, 2015). These rates of decline allow the use of two or more data points to extrapolate to the full 50 year timeframe required in an assessment. The annual rate of change (ARC) uses a compound interest law to determine the instantaneous rate of change (Puryvaud 2004). For further information about the choice of each of these methods to extrapolate refer to the IUCN Red List of Ecosystems guidelines (Bland et al 2016).
 
@@ -119,15 +130,15 @@ In the Red List of Ecosystems, two methods are suggested to determine the rate o
 
 # absolute rate of decline
 ard <- getARD (a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-ard # 13.7 km2 lost per year
+ard # km2 lost per year
 
 # proportional rate of decline
 prd <- getPRD (a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-prd # 4.1% per year annual decline in area
+prd # proportional change per year
 
 # absolute rate of change 
 arc <-  getARC (a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-arc # -4.2% rate of change in area
+arc # % rate of change in area
 ```
 
 We provide one single function for calculating all of these, which returns a dataframe of the results.
