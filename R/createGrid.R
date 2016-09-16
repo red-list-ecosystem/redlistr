@@ -19,5 +19,8 @@ createGrid <- function(x, grid.size){
   grid <- raster(x)
   res(grid) <- grid.size
   grid[] <- 1:(ncell(grid))
-  return (grid)
+  grid.expanded <- extend(grid, c(2,2)) # grow the grid rast by 2 each way
+  grid.expanded[] <- 1:(ncell(grid.expanded))
+  return (grid.expanded)
 }
+
