@@ -159,3 +159,5 @@ This tells us that 50 years from our first estimate in year `r extrapolated.area
 
 ## 4. Assessing Criterion B (distribution size)
 
+
+Criterion B utilizes measures of the geographic distribution of an ecosystem type to identify ecosystems that are at risk from catastrophic disturbances. The geographic distribution of an ecosystem type is assessed under criterion B with two standardized metrics: the extent of occurrence (EOO) and the area of occupancy (AOO) (Gaston and Fuller, 2009, Keith et al., 2013). It must be emphasised that EOO and AOO are not used to estimate the mapped area of an ecosystem like the methods we used in Criterion A; they are simply spatial metrics that allow us to standardise an estimate of risk spreading. Thus, it is critical that these measures are used consistently across all assessments, and the use of non-standard measures invalidates comparison against the thresholds. Refer to the guidelines for more information on AOO and EOO.
