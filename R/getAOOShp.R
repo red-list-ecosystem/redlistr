@@ -22,14 +22,19 @@
 #' AOO = getAOO(r1, n, one.percent.rule = F)
 #' AOO # number of grid cells occupied by an ecosystem or species
 
-getAOO <- function (ecosystem.data, grid, one.percent.rule = TRUE) {
+getAOOShp <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-  agg.extent <- extent(ecosystem.data)
-  agg.resample <- resample(ecosystem.data, grid, method ="ngb")
-  zonal.stat <- zonal(agg.resample,grid, 'sum') # provides stats of number of grid cells in each AOO cell
-  zonal.data <- as.data.frame(zonal.stat)
+  grid <- createGrid(ecosystem.data, grid.size)
+  eco.points <- rasterToPoints(ecosystem.data)
+  xy <- as.matrix(eco.points)[,c(1,2)] # select xy column only
+  x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
+  NAvalue(x) <- 0
+  zonal.data = as.data.frame(freq(x, useNA = 'no'))
   cell.res <- res(ecosystem.data)
-  zonal.data$area <- ((cell.res[1]*cell.res[2])*zonal.data$sum)/100000 ## CHECK SHOULD IT BE 100000 or 1000000????
+  zonal.data$area <- ((cell.res[1]*cell.res[2])*zonal.data$value)/100000
+
+  ## CHECK SHOULD IT BE 100000 or 1000000????
+
   if (one.percent.rule == TRUE){
     zonal.data$AOO <- zonal.data$area > 1 # >1km2 for 1pc AOO
     AOO.number <- sum(zonal.data$AOO)
@@ -41,26 +46,5 @@ getAOO <- function (ecosystem.data, grid, one.percent.rule = TRUE) {
   return(AOO.number)
 }
 
-## CHECK IF THIS IS WORKING WITH COARSE AOO GRID RESOLUTION!!
 
-# TODO: change the 1% rule to a number between 0 and 1 specifying how much of the grid cell must be occupied before being selected for AOO
-# TODO: can we get a raster or vector output of the final AOO? Should be possible by passing the grid cell IDs here and selecting the grid cells from the grid object
-
-
-InputDir <- "C:\\Dropbox\\Projects\\Congo\\Data\\s1_Raw\\forest_grids"
-InputList <- list.files(InputDir, pattern = ".tif$")
-i = 63 #mangrov
-InputDataString <- paste(InputDir, "\\", InputList[i], sep="")
-rast = raster(InputDataString)
-NAvalue(rast) <- 0
-
-n = createGrid(rast, 10000)
-plot (n)
-plot (rast, add = TRUE)
-AOO = getAOO(rast, n, one.percent.rule = F)
-AOO # number of grid cells occupied by an ecosystem or species
-
-AOO1pc = getAOO(rast, n, one.percent.rule = T)
-AOO1pc # FAILS!!!
-
-
+## NOTE THIS IS FASTER THAN THE OLD VERSION
