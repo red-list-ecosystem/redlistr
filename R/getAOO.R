@@ -22,8 +22,9 @@
 #' AOO = getAOO(r1, n, one.percent.rule = F)
 #' AOO # number of grid cells occupied by an ecosystem or species
 
-getAOO <- function (ecosystem.data, grid, one.percent.rule = TRUE) {
+getAOO <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
+  grid <- createGrid(ecosystem.data, grid.size)
   agg.extent <- extent(ecosystem.data)
   agg.resample <- resample(ecosystem.data, grid, method ="ngb")
   zonal.stat <- zonal(agg.resample,grid, 'sum') # provides stats of number of grid cells in each AOO cell
@@ -47,20 +48,5 @@ getAOO <- function (ecosystem.data, grid, one.percent.rule = TRUE) {
 # TODO: can we get a raster or vector output of the final AOO? Should be possible by passing the grid cell IDs here and selecting the grid cells from the grid object
 
 
-InputDir <- "C:\\Dropbox\\Projects\\Congo\\Data\\s1_Raw\\forest_grids"
-InputList <- list.files(InputDir, pattern = ".tif$")
-i = 63 #mangrov
-InputDataString <- paste(InputDir, "\\", InputList[i], sep="")
-rast = raster(InputDataString)
-NAvalue(rast) <- 0
-
-n = createGrid(rast, 10000)
-plot (n)
-plot (rast, add = TRUE)
-AOO = getAOO(rast, n, one.percent.rule = F)
-AOO # number of grid cells occupied by an ecosystem or species
-
-AOO1pc = getAOO(rast, n, one.percent.rule = T)
-AOO1pc # FAILS!!!
 
 
