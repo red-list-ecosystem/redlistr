@@ -27,4 +27,3 @@ plot(a, col = "red", add = TRUE)
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}
 }
-

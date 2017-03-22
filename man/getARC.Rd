@@ -30,9 +30,6 @@ a.r2 = getArea(r2) # a distribution raster
 ARC = getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 ARC
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \references{
 Puyravaud, J.-P. 2003. Standardizing the calculation of the
 annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
@@ -41,4 +38,6 @@ annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 \code{\link{getArea}}, \code{\link{getPRD}}, \code{\link{getARD}},
 \code{\link{getARC}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

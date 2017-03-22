@@ -31,9 +31,6 @@ a.r2 = getArea(r2) # a distribution raster
 ARD = getARD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 ARD
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \references{
 Keith, D. A., Orscheg, C., Simpson, C. C., Clarke, P. J., Hughes,
 L., Kennelly, S. J., Major, R. E., Soderquist, T. R., Wilson, A. L. &
@@ -53,4 +50,6 @@ IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
 \code{\link{getArea}}, \code{\link{getPRD}}, \code{\link{getARD}},
 \code{\link{getARC}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

@@ -22,4 +22,3 @@ pie(rep(1,50), col=n, frame = F)
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}
 }
-

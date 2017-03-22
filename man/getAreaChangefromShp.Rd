@@ -21,11 +21,10 @@ datasets
 \examples{
 getAreaChangefromShp(p1, p2) # distribution rasters
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \seealso{
 \code{\link{getArea}} \code{\link{getAreaChangefromRast}}
 \code{\link{getAreaChange}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

@@ -23,9 +23,6 @@ cells occupied by a species or ecosystem. The key difference with
 \code{getAOO} is that it accounts for the impact of the location of the AOO
 grid by randomly moving the grid and recomputing AOO at each step.
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
@@ -35,4 +32,6 @@ IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
 \seealso{
 \code{\link{createGrid}} \code{\link{getAOO}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

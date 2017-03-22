@@ -33,9 +33,6 @@ a.r2 = getArea(r2) # a distribution raster
 RLEstats = getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 RLEstats
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
@@ -46,4 +43,6 @@ IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
 \code{\link{getArea}}, \code{\link{getPRD}}, \code{\link{getARD}},
 \code{\link{getARC}}, \code{\link{getAreaChange}}, \code{\link{getPercentLost}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

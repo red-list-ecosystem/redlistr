@@ -28,9 +28,6 @@ plot (r1, add = TRUE)
 AOO = getAOO(r1, n, one.percent.rule = F)
 AOO # number of grid cells occupied by an ecosystem or species
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
@@ -40,4 +37,6 @@ IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
 \seealso{
 \code{\link{createGrid}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

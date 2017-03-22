@@ -19,10 +19,9 @@ datasets
 \examples{
 getCellWidth(x) # distribution raster
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \seealso{
 \code{\link{getArea}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

@@ -20,11 +20,10 @@ Returns the difference between two areas.
 \examples{
 getAreaChange(100,80)
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \seealso{
 \code{\link{getAreaChangefromRast}}
 \code{\link{getAreaChangefromShp}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

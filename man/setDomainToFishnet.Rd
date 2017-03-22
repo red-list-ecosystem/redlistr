@@ -29,9 +29,6 @@ plot (y)
 plot (x, add = TRUE, col = "black")
 plot (n, add = TRUE, col = "blue")
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
@@ -41,4 +38,6 @@ IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
 \seealso{
 \code{\link{createGrid}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

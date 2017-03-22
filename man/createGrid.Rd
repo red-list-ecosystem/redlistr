@@ -23,9 +23,6 @@ Create Area of Occupancy (AOO) Grid.
 createGrid(raster1, 10000) # a 10-km grid with extent of raster1
 createGrid(raster1, 2000) # a 2-km grid with extent of raster1
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
@@ -35,4 +32,6 @@ IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
 \seealso{
 \code{\link{getAOO}}, \code{\link{getRLEReport}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

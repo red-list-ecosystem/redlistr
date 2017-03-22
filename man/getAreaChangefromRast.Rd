@@ -21,11 +21,10 @@ objects.
 \examples{
 getAreaChangefromRast(r1, r2) # distribution rasters
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \seealso{
 \code{\link{getArea}} \code{\link{getAreaChangefromShp}}
 \code{\link{getAreaChange}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

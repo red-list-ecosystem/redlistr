@@ -20,10 +20,9 @@ method. Requires a binary raster as input.
 \examples{
 a.r1 = getArea(r1) # a distribution raster
 }
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}
-}
 \seealso{
 \code{\link{getCellRes}}
 }
-
+\author{
+Nicholas Murray \email{murr.nick@gmail.com}
+}

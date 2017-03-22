@@ -22,16 +22,36 @@
 #' AOO = getAOO(r1, n, one.percent.rule = F)
 #' AOO # number of grid cells occupied by an ecosystem or species
 
-getAOO <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
+makeAOOGrid <- function (ecosystem.data, grid.size, one.percent.rule = FALSE) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-    AOO.number = length(makeAOOGrid(ecosystem.data, grid.size, one.percent.rule))
-  return(AOO.number)
+  grid <- createGrid(ecosystem.data, grid.size)
+  eco.points <- rasterToPoints(ecosystem.data)
+  xy <- as.matrix(eco.points)[,c(1,2)] # select xy column only
+  x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
+  names(x) <- 'count'
+  grid.shp <- rasterToPolygons(x, dissolve=FALSE)
+  if (one.percent.rule == FALSE){
+    outGrid <- grid.shp
+  }
+  if (one.percent.rule == TRUE){
+    cell.res <- res(ecosystem.data)
+    area <- cell.res[1] * cell.res[2]
+    one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
+    threshold <- one.pc.grid / area
+    outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshol
+  }
+  return (outGrid)
 }
 
-# for ecosystems
-getAOO(rast, 10000, TRUE)
-getAOO(rast, 10000, FALSE)
-
-# for species
-getAOO(rast, 2000, TRUE)
-getAOO(rast, 2000, FALSE)
+#test it
+grid.size = 10000
+n = makeAOOGrid(rast, grid.size, one.percent.rule = F)
+o = makeAOOGrid(rast, grid.size, one.percent.rule = T)
+plot(n, col = "darkgrey")
+length(n)
+plot(o, add = T,col = "red")
+length(o)
+# check in QGIS/ArcGIS
+writeRaster(x, "papap.tif", format = "GTiff" )
+shapefile(n, "q", overwrite=TRUE)
+shapefile(o, "w", overwrite=TRUE)
