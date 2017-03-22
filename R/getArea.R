@@ -14,8 +14,17 @@
 getArea <- function (x){
   cell.res <- res(x)
   cell.width <- cell.res[1]
-  n.cell <- ncell(x[values(x)!="NA"]) # count non NA cells
-  aream2 <- (cell.width * cell.width) * n.cell
+  n.cell <- ncell( ! is.na(x[]) )# count non NA cells
   areakm2 <- aream2/1000000
   return (areakm2)
 }
+
+x = rast
+ncell(x)
+ncell(Which(!is.na(x), cells=TRUE))
+?Which
+ncell(!is.na(x))
+?na.omit
+ncell ()
+
+

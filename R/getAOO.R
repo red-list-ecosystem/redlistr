@@ -29,7 +29,7 @@ getAOO <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
 }
 
 # for ecosystems
-getAOO(rast, 10000, TRUE)
+getAOO(rast3, 10000, TRUE)
 getAOO(rast, 10000, FALSE)
 
 # for species
