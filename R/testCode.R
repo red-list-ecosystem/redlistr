@@ -90,13 +90,16 @@ b
 
 rasterOptions(tmpdir = getwd())
 removeTmpFiles(1) # delete temp .gri and .grd files in 1 hour
-ecosystem.data = raster("remapseive.tif")
+ecosystem.data = raster("C:\\Dropbox\\Projects\\Congo\\Data\\s1_Raw\\forest_grids\\ext11320_250.tif")
+NAvalue(ecosystem.data) <- 0
 filename  = filename(ecosystem.data)
 isLonLat(ecosystem.data) # true --> need to change to a projected coordinate system
-sr <- "+proj=utm +zone=54 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"  # reproject to UTM
-inRast <- projectRaster(ecosystem.data, crs = sr,   method = "ngb") # use nearest neigbour (ngb) to preserve class values rather than default (bilinear)
+
+#sr <- "+proj=utm +zone=54 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"  # reproject to UTM
+#inRast <- projectRaster(ecosystem.data, crs = sr,   method = "ngb") # use nearest neigbour (ngb) to preserve class values rather than default (bilinear)
+inRast = ecosystem.data
 grid.size = 10000
-# plot(rast)
+plot(inRast)
 
 
 # set up data capture
@@ -123,16 +126,8 @@ message('Raster has >>> ', length(valList) , ' <<< classes' )
 for (i in valList){
   message ("working on class... ", i)
   start.time = Sys.time()
-
-  #------------------------------#
-  # FAILS IN HERE - HOW TO ENSURE 0 is set to no data?
   rast <- inRast == i
-  values(rast)[values(rast) == 0] = NA
-  plot(rast)
-  #------------------------------#
-
-
-  # rast
+  values(rast)[values(rast) == 0] <- NA
   eco.area.km2 <- getArea(rast)
   message (paste("... area of ecosystem is", eco.area.km2, "km^2"))
   eco.grain <- getCellWidth(rast)
@@ -197,7 +192,7 @@ for (i in valList){
                         start.time = start.time )
 
   results.df <- rbind(results.df, ecoclass.df)
-  rm (ecoclass.df,rast, i, grid.size, eco.area.km2, eco.grain, eeo.area.km2,
+  rm (ecoclass.df,rast, i, eco.area.km2, eco.grain, eoo.area.km2,
       eoo.status, occ.no, aoo.1pc, aoo.status, overall.status, start.time)
 }
 
