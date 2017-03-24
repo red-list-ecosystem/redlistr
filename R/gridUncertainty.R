@@ -19,10 +19,9 @@
 #' @examples
 # TODO: do the examples
 
-gridUncertainty <- function (x, grid.rast, nSim = 100){
-  new.grid = createGrid(grid.rast,grid.size = 10000)
-  grid.expanded <- extend(new.grid, c(2,2)) # grow the grid rast by 2 each way
-  grid.expanded[] <- 1:(ncell(grid.expanded))
+gridUncertainty <- function (ecosystem.data, grid.size, nSim = 10, one.percent.rule = FALSE){
+
+  grid <- createGrid(ecosystem.data, grid.size)
   results.df <- data.frame(sim.no = integer(),
                            x.shift = integer(),
                            y.shift = integer(),
@@ -39,8 +38,11 @@ gridUncertainty <- function (x, grid.rast, nSim = 100){
     y.shift = sample(-10000:10000, 1)
     message (paste("... moved y by:", y.shift))
     dist.move = sqrt((x.shift^2)+(y.shift^2))# use pythagoras to work out how far it was moved as a function of a right-angled triangle
-    grid.shift <- shift(grid.expanded, x=x.shift, y=y.shift)
-    AOO = getAOO(x, grid = grid.shift,one.percent.rule = FALSE) #this ensures we use a fishnet with same extent
+
+    grid.shift <- shift(grid, x=x.shift, y=y.shift) # move the grid
+    AOO = getAOOSilent (ecosystem.data, grid = grid.shift, one.percent.rule = one.percent.rule) # get the AOO again
+
+
     message (paste("... AOO equals:", AOO))
     sim.df <-  data.frame(sim.no = i,
                           x.shift = x.shift,
@@ -51,19 +53,20 @@ gridUncertainty <- function (x, grid.rast, nSim = 100){
 
     results.df <- rbind(results.df, sim.df)
   }
-  mean.AOO <- mean(results.df$AOO)
+  min.AOO <-  min (results.df$AOO)
   message (paste("Mean AOO is:", mean.AOO))
   out.df <- data.frame (n.sims = nSim,
-                        mean.AOO = mean.AOO,
+                        mean.AOO = mean(results.df$AOO),
                         var.AOO = var(results.df$AOO),
                         sd.AOO = sd (results.df$AOO),
                         min.AOO = min (results.df$AOO),
                         max.AOO = max (results.df$AOO))
 
   hist.breaks = seq(min(results.df$AOO),max(results.df$AOO),1)
-  hist(results.df$AOO, breaks = hist.breaks, col = "darkred")
+  hist(results.df$AOO, breaks = hist.breaks, col = "darkred", main = "Histogram: AOO Uncertainty")
   return (list(raw.sims = results.df, summary.sims = out.df))
 }
 
 # TODO: change the 1% rule to a number between 0 and 1 specifying how much of the grid cell must be occupied before being selected for AOO
 # TODO: can we get a raster or vector output of the final AOO? Should be possible by passing the grid cell IDs here and selecting the grid cells from the grid object
+n = gridUncertainty(ecosystem.data, grid.size = 10000, nSim = 50, one.percent.rule = FALSE)
