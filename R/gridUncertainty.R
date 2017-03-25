@@ -54,7 +54,7 @@ gridUncertainty <- function (ecosystem.data, grid.size, nSim = 10, one.percent.r
     results.df <- rbind(results.df, sim.df)
   }
   min.AOO <-  min (results.df$AOO)
-  message (paste("Mean AOO is:", mean.AOO))
+  message (paste("Minimum AOO is from", nSim, "assessments is:", min.AOO, "grid cells"))
   out.df <- data.frame (n.sims = nSim,
                         mean.AOO = mean(results.df$AOO),
                         var.AOO = var(results.df$AOO),
@@ -69,4 +69,4 @@ gridUncertainty <- function (ecosystem.data, grid.size, nSim = 10, one.percent.r
 
 # TODO: change the 1% rule to a number between 0 and 1 specifying how much of the grid cell must be occupied before being selected for AOO
 # TODO: can we get a raster or vector output of the final AOO? Should be possible by passing the grid cell IDs here and selecting the grid cells from the grid object
-n = gridUncertainty(ecosystem.data, grid.size = 10000, nSim = 50, one.percent.rule = FALSE)
+n = gridUncertainty(ecosystem.data, grid.size = 10000, nSim = 100, one.percent.rule = FALSE)
