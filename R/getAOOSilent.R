@@ -7,6 +7,7 @@
 getAOOSilent <- function (ecosystem.data, grid, one.percent.rule = FALSE) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- grid # below is different from getAOO
+  grid.size = res(grid)
   # here to end of if is the same as getAOO
   eco.points <- rasterToPoints(ecosystem.data)
   xy <- as.matrix(eco.points)[,c(1,2)] # select xy column only

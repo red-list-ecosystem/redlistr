@@ -15,9 +15,19 @@ r[] <- 1:1000
 plot(r)
 
 
+
+
 # ##
 # # data
-# setwd("C:\\_NickMurray\\test")
+setwd("C:\\_NickMurray\\test")
+r1 <- readAsciiGrid("force10test_spatial_coral.txt")
+r1 <- raster(r1)
+plot(r1)
+r1
+isLonLat(r1) # true --> need to change to a projected coordinate system
+getAOO(r1, 10000, TRUE)
+getAOO(r1, 10000, FALSE)
+
 # InputDir <- "C:\\Dropbox\\Projects\\Congo\\Data\\s1_Raw\\forest_grids"
 # OutDir = getwd()
 # InputList <- list.files(InputDir, pattern = ".tif$")
