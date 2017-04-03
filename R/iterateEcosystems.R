@@ -115,6 +115,7 @@ for (i in valList){
   results.df <- rbind(results.df, ecoclass.df)
   rm (ecoclass.df,rast, i, eco.area.km2, eco.grain, eoo.area.km2,
       eoo.status, occ.no, aoo.1pc, aoo.status, overall.status, start.time)
+  do.call(file.remove,list(list.files(pattern=".gr*")))  # explicitly delete temp files
 }
 
 message ("Analysis complete.")

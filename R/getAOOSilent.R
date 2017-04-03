@@ -1,4 +1,4 @@
-#' Silent function for grid uncertainty
+#' Helper function for grid uncertainty
 #'
 # only difference is you can pass a grid to getAOO
 # used for grid uncertainty

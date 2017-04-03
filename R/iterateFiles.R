@@ -28,14 +28,14 @@ library(rgdal)
 library(stringr)
 
 # Set options
-rasterOptions(tmpdir = getwd())
-removeTmpFiles(1) # delete temp .gri and .grd files in 1 hour
 options(scipen = 5)
 grid.size = 10000 # size of AOO grid
 saveShps = TRUE
 
 # data
-setwd("C:\\_NickMurray\\test")
+setwd("E:\\Test")
+rasterOptions(tmpdir = getwd())
+removeTmpFiles(0) # delete temp .gri and .grd files in 0 hour
 InputDir <- "C:\\Dropbox\\Projects\\Congo\\Data\\s1_Raw\\forest_grids"
 OutDir = getwd()
 InputList <- list.files(InputDir, pattern = ".tif$")
@@ -144,6 +144,7 @@ for (i in 1:length(InputList)){
   results.df <- rbind(results.df, ecoclass.df)
   rm (ecoclass.df,rast, i, eco.area.km2, eco.grain, eoo.area.km2,
       eoo.status, occ.no, aoo.1pc, aoo.status, overall.status, start.time)
+  do.call(file.remove,list(list.files(pattern=".gr*")))  # explicitly delete temp files
 }
 
 message ("Analysis complete.")
