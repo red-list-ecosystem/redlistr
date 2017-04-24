@@ -4,13 +4,14 @@
 \alias{gridUncertainty}
 \title{Compute Area of Occupancy (AOO) accounting for grid uncertainty}
 \usage{
-gridUncertainty(x, grid.rast, nSim = 100)
+gridUncertainty(ecosystem.data, grid.size, nSim = 10,
+  one.percent.rule = FALSE)
 }
 \arguments{
-\item{x}{Raster object of an ecosystem or species distribution}
-
 \item{nSim}{specifies the number of times to repeat the AOO calculation
 with randomly sampled grid origin coordinates}
+
+\item{x}{Raster object of an ecosystem or species distribution}
 
 \item{grid}{Raster object of a regular grid suitable for assessing AOO}
 }

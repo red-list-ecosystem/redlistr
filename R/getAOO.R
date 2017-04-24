@@ -27,11 +27,3 @@ getAOO <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
     AOO.number = length(makeAOOGrid(ecosystem.data, grid.size, one.percent.rule))
   return(AOO.number)
 }
-
-# for ecosystems
-getAOO(rast3, 10000, TRUE)
-getAOO(rast, 10000, FALSE)
-
-# for species
-getAOO(rast, 2000, TRUE)
-getAOO(rast, 2000, FALSE)

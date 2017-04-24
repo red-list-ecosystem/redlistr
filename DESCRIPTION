@@ -11,7 +11,8 @@ Description: redlistr is a toolbox created by members of the International
 	against the IUCN Red List of Threatened Species and the IUCN Red List of Ecosystems categories
     and criteria. See the IUCN website for detailed guidelines, the criteria, publications and other information.
 Imports:
-    raster, rgeos
+    raster,
+    rgeos
 Depends:
     R (>= 3.2.4)
 License: GPL (>=2)

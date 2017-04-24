@@ -31,24 +31,3 @@ getArea <- function (x){
 }
 
 
-freq(inRast)
-freq(x)
-
-x = inRast
-x <- inRast == 1 #convert to single class
-x <- inRast == 3 #convert to single class
-
-getArea(x)
-
-time.test = microbenchmark(
-  rast <- inRast == 2, #convert to single class
-  values(rast)[values(rast) == 0] <- NA,
-  n.cell <- ncell(Which(!is.na(rast), cells=TRUE)), # this is faster
-  n.cell.2 <- sum(na.omit(getValues(rast))>0) # this one works but is a tiny bit slower
-)
-
-
-library(ggplot2)
-autoplot(time.test)
-
-

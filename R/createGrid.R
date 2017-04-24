@@ -23,7 +23,7 @@
 #' resolution measured in degrees as 1-degree is ~111.32km at the equator
 
 createGrid <- function(ecosystem.data, grid.size){
-  grid <- raster(ecosystem.data)
+  grid <- raster::raster(ecosystem.data)
   res(grid) <- grid.size
   grid.expanded <- extend(grid, c(2,2)) # grow the grid by 2 each way
   grid.expanded[] <- 1:(ncell(grid.expanded))

@@ -2,36 +2,41 @@
 % Please edit documentation in R/createGrid.R
 \name{createGrid}
 \alias{createGrid}
-\title{Create Area of Occupancy (AOO) Grid.}
+\title{Create empty Area of Occupancy (AOO) Grid.}
 \usage{
-createGrid(x, grid.size)
+createGrid(ecosystem.data, grid.size)
 }
 \arguments{
-\item{x}{Raster object of an ecosystem or species distribution}
+\item{ecosystem.data}{Raster object of an ecosystem or species distribution}
 
-\item{grid.size}{A number specifying the width of the desired grid square
-(in metres)}
+\item{grid.size}{A number specifying the width of the desired grid square (in
+same units as your coordiante reference system)}
 }
 \value{
 A regular grid raster with extent \code{ecosystem.data} and grid size
-  \code{grid.size}. Each grid square has a unique identification number
+ \code{grid.size}. Each grid square has a unique identification number.
 }
 \description{
-Create Area of Occupancy (AOO) Grid.
+Produces empty grid which can be used as the basis to help compute AOO.
 }
 \examples{
-createGrid(raster1, 10000) # a 10-km grid with extent of raster1
-createGrid(raster1, 2000) # a 2-km grid with extent of raster1
+createGrid(raster1, 10000) # a 10-km grid with extent of raster1 with resolution
+measured in m
+createGrid(raster1, 2000) # a 2-km grid with extent of raster1 with resolution
+measured in m
+createGrid(raster1, 0.08983112) # a ~10-km grid with extent of raster with
+resolution measured in degrees as 1-degree is ~111.32km at the equator
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-List of Ecosystems Categories and Criteria, Version 1.0. Gland, Switzerland:
-IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
+ Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red List
+ of Ecosystems Categories and Criteria, Version 1.0. Gland, Switzerland:
+ IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
 }
 \seealso{
-\code{\link{getAOO}}, \code{\link{getRLEReport}}
+\code{\link{getAOO}}, \code{\link{makeAOOGrid}},
+ \code{\link{getRLEReport}}
 }
 \author{
-Nicholas Murray \email{murr.nick@gmail.com}
+Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
 }

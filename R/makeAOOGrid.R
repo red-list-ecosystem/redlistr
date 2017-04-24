@@ -45,15 +45,3 @@ makeAOOGrid <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
   return (outGrid)
 }
 
-#test it
-grid.size = 10000
-n = makeAOOGrid(rast, grid.size, one.percent.rule = F)
-o = makeAOOGrid(rast, grid.size, one.percent.rule = T)
-plot(n, col = "darkgrey")
-length(n)
-plot(o, add = T,col = "red")
-length(o)
-# check in QGIS/ArcGIS
-writeRaster(x, "papap.tif", format = "GTiff" )
-shapefile(n, "q", overwrite=TRUE)
-shapefile(o, "w", overwrite=TRUE)
