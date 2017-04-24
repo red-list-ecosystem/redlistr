@@ -6,9 +6,7 @@
 #' AOO. This functionality is important for assessing the IUCN Red List of
 #' Ecosystems Criteria B.
 #'
-#' @param ecosystem.data Raster object of an ecosystem or species distribution
-#' @param grid.size Integer. A number specifying the width of the desired grid
-#'   square (in same units as your coordiante reference system)
+#' @inheritParams createGrid
 #' @param one.percent.rule Logical.If \code{TRUE} one percent of the grid cell
 #'   must be occupied before it is counted in the AOO.
 #' @return A shapefile of grid cells occupied by an ecosystem or species
@@ -26,7 +24,7 @@
 #' AOO_grid = makeAOOGrid(r1, n, one.percent.rule = F)
 #' AOO_grid # shapefile of grid cells occupied by an ecosystem or species
 
-makeAOOGrid <- function (ecosystem.data, grid.size, one.percent.rule = FALSE) {
+makeAOOGrid <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- createGrid(ecosystem.data, grid.size)
   eco.points <- rasterToPoints(ecosystem.data)
