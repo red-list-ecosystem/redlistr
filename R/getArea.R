@@ -1,33 +1,29 @@
-#' Area of Raster.
+#' Calculates the Area of a Raster.
 #'
 #' \code{getArea} reports the area of a raster object using the pixel counting
 #' method. Requires a binary raster as input.
 #'
 #' @param x A binary raster object with cells containing no data identified as
-#' NA
-#' @return Returns the area of a raster object in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}
+#'   NA
+#' @return The area of \code{x} in km2
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
 #' @seealso \code{\link{getCellRes}}
 #' @examples
 #' a.r1 = getArea(r1) # a distribution raster
 
-# getArea <- function (x){
-#   cell.res <- res(x)
-#   cell.width <- cell.res[1]
-#   n.cell <- ncell( ! is.na(x[]) )# count non NA cells
-#   aream2 <- (cell.width * cell.width) * n.cell
-#   areakm2 <- aream2/1000000
-#   return (areakm2)
-# }
 
 getArea <- function (x){
-  cell.res <- res(x)
-  cell.width <- cell.res[1]
-  values(x)[values(x) == 0] <- NA
-  n.cell <- ncell(Which(!is.na(x), cells=TRUE)) # count non NA cells
-  aream2 <- (cell.width * cell.width) * n.cell
-  areakm2 <- aream2/1000000
-  return (areakm2)
+  if(length(unique(x)) != 1){
+    return("The input raster is not binary")
+  } else{
+    cell.res <- res(x)
+    cell.width <- cell.res[1]
+    values(x)[values(x) == 0] <- NA
+    n.cell <- ncell(Which(!is.na(x), cells=TRUE)) # count non NA cells
+    aream2 <- (cell.width * cell.width) * n.cell
+    areakm2 <- aream2/1000000
+    return (areakm2)}
 }
 
 

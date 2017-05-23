@@ -9,8 +9,9 @@
 #' @param year.t1 Year of time t1
 #' @param A.t2 Area at time t2
 #' @param year.t2 Year of time t2
-#' @return Returns the annual rate of change (ARC) between the two time periods
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}
+#' @return The annual rate of change (ARC) between the two time periods
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
 #' @seealso \code{\link{getArea}}, \code{\link{getPRD}}, \code{\link{getARD}},
 #' \code{\link{getARC}}
 #' @references Puyravaud, J.-P. 2003. Standardizing the calculation of the
