@@ -16,7 +16,7 @@ getARC(A.t1, A.t2, year.t1, year.t2)
 \item{year.t2}{Year of time t2}
 }
 \value{
-Returns the annual rate of change (ARC) between the two time periods
+The annual rate of change (ARC) between the two time periods
 }
 \description{
 \code{getARC} calculates the Annual Rate of Change (ARC) given two areas and
@@ -25,10 +25,9 @@ exponential decay model is available in Puyravaud (2003). Annual rate of
 change is also known as instantaneous rate of change.
 }
 \examples{
-a.r1 = getArea(r1) # a distribution raster
-a.r2 = getArea(r2) # a distribution raster
-ARC = getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-ARC
+a.r1 <- getArea(r1) # a distribution raster
+a.r2 <- getArea(r2) # a distribution raster
+ARC <- getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 }
 \references{
 Puyravaud, J.-P. 2003. Standardizing the calculation of the
@@ -39,5 +38,6 @@ annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 \code{\link{getARC}}
 }
 \author{
-Nicholas Murray \email{murr.nick@gmail.com}
+Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
+  \email{calvinkflee@gmail.com}
 }

@@ -10,13 +10,14 @@ Description: redlistr is a toolbox created by members of the International
     Committee for Scientific Standards. Primarily, it is a set of tools suitable
     for calculating the metrics required for making assessments of species and
     ecosystems against the IUCN Red List of Threatened Species and the IUCN Red
-    List of Ecosystems categories and criteria. See the IUCN website for 
+    List of Ecosystems categories and criteria. See the IUCN website for
     detailed guidelines, the criteria, publications and other information.
 Imports:
-    raster,
-    rgeos
+    rgeos,
+    plyr
 Depends:
-    R (>= 3.2.4)
+    R (>= 3.2.4),
+    raster
 License: GPL (>=2)
 LazyData: true
 RoxygenNote: 6.0.1

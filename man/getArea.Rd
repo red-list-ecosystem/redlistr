@@ -2,27 +2,27 @@
 % Please edit documentation in R/getArea.R
 \name{getArea}
 \alias{getArea}
-\title{Area of Raster.}
+\title{Calculates the Area of a Raster.}
 \usage{
-getArea(x)
+getArea(x, value.to.count)
 }
 \arguments{
-\item{x}{A binary raster object with cells containing no data identified as
-NA}
+\item{x}{A raster object with cells containing no data identified as NA}
+
+\item{value.to.count}{Optional. Value of the cells to be counted}
 }
 \value{
-Returns the area of a raster object in km2
+The area of the cells of interest
 }
 \description{
 \code{getArea} reports the area of a raster object using the pixel counting
-method. Requires a binary raster as input.
+method.
 }
 \examples{
-a.r1 = getArea(r1) # a distribution raster
-}
-\seealso{
-\code{\link{getCellRes}}
+a.r1 <- getArea(r1) # area of all non-NA cells in r1
+a.r1 <- getArea(r1, 1) # area of cells labelled 1 in r1
 }
 \author{
-Nicholas Murray \email{murr.nick@gmail.com}
+Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
+  \email{calvinkflee@gmail.com}
 }

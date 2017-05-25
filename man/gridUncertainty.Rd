@@ -8,8 +8,8 @@ gridUncertainty(ecosystem.data, grid.size, nSim = 10,
   one.percent.rule = FALSE)
 }
 \arguments{
-\item{nSim}{specifies the number of times to repeat the AOO calculation
-with randomly sampled grid origin coordinates}
+\item{nSim}{specifies the number of times to repeat the AOO calculation with
+randomly sampled grid origin coordinates}
 
 \item{x}{Raster object of an ecosystem or species distribution}
 
@@ -26,9 +26,10 @@ grid by randomly moving the grid and recomputing AOO at each step.
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-List of Ecosystems Categories and Criteria, Version 1.0. Gland, Switzerland:
-IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
+  Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+  List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+  Switzerland: IUCN. ix + 94pp. Available at the following web site:
+  \url{iucnrle.org/}
 }
 \seealso{
 \code{\link{createGrid}} \code{\link{getAOO}}

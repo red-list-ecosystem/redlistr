@@ -17,10 +17,9 @@
 #' @references Puyravaud, J.-P. 2003. Standardizing the calculation of the
 #' annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 #' @examples
-#' a.r1 = getArea(r1) # a distribution raster
-#' a.r2 = getArea(r2) # a distribution raster
-#' ARC = getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-#' ARC
+#' a.r1 <- getArea(r1) # a distribution raster
+#' a.r2 <- getArea(r2) # a distribution raster
+#' ARC <- getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 
 getARC <- function (A.t1, A.t2, year.t1, year.t2){
   # Annual rate of change from Puyravaud 2004. Also known as instantaneous rate of change.

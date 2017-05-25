@@ -16,8 +16,8 @@ getARD(A.t1, A.t2, year.t1, year.t2)
 \item{year.t2}{Year of time t2}
 }
 \value{
-Returns the absolute rate of decline (ARD) between the two time
-periods
+The absolute rate of decline (ARD) between the two time
+  periods
 }
 \description{
 \code{getARD} calculates the Absolute Rate of Decline (ARD) given two areas
@@ -33,22 +33,23 @@ ARD
 }
 \references{
 Keith, D. A., Orscheg, C., Simpson, C. C., Clarke, P. J., Hughes,
-L., Kennelly, S. J., Major, R. E., Soderquist, T. R., Wilson, A. L. &
-Bedward, M. 2009. A new approach and case study for estimating extent and
-rates of habitat loss for ecological communities. Biological Conservation,
-142, 1469-1479.
+  L., Kennelly, S. J., Major, R. E., Soderquist, T. R., Wilson, A. L. &
+  Bedward, M. 2009. A new approach and case study for estimating extent and
+  rates of habitat loss for ecological communities. Biological Conservation,
+  142, 1469-1479.
 
 Puyravaud, J.-P. 2003. Standardizing the calculation of the
-annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
+  annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-Rodríguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-List of Ecosystems Categories and Criteria, Version 1.0. Gland, Switzerland:
-IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
+  Rodríguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+  List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+  Switzerland: IUCN. ix + 94pp. Available at the following web site:
+  \url{iucnrle.org/}
 }
 \seealso{
 \code{\link{getArea}}, \code{\link{getPRD}}, \code{\link{getARD}},
-\code{\link{getARC}}
+  \code{\link{getARC}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}
