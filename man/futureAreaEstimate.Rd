@@ -20,45 +20,38 @@ futureAreaEstimate(A.t1, year.t1, PRD, ARD, ARC, nYears)
 \item{nYears}{Number of years since t1 for area prediction}
 }
 \value{
-A dataframe listing
-\item{area.t1}{area at time t1}
-\item{year.t1}{year of t1.}
-\item{prop.rate.decl}{proportional rate of decline.}
-\item{abs.rate.decl}{absolute rate of decline.}
-\item{annual.rate.change}{annual rate of change.}
-\item{forecast.year}{year for which future area estimate is made.}
-\item{forecast.area.prd}{future area as estimated with proportional rate of
-decline.}
-\item{forecast.area.arc}{future area as estimated with annual rate of change
-.}
-\item{forecast.area.ard}{future area as estimated with absolute rate of
-decline.}
+A dataframe listing \item{area.t1}{area at time t1}
+  \item{year.t1}{year of t1.} \item{prop.rate.decl}{proportional rate of
+  decline.} \item{abs.rate.decl}{absolute rate of decline.}
+  \item{annual.rate.change}{annual rate of change.} \item{forecast.year}{year
+  for which future area estimate is made.} \item{forecast.area.prd}{future
+  area as estimated with proportional rate of decline.}
+  \item{forecast.area.arc}{future area as estimated with annual rate of
+  change .} \item{forecast.area.ard}{future area as estimated with absolute
+  rate of decline.}
 }
 \description{
-\code{futureAreaEstimate} calculates the expected area of a distribution
-  at a future date using known rates of decline.
+\code{futureAreaEstimate} calculates the expected area of a distribution at a
+future date using known rates of decline.
 }
 \examples{
 a.r1 = getArea(r1) # a distribution raster
 a.r2 = getArea(r2) # a distribution raster
 PRD = getPRD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-PRD
 ARD = getARD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-ARD
 ARC = getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-ARC
 area2050 <- futureAreaEstimate(A.t1 = a.r1, 2000, PRD, ARD, ARC, nYears = 50)
-area2050
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-List of Ecosystems Categories and Criteria, Version 1.0. Gland, Switzerland:
-IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
+  Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+  List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+  Switzerland: IUCN. ix + 94pp. Available at the following web site:
+  \url{iucnrle.org/}
 }
 \seealso{
 \code{\link{getArea}}, \code{\link{getPRD}}, \code{\link{getARD}},
-\code{\link{getARC}}
+  \code{\link{getARC}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}

@@ -32,6 +32,12 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   Switzerland: IUCN. ix + 94pp. Available at the following web site:
   \url{iucnrle.org/}
 }
+\seealso{
+\code{\link{getRLEReport}}
+
+Other AOO functions: \code{\link{getAOOSilent}},
+  \code{\link{getAOO}}, \code{\link{makeAOOGrid}}
+}
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
   \email{calvinkflee@gmail.com}
