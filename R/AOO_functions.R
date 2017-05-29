@@ -11,7 +11,8 @@
 #'   \code{grid.size}. Each grid square has a unique identification number.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
-#' @family AOO functions \code{\link{getRLEReport}}
+#' @family AOO functions
+#' @seealso \code{\link{getRLEReport}}
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
