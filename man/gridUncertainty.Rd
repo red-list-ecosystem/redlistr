@@ -4,25 +4,40 @@
 \alias{gridUncertainty}
 \title{Compute Area of Occupancy (AOO) accounting for grid uncertainty}
 \usage{
-gridUncertainty(ecosystem.data, grid.size, nSim = 10,
-  one.percent.rule = FALSE)
+gridUncertainty(ecosystem.data, grid.size, split, one.percent.rule = TRUE)
 }
 \arguments{
-\item{nSim}{specifies the number of times to repeat the AOO calculation with
-randomly sampled grid origin coordinates}
+\item{split}{Specifies the number of ways to split the grid in ONE axis.}
+
+\item{one.percent.rule}{Logical. If true, >1% of a grid must be occupied
+before it is counted as an AOO cell}
 
 \item{x}{Raster object of an ecosystem or species distribution}
 
 \item{grid}{Raster object of a regular grid suitable for assessing AOO}
 }
 \value{
-A list of dataframes raw.sims and summary.sims
+List containing vector of length split*split of calculated AOO for
+  each shift position, a list of summary statistics for the vector, a list of
+  grids which generated the smallest AOO as RasterLayers, and the movements
+  which resulted in the grids with the smallest AOO.
 }
 \description{
 \code{gridUncertainty} determines the number of area of occupancy (AOO) grid
 cells occupied by a species or ecosystem. The key difference with
 \code{getAOO} is that it accounts for the impact of the location of the AOO
-grid by randomly moving the grid and recomputing AOO at each step.
+grid by systematically moving the grid and recomputing AOO at each step.
+}
+\examples{
+x <- gridUncertainty(r1, 10000, 3, F)
+x$AOO.list # vector of length 9 of calculated AOO for each grid position
+x$stats # dataframe returning the number of shifts performed, summary statistics
+for the calculated AOOs, and the shift values which created the grid
+position(s) with the smallest AOO.
+x$min.AOO.grid.list # list of RasterLayers of the grids which all return the
+minimum AOO.
+x$min.AOO.shifts # dataframe containing information of the index of the shift
+which created the grids with the smallest AOO and the x and y shifts for them.
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
@@ -33,7 +48,9 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 }
 \seealso{
 \code{\link{createGrid}} \code{\link{getAOO}}
+  \code{\link{getAOOSilent}}
 }
 \author{
-Nicholas Murray \email{murr.nick@gmail.com}
+Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
+  \email{calvinkflee@gmail.com}
 }

@@ -28,9 +28,9 @@ areas at two points in time. Also provides an estimate of area change and
 percentage lost between the two time periods.
 }
 \examples{
-a.r1 = getArea(r1) # a distribution raster
-a.r2 = getArea(r2) # a distribution raster
-RLEstats = getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+a.r1 <- getArea(r1) # a distribution raster
+a.r2 <- getArea(r2) # a distribution raster
+RLEstats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

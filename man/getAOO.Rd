@@ -27,10 +27,10 @@ is counted in the AOO. This functionality is important for assessing the IUCN
 Red List of Ecosystems Criteria B.
 }
 \examples{
-n = createGrid(r1, 10000)
+n <- createGrid(r1, 10000)
 plot (n)
 plot (r1, add = TRUE)
-AOO = getAOO(r1, n, one.percent.rule = F)
+AOO <- getAOO(r1, n, one.percent.rule = F)
 AOO # number of grid cells occupied by an ecosystem or species
 }
 \references{

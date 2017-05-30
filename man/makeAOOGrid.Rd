@@ -27,10 +27,10 @@ AOO. This functionality is important for assessing the IUCN Red List of
 Ecosystems Criteria B.
 }
 \examples{
-n = createGrid(r1, 10000)
+n <- createGrid(r1, 10000)
 plot (n)
 plot (r1, add = TRUE)
-AOO_grid = makeAOOGrid(r1, n, one.percent.rule = F)
+AOO_grid <- makeAOOGrid(r1, n, one.percent.rule = F)
 AOO_grid # shapefile of grid cells occupied by an ecosystem or species
 }
 \references{

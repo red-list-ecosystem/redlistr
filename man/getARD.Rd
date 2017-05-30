@@ -26,9 +26,9 @@ this model is available in Keith et al (2003). ARD is sometimes also known as
 Annual Change (R).
 }
 \examples{
-a.r1 = getArea(r1) # a distribution raster
-a.r2 = getArea(r2) # a distribution raster
-ARD = getARD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+a.r1 <- getArea(r1) # a distribution raster
+a.r2 <- getArea(r2) # a distribution raster
+ARD <- getARD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 ARD
 }
 \references{

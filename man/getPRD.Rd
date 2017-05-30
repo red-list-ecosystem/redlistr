@@ -26,9 +26,9 @@ assumptions of this model is available in Keith et al (2003). PRD is
 sometimes known as trajectory (eg. Waycott et al 2009).
 }
 \examples{
-a.r1 = getArea(r1) # a distribution raster
-a.r2 = getArea(r2) # a distribution raster
-PRD = getPRD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+a.r1 <- getArea(r1) # a distribution raster
+a.r2 <- getArea(r2) # a distribution raster
+PRD <- getPRD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 }
 \references{
 Keith, D. A., Orscheg, C., Simpson, C. C., Clarke, P. J., Hughes,
