@@ -36,14 +36,14 @@ gridUncertainty <- function (ecosystem.data, grid.size, nSim = 10, one.percent.r
   for (i in 1:nSim){
 
     message (paste("Starting grid uncertainty number: ",i, "of", nSim))
-    x.shift = sample(-10000:10000, 1)
+    x.shift <- sample(-10000:10000, 1)
     message (paste("... moved x by:", x.shift))
-    y.shift = sample(-10000:10000, 1)
+    y.shift <- sample(-10000:10000, 1)
     message (paste("... moved y by:", y.shift))
-    dist.move = sqrt((x.shift^2)+(y.shift^2))# use pythagoras to work out how far it was moved as a function of a right-angled triangle
+    dist.move <- sqrt((x.shift^2)+(y.shift^2))# use pythagoras to work out how far it was moved as a function of a right-angled triangle
 
     grid.shift <- shift(grid, x=x.shift, y=y.shift) # move the grid
-    AOO = getAOOSilent (ecosystem.data, grid = grid.shift, one.percent.rule = one.percent.rule) # get the AOO again
+    AOO <- getAOOSilent (ecosystem.data, grid = grid.shift, one.percent.rule = one.percent.rule) # get the AOO again
 
 
     message (paste("... AOO equals:", AOO))
@@ -65,7 +65,7 @@ gridUncertainty <- function (ecosystem.data, grid.size, nSim = 10, one.percent.r
                         min.AOO = min (results.df$AOO),
                         max.AOO = max (results.df$AOO))
 
-  hist.breaks = seq(min(results.df$AOO),max(results.df$AOO),1)
+  hist.breaks <- seq(min(results.df$AOO),max(results.df$AOO),1)
   hist(results.df$AOO, breaks = hist.breaks, col = "darkred", main = "Histogram: AOO Uncertainty")
   return (list(raw.sims = results.df, summary.sims = out.df))
 }

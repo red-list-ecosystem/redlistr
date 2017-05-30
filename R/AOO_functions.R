@@ -128,7 +128,7 @@ getAOO <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
 getAOOSilent <- function (ecosystem.data, grid, one.percent.rule = FALSE) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- grid # below is different from getAOO
-  grid.size = res(grid)
+  grid.size <- res(grid)
   # here to end of if is the same as getAOO
   eco.points <- rasterToPoints(ecosystem.data)
   xy <- as.matrix(eco.points)[,c(1,2)] # select xy column only
@@ -141,7 +141,7 @@ getAOOSilent <- function (ecosystem.data, grid, one.percent.rule = FALSE) {
   if (one.percent.rule == TRUE){
     cell.res <- res(ecosystem.data)
     area <- cell.res[1] * cell.res[2]
-    one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
+    one.pc.grid <- grid.size[1] * grid.size[2] / 100 # 1pc of grid cell
     threshold <- one.pc.grid / area
     outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshol
   }
