@@ -14,7 +14,8 @@
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
-#'
+#' @example
+#' EOO.polygon <- makeEOO(r1)
 
 makeEOO <- function (ecosystem.data){
   # Makes an EOO spatial polygon using the centre point of each pixel as the boundary
@@ -46,10 +47,13 @@ makeEOO <- function (ecosystem.data){
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions
+#' @example
+#' EOO.area <- getAreaEOO(EOO.polygon)
 
 getAreaEOO <- function(EOO.polygon){
   # Returns the area of the makeEOO output (spatialpolygons object)
-  EOO.aream2 <- sapply(slot(EOO.polygon, "polygons"), slot, "area")  # get the area from the slots in the polygon dataset
+  EOO.aream2 <- sapply(slot(EOO.polygon, "polygons"), slot, "area")
+  # get the area from the slots in the polygon dataset
   EOO.areakm2 <- EOO.aream2/1000000
   return(EOO.areakm2)
 }

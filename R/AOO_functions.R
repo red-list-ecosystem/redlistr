@@ -53,10 +53,10 @@ createGrid <- function(ecosystem.data, grid.size){
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' n = createGrid(r1, 10000)
+#' n <- createGrid(r1, 10000)
 #' plot (n)
 #' plot (r1, add = TRUE)
-#' AOO_grid = makeAOOGrid(r1, n, one.percent.rule = F)
+#' AOO_grid <- makeAOOGrid(r1, n, one.percent.rule = F)
 #' AOO_grid # shapefile of grid cells occupied by an ecosystem or species
 
 makeAOOGrid <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
@@ -99,10 +99,10 @@ makeAOOGrid <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' n = createGrid(r1, 10000)
+#' n <- createGrid(r1, 10000)
 #' plot (n)
 #' plot (r1, add = TRUE)
-#' AOO = getAOO(r1, n, one.percent.rule = F)
+#' AOO <- getAOO(r1, n, one.percent.rule = F)
 #' AOO # number of grid cells occupied by an ecosystem or species
 
 getAOO <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {

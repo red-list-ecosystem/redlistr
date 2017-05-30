@@ -56,8 +56,8 @@ getArea <- function(x, value.to.count){
 #' getAreaChangefromRast(r1, r2) # distribution rasters
 
 getAreaChangefromRast <- function (x, y){
-  a1 <- getArea (x)
-  a2 <- getArea (y)
+  a1 <- getArea(x)
+  a2 <- getArea(y)
   a.dif <- a1 - a2
   return(a.dif)
 }
@@ -133,20 +133,15 @@ getARC <- function (A.t1, A.t2, year.t1, year.t2){
 #' List of Ecosystems Categories and Criteria, Version 1.0. Gland, Switzerland:
 #' IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
 #' @examples
-#' a.r1 = getArea(r1) # a distribution raster
-#' a.r2 = getArea(r2) # a distribution raster
-#' PRD = getPRD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+#' a.r1 <- getArea(r1) # a distribution raster
+#' a.r2 <- getArea(r2) # a distribution raster
+#' PRD <- getPRD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 
 getPRD <- function (A.t1, A.t2, year.t1, year.t2){
   # Proportional rate of change (also known as trajectory (r))
   PRD <- 100 * (1-(A.t2/A.t1)^(1/(year.t2-year.t1)))
   return (PRD)
 }
-
-# getPRD2 <- function (A.t1, A.t2, year.t1, year.t2){
-#   PRD2 <- 100 * (1-(exp(log(A.t2/A.t1)/(year.t2-year.t1))))
-#   return (PRD2)
-# }
 
 #' Absolute Rate of Decline.
 #'
@@ -173,9 +168,9 @@ getPRD <- function (A.t1, A.t2, year.t1, year.t2){
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' a.r1 = getArea(r1) # a distribution raster
-#' a.r2 = getArea(r2) # a distribution raster
-#' ARD = getARD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+#' a.r1 <- getArea(r1) # a distribution raster
+#' a.r2 <- getArea(r2) # a distribution raster
+#' ARD <- getARD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 #' ARD
 
 getARD <- function (A.t1, A.t2, year.t1, year.t2){
@@ -224,9 +219,9 @@ getPercentLost <- function(A.t1, A.t2){
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' a.r1 = getArea(r1) # a distribution raster
-#' a.r2 = getArea(r2) # a distribution raster
-#' RLEstats = getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+#' a.r1 <- getArea(r1) # a distribution raster
+#' a.r2 <- getArea(r2) # a distribution raster
+#' RLEstats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 
 getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2){
   # consider raw code rather than a function in here
