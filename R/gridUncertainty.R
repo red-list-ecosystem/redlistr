@@ -8,8 +8,10 @@
 #' @param x Raster object of an ecosystem or species distribution
 #' @param grid Raster object of a regular grid suitable for assessing AOO
 #' @param split Specifies the number of ways to split the grid in ONE axis.
-#' @param one.percent.rule Logical. If true, >1% of a grid must be occupied
-#'   before it is counted as an AOO cell
+#' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
+#'   must be passed before a grid is counted as an AOO grid.
+#' @param percent Numeric. The minimum percent to be applied as a threshold for
+#'   the \code{min.percent.rule}
 #' @return List containing vector of length split*split of calculated AOO for
 #'   each shift position, a list of summary statistics for the vector, a list of
 #'   grids which generated the smallest AOO as RasterLayers, and the movements
@@ -35,7 +37,7 @@
 #' which created the grids with the smallest AOO and the x and y shifts for them.
 
 
-gridUncertainty <- function(ecosystem.data, grid.size, split, one.percent.rule = TRUE){
+gridUncertainty <- function(ecosystem.data, grid.size, split, one.percent.rule = TRUE, percent){
   grid <- createGrid(ecosystem.data, grid.size)
   results.df <- data.frame(sim.no = integer(),
                            x.shift = integer(),
@@ -60,7 +62,8 @@ gridUncertainty <- function(ecosystem.data, grid.size, split, one.percent.rule =
   })
 
   AOO.list <- sapply(grid.shifted.list, getAOOSilent, # List of AOO for each scenario
-                     ecosystem.data = ecosystem.data, one.percent.rule = one.percent.rule)
+                     ecosystem.data = ecosystem.data,
+                     one.percent.rule = one.percent.rule, percent = percent)
   min.AOO <- min(AOO.list)
   min.AOO.index <- which(AOO.list==min.AOO)
 
@@ -83,7 +86,3 @@ gridUncertainty <- function(ecosystem.data, grid.size, split, one.percent.rule =
               min.AOO.grid.list = grid.shifted.list[min.AOO.index],
               min.AOO.shifts = shift.grid[min.AOO.index, ]))
 }
-
-# TODO: change the 1% rule to a number between 0 and 1 specifying how much of the grid cell must be occupied before being selected for AOO
-
-

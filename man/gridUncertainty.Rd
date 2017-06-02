@@ -4,17 +4,21 @@
 \alias{gridUncertainty}
 \title{Compute Area of Occupancy (AOO) accounting for grid uncertainty}
 \usage{
-gridUncertainty(ecosystem.data, grid.size, split, one.percent.rule = TRUE)
+gridUncertainty(ecosystem.data, grid.size, split, one.percent.rule = TRUE,
+  percent)
 }
 \arguments{
 \item{split}{Specifies the number of ways to split the grid in ONE axis.}
 
-\item{one.percent.rule}{Logical. If true, >1% of a grid must be occupied
-before it is counted as an AOO cell}
+\item{percent}{Numeric. The minimum percent to be applied as a threshold for
+the \code{min.percent.rule}}
 
 \item{x}{Raster object of an ecosystem or species distribution}
 
 \item{grid}{Raster object of a regular grid suitable for assessing AOO}
+
+\item{min.percent.rule}{Logical. If \code{TRUE}, a minimum area threshold
+must be passed before a grid is counted as an AOO grid.}
 }
 \value{
 List containing vector of length split*split of calculated AOO for

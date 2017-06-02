@@ -41,7 +41,7 @@ createGrid <- function(ecosystem.data, grid.size){
 #' Ecosystems Criteria B.
 #'
 #' @inheritParams createGrid
-#' @param min.percent.rule Logical. If \code{TRUE}, A minimum area threshold
+#' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the \code{min.percent.rule}
