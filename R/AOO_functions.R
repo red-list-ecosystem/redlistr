@@ -35,14 +35,16 @@ createGrid <- function(ecosystem.data, grid.size){
 #' Create Area of Occupancy (AOO) grid for an ecosystem or species distribution
 #'
 #' \code{makeAOOGrid} creates grids for species presence based on the presented
-#' raster object. It includes capability for specifying whether at least one
+#' raster object. It includes capability for specifying whether a minimum
 #' percent of the grid cell needs to be occupied before it is counted in the
 #' AOO. This functionality is important for assessing the IUCN Red List of
 #' Ecosystems Criteria B.
 #'
 #' @inheritParams createGrid
-#' @param one.percent.rule Logical.If \code{TRUE} one percent of the grid cell
-#'   must be occupied before it is counted in the AOO.
+#' @param min.percent.rule Logical. If \code{TRUE}, A minimum area threshold
+#'   must be passed before a grid is counted as an AOO grid.
+#' @param percent Numeric. The minimum percent to be applied as a threshold for
+#'   the \code{min.percent.rule}
 #' @return A shapefile of grid cells occupied by an ecosystem or species
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -59,7 +61,7 @@ createGrid <- function(ecosystem.data, grid.size){
 #' AOO_grid <- makeAOOGrid(r1, n, one.percent.rule = F)
 #' AOO_grid # shapefile of grid cells occupied by an ecosystem or species
 
-makeAOOGrid <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
+makeAOOGrid <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- createGrid(ecosystem.data, grid.size)
   eco.points <- rasterToPoints(ecosystem.data)
@@ -67,14 +69,14 @@ makeAOOGrid <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
   x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
   names(x) <- 'count'
   grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-  if (one.percent.rule == FALSE){
+  if (min.percent.rule == FALSE){
     outGrid <- grid.shp
   }
-  if (one.percent.rule == TRUE){
+  if (min.percent.rule == TRUE){
     cell.res <- res(ecosystem.data)
     area <- cell.res[1] * cell.res[2]
     one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
-    threshold <- one.pc.grid / area
+    threshold <- one.pc.grid * percent / area
     outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshol
   }
   return (outGrid)
@@ -105,9 +107,9 @@ makeAOOGrid <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
 #' AOO <- getAOO(r1, n, one.percent.rule = F)
 #' AOO # number of grid cells occupied by an ecosystem or species
 
-getAOO <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
+getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1){
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-  AOO.number = length(makeAOOGrid(ecosystem.data, grid.size, one.percent.rule))
+  AOO.number = length(makeAOOGrid(ecosystem.data, grid.size, min.percent.rule, percent))
   return(AOO.number)
 }
 
@@ -125,7 +127,7 @@ getAOO <- function (ecosystem.data, grid.size, one.percent.rule = TRUE) {
 #'   \email{calvinkflee@@gmail.com}
 #' @family AOO functions
 
-getAOOSilent <- function (ecosystem.data, grid, one.percent.rule = FALSE) {
+getAOOSilent <- function (ecosystem.data, grid, one.percent.rule = TRUE, percent) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- grid # below is different from getAOO
   grid.size <- res(grid)
@@ -142,7 +144,7 @@ getAOOSilent <- function (ecosystem.data, grid, one.percent.rule = FALSE) {
     cell.res <- res(ecosystem.data)
     area <- cell.res[1] * cell.res[2]
     one.pc.grid <- grid.size[1] * grid.size[2] / 100 # 1pc of grid cell
-    threshold <- one.pc.grid / area
+    threshold <- one.pc.grid * percent / area
     outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshol
   }
   # end getAOO
