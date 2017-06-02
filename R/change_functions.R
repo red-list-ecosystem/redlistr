@@ -8,7 +8,6 @@
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family Change functions
-#' @seealso
 #' @examples
 #' a.r1 <- getArea(r1) # area of all non-NA cells in r1
 #' a.r1 <- getArea(r1, 1) # area of cells labelled 1 in r1

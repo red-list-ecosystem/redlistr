@@ -4,7 +4,7 @@
 \alias{getAOO}
 \title{Compute Area of Occupancy (AOO)}
 \usage{
-getAOO(ecosystem.data, grid.size, one.percent.rule = TRUE)
+getAOO(ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.
@@ -13,8 +13,11 @@ Please use a CRS with units measured in metres.}
 \item{grid.size}{A number specifying the width of the desired grid square (in
 same units as your coordiante reference system)}
 
-\item{one.percent.rule}{Logical.If \code{TRUE} one percent of the grid cell
-must be occupied before it is counted in the AOO.}
+\item{min.percent.rule}{Logical. If \code{TRUE}, A minimum area threshold
+must be passed before a grid is counted as an AOO grid.}
+
+\item{percent}{Numeric. The minimum percent to be applied as a threshold for
+the \code{min.percent.rule}}
 }
 \value{
 The number of grid cells occupied by the ecosystem or species

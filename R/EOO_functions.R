@@ -14,7 +14,7 @@
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
-#' @example
+#' @examples
 #' EOO.polygon <- makeEOO(r1)
 
 makeEOO <- function (ecosystem.data){
@@ -47,7 +47,7 @@ makeEOO <- function (ecosystem.data){
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions
-#' @example
+#' @examples
 #' EOO.area <- getAreaEOO(EOO.polygon)
 
 getAreaEOO <- function(EOO.polygon){

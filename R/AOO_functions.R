@@ -127,7 +127,7 @@ getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent 
 #'   \email{calvinkflee@@gmail.com}
 #' @family AOO functions
 
-getAOOSilent <- function (ecosystem.data, grid, one.percent.rule = TRUE, percent) {
+getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- grid # below is different from getAOO
   grid.size <- res(grid)
@@ -137,10 +137,10 @@ getAOOSilent <- function (ecosystem.data, grid, one.percent.rule = TRUE, percent
   x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
   names(x) <- 'count'
   grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-  if (one.percent.rule == FALSE){
+  if (min.percent.rule == FALSE){
     outGrid <- grid.shp
   }
-  if (one.percent.rule == TRUE){
+  if (min.percent.rule == TRUE){
     cell.res <- res(ecosystem.data)
     area <- cell.res[1] * cell.res[2]
     one.pc.grid <- grid.size[1] * grid.size[2] / 100 # 1pc of grid cell

@@ -4,7 +4,7 @@
 \alias{getAOOSilent}
 \title{Alternate function for getting AOO (with custom grid)}
 \usage{
-getAOOSilent(ecosystem.data, grid, one.percent.rule = FALSE)
+getAOOSilent(ecosystem.data, grid, min.percent.rule = TRUE, percent)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.

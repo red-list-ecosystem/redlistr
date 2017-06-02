@@ -17,6 +17,9 @@ The area of the \code{EOO.polygon} in km2
 \code{getAreaEOO} calculates the area of the EOO polygon generated from
 \code{makeEOO} the provided data
 }
+\examples{
+EOO.area <- getAreaEOO(EOO.polygon)
+}
 \seealso{
 Other EOO functions: \code{\link{makeEOO}}
 }

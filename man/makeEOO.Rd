@@ -18,6 +18,9 @@ An object of class SpatialPolygons representing the EOO of
 \code{makeEOO} creates a  minimum convex polygon enclosing all occurrences of
 the provided data
 }
+\examples{
+EOO.polygon <- makeEOO(r1)
+}
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
