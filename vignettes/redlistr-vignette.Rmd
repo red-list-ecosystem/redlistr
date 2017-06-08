@@ -9,64 +9,122 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 ## 1. Introduction
+This document provides an introduction to conducting assessments for the IUCN 
+Red List of Ecosystems in `R`. Assessments of ecosystems under the IUCN Red List
+of Ecosystems criteria require calculation of standardised metrics that were 
+developed to objectively assess risk to ecosystem ([Keith et al. 2013](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111)).
+The `redlistr` package was developed to assist in the calculation of these
+metrics, which include establishing the two standard measures of the size of an 
+ecosystems' geographic distribution , as measured by the Area of Occupancy (AOO)
+and Extent of Occurrence (EOO). As many of these measures are also useful for 
+assessing species under the IUCN Red List of Threatened Species criteria, we 
+expect this package will also be useful for assessors conducting species 
+assessments.
 
-This document provides an introduction to conducting assessments for the IUCN Red List of Ecosystems in \R. Assessments of ecosystems under the IUCN Red List of Ecosystems criteria require calculation of standardised metrics that were developed to objectively assess risk to ecosystem (Keith et al, 2013). The redlistr package was developed to assist in the calculation of these metrics, which include establishing the two standard measures of the size of an ecosystems' geographic distribution , as measured by the Area of Occupancy (AOO) and Extent of Occurrence (EOO). As many of these measures are also useful for assessing species under the IUCN Red List of Threatened Species criteria, we expect this package will also be useful for assessors conducting species assessments.
+In conducting an assessment with this package, we assume that you are familiar 
+with IUCN red listing protocols. In particular, you should consult the IUCN 
+guidelines for both of the red lists, which are the definitive sources of all 
+information required to ensure consistent application of IUCN criteria (IUCN, 
+2015; [Bland et al. 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
+In addition, the papers by Keith et al.
+([2013](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111))
+and Rodriguez et al. ([2015](https://www.iucn.org/sites/dev/files/content/documents/rodriguez-etal-2015-a-practical-guide-iucn-rle_erratum.pdf)) are particularly useful for navigating the IUCN Red
+List of Ecosystems criteria. A range of important resources, including software
+tools and guiding material is available on the IUCN Red List of Ecosystems
+[website](www.iucnrle.org). There is also plenty of handy material for assessing
+species available on the IUCN Red List of Threatened Species
+[website](http://www.iucnredlist.org).
 
-In conducting an assessment with this package, we assume that you are familiar with IUCN red listing protocols. In particular, you should consult the IUCN guidelines for both of the red lists, which are the definitive sources of all information required to ensure consistent application of IUCN criteria (IUCN, 2015; Bland et al 2016). In addition, the papers by Keith et al (2013) and Rodriguez et al (2015) are particularly useful for navigating the IUCN Red List of Ecosystems criteria. A range of important resources, including software tools and guiding material is available on the IUCN Red List of Ecosystems website (www.iucnrle.org). There is also plenty of handy material for assessing species available on the IUCN Red List of Threatened Species website (http://www.iucnredlist.org).
+We also assume that you are reasonably familiar with the `R` programming
+language, and have some experience in conducting analyses of vector and raster
+data within the `R` environment. Of particular use will be familiarity with the
+`Raster`, `sp` and `rgeos` packages. This is certainly not a prerequisite, but
+this package is built upon many of the functions available in these three
+packages.
 
-We also assume that you are reasonably familiar with the /R programming language, and have some experience in conducting analyses of vector and raster data within the /R environment. Of particular use will be familiarity with the 'Raster', 'sp' and 'rgeos' packages. This is certainly not a prerequisite, but this package is built upon many of the functions available in these three packages. 
-
-Last, this is a work in progress and we aim to continually add new functions to newer versions of package. Suggestions are welcomed, as would be offers for collaborative development.
+Last, this is a work in progress and we aim to continually add new functions to 
+newer versions of package. Suggestions are welcomed, as would offers for 
+collaborative development.
 
 ## 2. Importing data
+In this introduction, we will be focusing mainly on the `redlistr` tools aimed at
+assessing the spatial criteria of the IUCN Red List of Ecosystems. These
+criteria assess the change in the extent of an ecosystem over time (Criterion A)
+and properties of the geographic distribution size (Criterion B). Both of these
+criteria require the use of maps of ecosystem distributions.
 
-In this introduction, we will be focusing mainly on the redlistr tools aimed at assessing the spatial criteria of the IUCN Red List of Ecosystems. These criteria assess the change in the extent of an ecosystem over time (Criterion A) and properties of the geographic distribution size (Criterion B). Both of these criteria require the use of maps of ecosystem distributions. 
+Most distribution maps of ecosystems and species will be provided in raster or
+vector (shapefile) format. We will use the excellent `raster`, `sp`, and `rgeos`
+packages to import data, and to enable us to begin to use the functions in the
+`redlistr` package.
 
-Most distribution maps of ecosystems and species will be provided in raster or vector (shapefile) format. We will use the excellent `raster`, `sp`, and `rgeos` packages to import data, to enable us to begin to use the functions in the `redlistr` package.
-
-```{r Loading packages}
+```{r Loading packages, message=FALSE}
 # install.packages(c("raster", "sp", "rgeos"))
 library(raster)
 library(sp)
 library(rgeos)
 ```
 
-Import the data files that you will analyse. In our case, we will use a base dataset called volcano to represent a very simple ecosystem distribution dataset.The rasters now represent the distribution of an ecosystem, where a raster value of 1 denotes its presence. You will note that we generate two rasters. Raster 1 (r1) represents the distribution of an ecosystem at time 1 (t1, 1990) and raster 2 (r2) represents the distribution of the same ecosystem at time 2 (t2, 2012).
+Import the data files that you will analyse. In this example, we will use a base
+dataset called 'volcano' to represent a very simple ecosystem distribution
+dataset. Rasters are used to represent the distribution of an ecosystem, where a
+raster value of 1 denotes its presence. You will note that we generate two
+rasters. Raster 1 (r1) represents the distribution of an ecosystem at time 1
+(t1, 1990) and raster 2 (r2) represents the distribution of the same ecosystem
+at time 2 (t2, 2012).
 
-To import your own data, you can use the 'raster' function in the 'raster' package, which can handle many different types of georeferenced spatial data. In some cases, you may be using classified maps that contain many ecosystems, in which case you can use the huge functionality of the raster package to extract a single binary raster suitable for ingestion into a redlistr analyses.
+To import your own data, you can use the `raster` function in the `raster`
+package, which can handle many different types of georeferenced spatial data. In
+some cases, you may be using classified maps that contain many ecosystems, in
+which case you can use the huge functionality of the raster package to extract a
+single binary raster suitable for ingestion into a redlistr analyses.
 
-```{r}
+```{r Setting up two example rasters and setting their extents}
 image(volcano) # we use this base dataset to create 2 rasters of different sizes below
-r1 <- raster(ifelse((volcano<130), NA, 1), crs = "+proj=longlat +datum=WGS84") #t1 = 1990
-ext <- extent(0,6100,0,8700) # set the extent of raster r1, 100m resolution
+crs.UTM55N <- '+proj=utm +zone=55 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55N) #t1 = 1990
+ext <- extent(0, 6100, 0, 8700) # set the extent of raster r1, 100m resolution
 extent(r1) <- ext
 r2 <- raster(ifelse((volcano<145), NA, 1)) #t2 = 2012
-extent(r2) <- ext
+extent(r2) <- ext # set the extent of raster r2, 100m resolution
 ```
 
-We can plot the data to view the two distributions. Note that at t2 the ecosystem is smaller than at t1, due to uniform land clearing around the ecosystem boundaries. We simulated this process for simplicity here.
+We can plot the data to view the two distributions. Note that at t2 the
+ecosystem is smaller than at t1, due to uniform land clearing around the
+ecosystem boundaries. We simulated this process for simplicity here.
 
-```{r, fig.show='hold'}
+```{r Plotting the two rasters, fig.show='hold'}
 plot (r1, col = "grey30", legend = FALSE, main = "Ecosystem Distribution")
 plot (r2, add = T, col = "darkorange", legend = FALSE)
 ```
 
-At this stage it is also important to check that data are at least in the right location. This can be acheived by simply plotting the map and checking the coordinates, or check the distribution maps against satellite images. This can be acheived using packages such as ggmap, plotgooglemaps, googleVis etc. It is also important to check that the data are suitable for the task at hand. 
+At this stage it is also important to check that data are at least in the right
+location. This can be acheived by simply plotting the map and checking the
+coordinates, or check the distribution maps against satellite images. This can
+be acheived using packages such as `ggmap`, `plotgooglemaps`, `googleVis` etc.
+It is also important to check that the data are suitable for the task at hand.
 
 ## 3. Basic information
-
-We can now use some of features of redlistr to get some basic information on the ecosystem. However, before proceeing it is wise to check that the data have the same grain size (resolution), and spatial properties (spatial extent, origin and projection). This can be acheived using features from the 'raster' package, such as aggregate, resample and projectRaster.
+We can now use some of features of `redlistr` to get some basic information on
+the ecosystem. However, before proceeing it is wise to check that the data have
+the same grain size (resolution), and spatial properties (spatial extent, origin
+and projection). This can be acheived using features from the `raster` package,
+such as `aggregate`, `resample` and `projectRaster`.
 
 Below we check the projections of the data to ensure they are consistent:
 
-```{r}
+```{r Checking CRS}
 crs(r1,asText=TRUE)
 crs(r2) # no projection
 crs(r2) <- crs(r1)
 crs(r2) # same projection
 ```
 
-Now we can begin to use redlistr, first we load it from github, using the devtools package.
+It should be noted here that for `redlistr` to function properly, the projection
+used should be measured in metres.
+
+Now we can begin to use `redlistr`, first we load it from github, using the
+`devtools` package.
 
 ```{r}
 # library(devtools)
@@ -76,7 +134,11 @@ Now we can begin to use redlistr, first we load it from github, using the devtoo
 devtools::load_all()
 ```
 
-Start with getting the area of the dataset, noting there has been loss of the ecosystem over the time. Note that area is calculated using the pixel count method, where the number of pixels multiplied by the area of each pixel is used to determine the area of the ecosystem, which is provided in square kilometres. We can also check the resolution of the data (in metres).
+Start with getting the area of the dataset, noting there has been loss of the
+ecosystem over the time. Note that area is calculated using the pixel count
+method, where the number of pixels multiplied by the area of each pixel is used
+to determine the area of the ecosystem, which is provided in square kilometres.
+We can also check the resolution of the data (in metres).
 
 ```{r}
 a.r1 <- getArea(r1)
@@ -85,7 +147,7 @@ a.r2 <- getArea(r2)
 a.r2 #km2
 ```
 
-The result: at time 1 (1990) the ecosystem was `a.r1` km2 and at time 2 (2012) the ecosystem was `a.r2` km2.
+The result: at time 1 (1990) the ecosystem was `r a.r1` km2 and at time 2 (2012) the ecosystem was `r a.r2` km2.
 
 ## 3. Assessing Criterion A
 
