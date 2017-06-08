@@ -1,20 +1,13 @@
 ---
 title: "Introduction to the 'redlistr' package"
-author: "Nicholas J. Murray"
-date: "`July 25, 2016"
+author: "Nicholas J. Murray, Calvin K.F. Lee"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to the 'redlistr' package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
 ## 1. Introduction
 
 This document provides an introduction to conducting assessments for the IUCN Red List of Ecosystems in \R. Assessments of ecosystems under the IUCN Red List of Ecosystems criteria require calculation of standardised metrics that were developed to objectively assess risk to ecosystem (Keith et al, 2013). The redlistr package was developed to assist in the calculation of these metrics, which include establishing the two standard measures of the size of an ecosystems' geographic distribution , as measured by the Area of Occupancy (AOO) and Extent of Occurrence (EOO). As many of these measures are also useful for assessing species under the IUCN Red List of Threatened Species criteria, we expect this package will also be useful for assessors conducting species assessments.
@@ -29,9 +22,9 @@ Last, this is a work in progress and we aim to continually add new functions to 
 
 In this introduction, we will be focusing mainly on the redlistr tools aimed at assessing the spatial criteria of the IUCN Red List of Ecosystems. These criteria assess the change in the extent of an ecosystem over time (Criterion A) and properties of the geographic distribution size (Criterion B). Both of these criteria require the use of maps of ecosystem distributions. 
 
-Most distribution maps of ecosystems and species will be provided in raster of vector (shapefile) format. We will use the excellent 'raster' and 'sp' packages to import data, to enable us to begin to use the functions in the redlistr package
+Most distribution maps of ecosystems and species will be provided in raster or vector (shapefile) format. We will use the excellent `raster`, `sp`, and `rgeos` packages to import data, to enable us to begin to use the functions in the `redlistr` package.
 
-```{r}
+```{r Loading packages}
 # install.packages(c("raster", "sp", "rgeos"))
 library(raster)
 library(sp)
@@ -79,7 +72,8 @@ Now we can begin to use redlistr, first we load it from github, using the devtoo
 # library(devtools)
 # install_github('nick-murray/redlistr')
 # install.packages ("redlistr")
-library(redlistr) # loads the redlistr package
+#library(redlistr) # loads the redlistr package
+devtools::load_all()
 ```
 
 Start with getting the area of the dataset, noting there has been loss of the ecosystem over the time. Note that area is calculated using the pixel count method, where the number of pixels multiplied by the area of each pixel is used to determine the area of the ecosystem, which is provided in square kilometres. We can also check the resolution of the data (in metres).
@@ -89,10 +83,9 @@ a.r1 <- getArea(r1)
 a.r1 #km2
 a.r2 <- getArea(r2)
 a.r2 #km2
-resolution = getCellWidth(r1) #m
 ```
 
-The result: at time 1 (1990) the ecosystem was `r area.r1` km2 and at time 2 (2012) the ecosystem was `r area.r2` km2.
+The result: at time 1 (1990) the ecosystem was `a.r1` km2 and at time 2 (2012) the ecosystem was `a.r2` km2.
 
 ## 3. Assessing Criterion A
 
@@ -103,7 +96,7 @@ The IUCN Red List of Ecosystems criterion A requires estimates of the extent of 
 How much area has been lost between t1 and t2?
 
 ```{r}
-area.lost <- getAreaChange (a.r1, a.r2)
+area.lost <- a.r1 - a.r2
 area.lost # 301.63 km2
 ```
 
