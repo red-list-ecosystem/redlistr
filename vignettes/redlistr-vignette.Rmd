@@ -25,7 +25,7 @@ In conducting an assessment with this package, we assume that you are familiar
 with IUCN red listing protocols. In particular, you should consult the IUCN 
 guidelines for both of the red lists, which are the definitive sources of all 
 information required to ensure consistent application of IUCN criteria (IUCN, 
-2015; [Bland et al. 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
+[2015](link here); [Bland et al. 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
 In addition, the papers by Keith et al.
 ([2013](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111))
 and Rodriguez et al. ([2015](https://www.iucn.org/sites/dev/files/content/documents/rodriguez-etal-2015-a-practical-guide-iucn-rle_erratum.pdf)) are particularly useful for navigating the IUCN Red
@@ -126,7 +126,7 @@ used should be measured in metres.
 Now we can begin to use `redlistr`, first we load it from github, using the
 `devtools` package.
 
-```{r}
+```{r Loading redlistr}
 # library(devtools)
 # install_github('nick-murray/redlistr')
 # install.packages ("redlistr")
@@ -134,42 +134,55 @@ Now we can begin to use `redlistr`, first we load it from github, using the
 devtools::load_all()
 ```
 
-Start with getting the area of the dataset, noting there has been loss of the
-ecosystem over the time. Note that area is calculated using the pixel count
-method, where the number of pixels multiplied by the area of each pixel is used
-to determine the area of the ecosystem, which is provided in square kilometres.
-We can also check the resolution of the data (in metres).
+We start by calculating the area of the dataset, noting there has been a decline
+in area of the ecosystem over the time. Area is calculated here using the pixel
+count method, where the number of pixels classified as the ecosystem of interest
+is multiplied by the area of each pixel is used to determine the area of the
+whole ecosystem. The area calculated is provided in square kilometres. We can
+also check the resolution of the data (in metres).
 
-```{r}
+```{r Calculate area of rasters}
 a.r1 <- getArea(r1)
 a.r1 #km2
 a.r2 <- getArea(r2)
 a.r2 #km2
+res.r1 <- res(r1)
+res.r1 #m2
 ```
 
-The result: at time 1 (1990) the ecosystem was `r a.r1` km2 and at time 2 (2012) the ecosystem was `r a.r2` km2.
+The results: at time 1 (1990), the ecosystem was `r a.r1` km2, and at time 2,
+(2012) the ecosystem was `r a.r2` km2.
 
-## 3. Assessing Criterion A
+## 4. Assessing Criterion A
 
-The IUCN Red List of Ecosystems criterion A requires estimates of the extent of change over time. This is typically calculated over a 50 year time period (past, present or future) or against an historical baseline (Bland et al 2016). The first step towards acheiving this change estimate over a fixed time frame is to assess the amount of change observed in your data.
+The IUCN Red List of Ecosystems criterion A requires estimates of the magnitude of
+change over time. This is typically calculated over a 50 year time period (past,
+present or future) or against a historical baseline ([Bland et al 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
+The first step towards acheiving this change estimate over a fixed time frame is
+to assess the amount of change observed in your data.
 
-### 3a. Area change
+### Area change
 
 How much area has been lost between t1 and t2?
 
 ```{r}
 area.lost <- a.r1 - a.r2
-area.lost # 301.63 km2
+area.lost 
 ```
 
-A change estimate can also be acheived by passing the input raster datasets directly to a 'redlistr' function. An analogue function is also provided (getAreaChangefromShp) in the case of using vector (shapefile) data.
+A change estimate can also be acheived by passing the input raster datasets
+directly to the `getAreaChangefromRast` function in `redlistr`. An analogue
+function is also provided (`getAreaChangefromShp`) which accepts vector
+(shapefile) data as inputs.
 
 ```{r}
 area.change <- getAreaChangefromRast (r1,r2)
-area.change #301.63 km2
+area.change 
 ```
 
-We can visualise this change using an image differencing function. This function creates a new raster of all areas that have been lost between t1 and t2. Note that an accuracy assessment of this change map can 
+We can visualise this change using an image differencing function. This function
+creates a new raster of all areas that have been lost between t1 and t2. Note
+that an accuracy assessment of this change map can
 
 ```{r}
 dif.rast <- differenceRaster (r1,r2)
@@ -177,11 +190,21 @@ plot(dif.rast, col = "dark red", legend = FALSE)
 getArea(dif.rast)
 ```
 
-### 3a. Rate of change
+### Rate of change
 
-In the Red List of Ecosystems, two methods are suggested to determine the rate of decline of an ecosystem, each of which assumes a different functional form of the decline (IUCN, 2015).  The proportional rate of decline (PRD) is a fraction of the previous year's remaining area, while the absolute rate of decline (ARD) is a constant fraction of the area of the ecosystem at the beginning of the decline (IUCN, 2015). These rates of decline allow the use of two or more data points to extrapolate to the full 50 year timeframe required in an assessment. The annual rate of change (ARC) uses a compound interest law to determine the instantaneous rate of change (Puryvaud 2004). For further information about the choice of each of these methods to extrapolate refer to the IUCN Red List of Ecosystems guidelines (Bland et al 2016).
+In the Red List of Ecosystems, two methods are suggested to determine the rate
+of decline of an ecosystem, each of which assumes a different functional form of
+the decline (IUCN, 2015).  The proportional rate of decline (PRD) is a fraction
+of the previous year's remaining area, while the absolute rate of decline (ARD)
+is a constant fraction of the area of the ecosystem at the beginning of the
+decline (IUCN, 2015). These rates of decline allow the use of two or more data 
+points to extrapolate to the full 50 year timeframe required in an assessment.
 
-```{r}
+The annual rate of change (ARC) uses a compound interest law to determine the 
+instantaneous rate of change ([Puyravaud 2003](http://www.sciencedirect.com/science/article/pii/S0378112702003353)). For further information about the choice of each of these methods to extrapolate
+refer to the IUCN Red List of Ecosystems guidelines ([Bland et al 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
+
+```{r Using various methods to calculate rate of decline}
 
 # absolute rate of decline
 ard <- getARD (a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
