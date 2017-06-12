@@ -127,7 +127,7 @@ getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent 
 #'   \email{calvinkflee@@gmail.com}
 #' @family AOO functions
 
-getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent) {
+getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- grid # below is different from getAOO
   grid.size <- res(grid)
@@ -193,7 +193,7 @@ getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent
 #' which created the grids with the smallest AOO and the x and y shifts for them.
 
 
-gridUncertainty <- function(ecosystem.data, grid.size, split, one.percent.rule = TRUE, percent){
+gridUncertainty <- function(ecosystem.data, grid.size, splits, min.percent.rule = TRUE, percent = 1){
   grid <- createGrid(ecosystem.data, grid.size)
   results.df <- data.frame(sim.no = integer(),
                            x.shift = integer(),
@@ -219,7 +219,8 @@ gridUncertainty <- function(ecosystem.data, grid.size, split, one.percent.rule =
 
   AOO.list <- sapply(grid.shifted.list, getAOOSilent, # List of AOO for each scenario
                      ecosystem.data = ecosystem.data,
-                     one.percent.rule = one.percent.rule, percent = percent)
+                     min.percent.rule = min.percent.rule,
+                     percent = percent)
   min.AOO <- min(AOO.list)
   min.AOO.index <- which(AOO.list==min.AOO)
 
