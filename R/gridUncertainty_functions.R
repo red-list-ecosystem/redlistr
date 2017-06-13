@@ -96,7 +96,7 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
 #' RasterLayer(s) containing the grids with the minimum AOO. Requires manual
 #' number of simulations input
 #' @inheritParams createGrid
-#' @param n.sim Specifies the number of random grids to be created and tested
+#' @param n.sim Specifies the number of random grids to be created and tested.
 #' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
@@ -293,7 +293,7 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size,
 #' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the \code{min.percent.rule}
+#'   the \code{min.percent.rule}.
 #' @return A list containing the following:
 #' \itemize{
 #'  \item Data frame of results showing the minimum AOO calculated for each
@@ -313,26 +313,32 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size,
 #' AOO <- min(AOO.df$min.AOO)
 #' @export
 
-gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement, min.percent.rule = T, percent = 1){
+gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
+                            min.percent.rule = T, percent = 1){
   out.df <- data.frame(n.splits = integer,
                        min.AOO = integer)
   min.AOO.rasters <- list()
   for (i in 1:n.AOO.improvement){ # First runs before checking for improvement
     out.df[i, 1] <- i
-    results <- gridUncertaintyBase(ecosystem.data = ecosystem.data, grid.size = grid.size, splits = i,
-                                   min.percent.rule = min.percent.rule, percent = percent)
+    results <- gridUncertaintyBase(ecosystem.data = ecosystem.data,
+                                   grid.size = grid.size, splits = i,
+                                   min.percent.rule = min.percent.rule,
+                                   percent = percent)
     out.df[i, 2] <- results$stats$min.AOO
     min.rasters[[i]] <- results$min.AOO.grid.list
   }
   for (i in n.AOO.improvement+1:1000){ #arbitrary large number
     out.df[i, 1] <- i
-    results <- gridUncertaintyBase(ecosystem.data = ecosystem.data, grid.size = grid.size, splits = i,
-                                   min.percent.rule = min.percent.rule, percent = percent)
+    results <- gridUncertaintyBase(ecosystem.data = ecosystem.data,
+                                   grid.size = grid.size, splits = i,
+                                   min.percent.rule = min.percent.rule,
+                                   percent = percent)
     out.df[i, 2] <- results$stats$min.AOO
     min.AOO.rasters[[i]] <- results$min.AOO.grid.list
     logic.test <- vector()
     for (j in 1:(n.AOO.improvement-1)){
-      logic.test <- c(logic.test, out.df[(i-n.AOO.improvement), 2] <= out.df[(i-n.AOO.improvement+j), 2])
+      logic.test <- c(logic.test, out.df[(i-n.AOO.improvement), 2] <=
+                        out.df[(i-n.AOO.improvement+j), 2])
     }
     if (all(logic.test)) break # Stop the function when AOO no longer decreases
   }
@@ -354,9 +360,9 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement, min.pe
 #' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the \code{min.percent.rule}
+#'   the \code{min.percent.rule}.
 #' @return Data frame of results showing the minimum and maximum AOO calculated
-#'   for each grid shift scenario
+#'   for each grid shift scenario.
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

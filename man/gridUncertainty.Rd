@@ -21,7 +21,7 @@ calculated AOO is not improved before stopping the function.}
 must be passed before a grid is counted as an AOO grid.}
 
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
-the \code{min.percent.rule}}
+the \code{min.percent.rule}.}
 }
 \value{
 A list containing the following:

@@ -14,7 +14,7 @@ Please use a CRS with units measured in metres.}
 \item{grid.size}{A number specifying the width of the desired grid square (in
 same units as your coordiante reference system)}
 
-\item{n.sim}{Specifies the number of random grids to be created and tested}
+\item{n.sim}{Specifies the number of random grids to be created and tested.}
 
 \item{min.percent.rule}{Logical. If \code{TRUE}, a minimum area threshold
 must be passed before a grid is counted as an AOO grid.}

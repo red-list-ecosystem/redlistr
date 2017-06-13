@@ -21,11 +21,11 @@ the generated grid}
 must be passed before a grid is counted as an AOO grid.}
 
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
-the \code{min.percent.rule}}
+the \code{min.percent.rule}.}
 }
 \value{
 Data frame of results showing the minimum and maximum AOO calculated
-  for each grid shift scenario
+  for each grid shift scenario.
 }
 \description{
 \code{gridUncertaintySimulation} returns the maximum and minimum number of
