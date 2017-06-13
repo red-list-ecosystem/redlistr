@@ -106,25 +106,31 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
 #' AOO <- min(AOO.df$min.AOO)
 #' @export
 
-gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement, min.percent.rule, percent){
+gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement, min.percent.rule = T, percent = 1){
   out.df <- data.frame('n.splits' = 0,
                        'min.AOO' = 0)
+  min.rasters <- list()
   for(i in 1:n.AOO.improvement){
     out.df[i, 1] <- i
-    results <- gridUncertaintyBase(ecosystem.data = ecosystem.data, grid.size = grid.size, splits = i, min.percent.rule = min.percent.rule, percent = percent)
+    results <- gridUncertaintyBase(ecosystem.data = ecosystem.data, grid.size = grid.size, splits = i,
+                                   min.percent.rule = min.percent.rule, percent = percent)
     out.df[i, 2] <- results$stats$min.AOO
+    min.rasters[[i]] <- results$min.AOO.grid.list
   }
   for(i in n.AOO.improvement+1:1000){ #arbitrary large number
     out.df[i, 1] <- i
     results <- gridUncertaintyBase(ecosystem.data = ecosystem.data, grid.size = grid.size, splits = i,
-                               min.percent.rule = min.percent.rule, percent = percent)
+                                   min.percent.rule = min.percent.rule, percent = percent)
     out.df[i, 2] <- results$stats$min.AOO
+    min.rasters[[i]] <- results$min.AOO.grid.list
     for (j in 1:(n.AOO.improvement-1)){
       logic.list <- out.df[i-n.AOO.improvement, 2] <= out.df[(i-n.AOO.improvement+j), 2]
     }
     if (all(logic.list)) break # checking if the min.AOO decreases
   }
-  return(out.df)
+  results <- list('min.AOO.df' = out.df,
+                  'min.AOO.rasters' = min.rasters)
+  return(results)
 }
 
 #' Function to investigate behaviour of AOO under various splits
@@ -156,7 +162,7 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement, min.pe
 #' @export
 
 gridUncertaintySimulation <- function(ecosystem.data, grid.size,
-                                      simulations, min.percent.rule, percent){
+                                      simulations, min.percent.rule = T, percent = 1){
   out.df <- data.frame('n.splits' = rep(0, simulations),
                        'min.AOO' = rep(0, simulations),
                        'max.AOO' = rep(0, simulations))
