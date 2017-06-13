@@ -16,6 +16,7 @@
 #'   \url{iucnrle.org/}
 #' @examples
 #' EOO.polygon <- makeEOO(r1)
+#' @export
 
 makeEOO <- function (ecosystem.data){
   # Makes an EOO spatial polygon using the centre point of each pixel as the boundary
@@ -49,6 +50,7 @@ makeEOO <- function (ecosystem.data){
 #' @family EOO functions
 #' @examples
 #' EOO.area <- getAreaEOO(EOO.polygon)
+#' @export
 
 getAreaEOO <- function(EOO.polygon){
   # Returns the area of the makeEOO output (spatialpolygons object)

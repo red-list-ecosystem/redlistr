@@ -21,6 +21,7 @@
 #' @examples
 #' createGrid(raster1, 10000) # a 10-km grid with extent of raster1 with resolution
 #' createGrid(raster1, 2000) # a 2-km grid with extent of raster1 with resolution
+#' @export
 
 
 
@@ -60,7 +61,7 @@ createGrid <- function(ecosystem.data, grid.size){
 #' plot (r1, add = TRUE)
 #' AOO_grid <- makeAOOGrid(r1, n, one.percent.rule = F)
 #' AOO_grid # shapefile of grid cells occupied by an ecosystem or species
-
+#' @export
 makeAOOGrid <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- createGrid(ecosystem.data, grid.size)
@@ -106,7 +107,7 @@ makeAOOGrid <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, per
 #' plot (r1, add = TRUE)
 #' AOO <- getAOO(r1, n, one.percent.rule = F)
 #' AOO # number of grid cells occupied by an ecosystem or species
-
+#' @export
 getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1){
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   AOO.number = length(makeAOOGrid(ecosystem.data, grid.size, min.percent.rule, percent))
@@ -126,7 +127,7 @@ getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent 
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family AOO functions
-
+#' @export
 getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- grid # below is different from getAOO

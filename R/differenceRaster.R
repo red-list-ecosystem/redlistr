@@ -10,6 +10,7 @@
 #' plot (raster1, col = "black")
 #' plot (raster2, col = "darkgrey", add = TRUE)
 #' plot(a, col = "red", add = TRUE)
+#' @export
 
 differenceRaster <- function (r1, r2){
   p1 <- rasterToPolygons(r1, dissolve = T)

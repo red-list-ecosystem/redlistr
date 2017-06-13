@@ -33,7 +33,7 @@
 #' ARD = getARD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 #' ARC = getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 #' area2050 <- futureAreaEstimate(A.t1 = a.r1, 2000, PRD, ARD, ARC, nYears = 50)
-
+#' @export
 futureAreaEstimate <- function(A.t1, year.t1, PRD, ARD, ARC, nYears){
   A.PRD.t3 <- A.t1 * (1 -(PRD/100))^nYears
   A.ARC.t3 <- A.t1 * (1 + ARC)^nYears

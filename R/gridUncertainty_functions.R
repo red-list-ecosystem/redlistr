@@ -33,7 +33,7 @@
 #' minimum AOO.
 #' x$min.AOO.shifts # dataframe containing information of the index of the shift
 #' which created the grids with the smallest AOO and the x and y shifts for them.
-
+#' @export
 gridUncertaintyBase <- function(ecosystem.data, grid.size,
                                 splits, min.percent.rule = TRUE, percent = 1){
   grid <- createGrid(ecosystem.data, grid.size)
@@ -103,7 +103,7 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
 #' @examples
 #' AOO.df <- gridUncertainty(r, 10000, 4, T, 1)
 #' AOO <- min(AOO.df$min.AOO)
-
+#' @export
 gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement, min.percent.rule, percent){
   out.df <- data.frame('n.splits' = 0,
                        'min.AOO' = 0)
@@ -152,7 +152,7 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement, min.pe
 #' plot(AOO.df$n.splits, AOO.df$min.AOO,
 #'      type = 'l', col = 'red', ylim = c(0, 10), xlab = 'Number of splits', ylab = 'Minimum AOO')
 #' lines(AOO.df$n.splits, AOO.df$max.AOO, col = 'blue')
-
+#' @export
 gridUncertaintySimulation <- function(ecosystem.data, grid.size,
                                       simulations, min.percent.rule, percent){
   out.df <- data.frame('n.splits' = rep(0, simulations),
