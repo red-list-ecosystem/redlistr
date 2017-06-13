@@ -51,6 +51,7 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 }
 \seealso{
 Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
+  \code{\link{gridUncertaintyRandomManual}},
   \code{\link{gridUncertaintySimulation}}
 }
 \author{

@@ -34,8 +34,8 @@ incremental splits using \code{gridUncertaintyBase}.
 }
 \examples{
 AOO.df <- gridUncertaintySimulation(r, 10000, 10, T, 1)
-plot(AOO.df$n.splits, AOO.df$min.AOO,
-     type = 'l', col = 'red', ylim = c(0, 10), xlab = 'Number of splits', ylab = 'Minimum AOO')
+plot(AOO.df$n.splits, AOO.df$min.AOO, type = 'l', col = 'red',
+     ylim = c(0, 10), xlab = 'Number of splits', ylab = 'Minimum AOO')
 lines(AOO.df$n.splits, AOO.df$max.AOO, col = 'blue')
 }
 \references{
@@ -47,6 +47,7 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 }
 \seealso{
 Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
+  \code{\link{gridUncertaintyRandomManual}},
   \code{\link{gridUncertainty}}
 }
 \author{

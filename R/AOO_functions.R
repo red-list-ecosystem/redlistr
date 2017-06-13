@@ -124,6 +124,7 @@ getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent 
 #'   \code{gridUncertainty}
 #' @param one.percent.rule Logical.If \code{TRUE} one percent of the grid cell
 #'   must be occupied before it is counted in the AOO.
+#' @return Value. The AOO calculated with the input distribution and grid.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family AOO functions

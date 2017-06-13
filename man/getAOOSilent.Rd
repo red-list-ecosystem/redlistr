@@ -16,6 +16,9 @@ Please use a CRS with units measured in metres.}
 \item{one.percent.rule}{Logical.If \code{TRUE} one percent of the grid cell
 must be occupied before it is counted in the AOO.}
 }
+\value{
+Value. The AOO calculated with the input distribution and grid.
+}
 \description{
 \code{getAOOSilent} is identical to \code{getAOO}, but allows the custom
 input of the grid parameter. Used for \code{gridUncertainty}.
