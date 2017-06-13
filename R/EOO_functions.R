@@ -59,4 +59,3 @@ getAreaEOO <- function(EOO.polygon){
   EOO.areakm2 <- EOO.aream2/1000000
   return(EOO.areakm2)
 }
-
