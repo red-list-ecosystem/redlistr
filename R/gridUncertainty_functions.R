@@ -25,8 +25,7 @@
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
-#' @seealso \code{\link{createGrid}} \code{\link{getAOO}}
-#'   \code{\link{getAOOSilent}}
+#' @seealso \code{\link{createGrid}} \code{\link{getAOOSilent}}
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
@@ -113,8 +112,7 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
-#' @seealso \code{\link{createGrid}} \code{\link{getAOO}}
-#'   \code{\link{getAOOSilent}}
+#' @seealso \code{\link{createGrid}} \code{\link{getAOOSilent}}
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
@@ -172,6 +170,117 @@ gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
               min.AOO.rasters = min.AOO.rasters))
 }
 
+#' Function to compute AOO with grid uncertainty randomly with stop rule
+#'
+#' \code{gridUncertaintyRandom} helps determine the minimum number of area of
+#' occupancy (AOO) grid cells occupied by a species or ecosystem. It varies the
+#' location of the AOO grid by shifting in randomly in both x- and y-
+#' axes, returning summary statistics for the range of AOOs calculated, and the
+#' RasterLayer(s) containing the grids with the minimum AOO. It automatically
+#' stops when the AOO no longer improves after a specified number of rounds.
+#' @inheritParams createGrid
+#' @param n.AOO.improvement Specifies the minimum number of rounds the
+#'   calculated AOO is not improved before stopping the function.
+#' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
+#'   must be passed before a grid is counted as an AOO grid.
+#' @param percent Numeric. The minimum percent to be applied as a threshold for
+#'   the \code{min.percent.rule}.
+#' @return List containing the following:
+#' \itemize{
+#'  \item Data frame of summary statistics for the results
+#'  \item Data frame showing the distance shifted in x and y directions used to
+#'  create the AOO grid(s) and their associated AOOs
+#'  \item List of RasterLayer(s) containing the AOO grid(s) which return the
+#'  smallest AOO
+#' }
+#' @author Calvin Lee \email{calvinkflee@@gmail.com}. Nicholas Murray
+#'   \email{murr.nick@@gmail.com}
+#' @family gridUncertainty functions
+#' @seealso \code{\link{createGrid}} \code{\link{getAOOSilent}}
+#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
+#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
+#'   \url{iucnrle.org/}
+#' @examples
+#' x <- gridUncertaintyRandom(sample.mang, 10000, 50, T, 1)
+#' x$shift.df # vector of length 50 of calculated AOO  and random movement for
+#' each randomly generated grid
+#' x$AOO.stats # data frame returning the number of shifts performed and the
+#' summary statistics for the calculated AOOs.
+#' x$min.AOO.rasters # list of RasterLayers of the grids which all return the
+#' minimum AOO.
+#' @export
+
+gridUncertaintyRandom <- function(ecosystem.data, grid.size,
+                                  n.AOO.improvement, min.percent.rule = T,
+                                  percent = 1, max.n.rounds = 1000){
+  grid <- createGrid(ecosystem.data = ecosystem.data, grid.size = grid.size)
+  results.df <- data.frame(sim.no = integer(),
+                           x.shift = integer(),
+                           y.shift = integer(),
+                           dist.move = double(),
+                           AOO = integer(),
+                           stringsAsFactors = F)
+  output.rasters <- list()
+  for (i in 1:n.AOO.improvement){ # First runs before checking for improvement
+    x.shift <- sample(-grid.size:grid.size, 1)
+    y.shift <- sample(-grid.size:grid.size, 1)
+    dist.move <- sqrt((x.shift^2)+(y.shift^2)) # Total distance moved using Pythagoras
+    shifted.grid <- shift(grid, x = x.shift, y = y.shift)
+    AOO <- getAOOSilent(ecosystem.data = ecosystem.data,
+                        grid = shifted.grid, min.percent.rule = min.percent.rule,
+                        percent = percent) # get the AOO for each sampled grid
+    sim.df <- data.frame(sim.no = i,
+                         x.shift = x.shift,
+                         y.shift = y.shift,
+                         dist.move = dist.move,
+                         AOO = AOO,
+                         stringsAsFactors = F)
+    results.df <- rbind(results.df, sim.df)
+    output.rasters[[i]] <- shifted.grid
+  }
+
+  for (i in n.AOO.improvement+1:max.n.rounds){
+    x.shift <- sample(-grid.size:grid.size, 1)
+    y.shift <- sample(-grid.size:grid.size, 1)
+    dist.move <- sqrt((x.shift^2)+(y.shift^2)) # Total distance moved using Pythagoras
+    shifted.grid <- shift(grid, x = x.shift, y = y.shift)
+    AOO <- getAOOSilent(ecosystem.data = ecosystem.data,
+                        grid = shifted.grid, min.percent.rule = min.percent.rule,
+                        percent = percent) # get the AOO for each sampled grid
+    sim.df <- data.frame(sim.no = i,
+                         x.shift = x.shift,
+                         y.shift = y.shift,
+                         dist.move = dist.move,
+                         AOO = AOO,
+                         stringsAsFactors = F)
+    results.df <- rbind(results.df, sim.df)
+    output.rasters[[i]] <- shifted.grid
+    logic.test <- vector()
+    for (j in 1:(n.AOO.improvement-1)){
+      logic.test <- c(logic.test,
+                      results.df[(i-n.AOO.improvement), 'AOO'] <=
+                        results.df[(i-n.AOO.improvement+j), 'AOO'])
+    }
+    if (all(logic.test)) break # Stop the function when AOO no longer decreases
+  }
+
+  min.AOO <- min(results.df$AOO)
+  min.AOO.index <- which(results.df$AOO == min.AOO)
+  stat.df <- data.frame(n.sims = max(results.df$sim.no),
+                        mean.AOO = mean(results.df$AOO),
+                        var.AOO = var(results.df$AOO),
+                        min.AOO = min(results.df$AOO),
+                        max.AOO = max(results.df$AOO))
+  min.AOO.rasters <- output.rasters[min.AOO.index]
+  names(min.AOO.rasters) <- min.AOO.index
+
+  return(list(AOO.stats = stat.df,
+              shift.df = results.df,
+              min.AOO.rasters = min.AOO.rasters))
+}
+
 #' Function to compute AOO with grid uncertainty systematically with stopping rule
 #'
 #' \code{gridUncertainty} determines the number of area of occupancy (AOO) grid
@@ -205,30 +314,30 @@ gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
 #' @export
 
 gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement, min.percent.rule = T, percent = 1){
-  out.df <- data.frame('n.splits' = 0,
-                       'min.AOO' = 0)
-  min.rasters <- list()
-  for(i in 1:n.AOO.improvement){
+  out.df <- data.frame(n.splits = integer,
+                       min.AOO = integer)
+  min.AOO.rasters <- list()
+  for (i in 1:n.AOO.improvement){ # First runs before checking for improvement
     out.df[i, 1] <- i
     results <- gridUncertaintyBase(ecosystem.data = ecosystem.data, grid.size = grid.size, splits = i,
                                    min.percent.rule = min.percent.rule, percent = percent)
     out.df[i, 2] <- results$stats$min.AOO
     min.rasters[[i]] <- results$min.AOO.grid.list
   }
-  for(i in n.AOO.improvement+1:1000){ #arbitrary large number
+  for (i in n.AOO.improvement+1:1000){ #arbitrary large number
     out.df[i, 1] <- i
     results <- gridUncertaintyBase(ecosystem.data = ecosystem.data, grid.size = grid.size, splits = i,
                                    min.percent.rule = min.percent.rule, percent = percent)
     out.df[i, 2] <- results$stats$min.AOO
-    min.rasters[[i]] <- results$min.AOO.grid.list
+    min.AOO.rasters[[i]] <- results$min.AOO.grid.list
     logic.test <- vector()
     for (j in 1:(n.AOO.improvement-1)){
-      logic.test <- c(logic.test, out.df[i-n.AOO.improvement, 2] <= out.df[(i-n.AOO.improvement+j), 2])
+      logic.test <- c(logic.test, out.df[(i-n.AOO.improvement), 2] <= out.df[(i-n.AOO.improvement+j), 2])
     }
-    if (all(logic.test)) break # checking if the min.AOO decreases
+    if (all(logic.test)) break # Stop the function when AOO no longer decreases
   }
   results <- list('min.AOO.df' = out.df,
-                  'min.AOO.rasters' = min.rasters)
+                  'min.AOO.rasters' = min.AOO.rasters)
   return(results)
 }
 

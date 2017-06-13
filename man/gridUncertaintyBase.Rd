@@ -61,10 +61,10 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   \url{iucnrle.org/}
 }
 \seealso{
-\code{\link{createGrid}} \code{\link{getAOO}}
-  \code{\link{getAOOSilent}}
+\code{\link{createGrid}} \code{\link{getAOOSilent}}
 
 Other gridUncertainty functions: \code{\link{gridUncertaintyRandomManual}},
+  \code{\link{gridUncertaintyRandom}},
   \code{\link{gridUncertaintySimulation}},
   \code{\link{gridUncertainty}}
 }
