@@ -2,10 +2,10 @@
 % Please edit documentation in R/gridUncertainty_functions.R
 \name{gridUncertaintySimulation}
 \alias{gridUncertaintySimulation}
-\title{Function to investigate behaviour of AOO under various splits}
+\title{Function to investigate behaviour of AOO under various split scenarios}
 \usage{
 gridUncertaintySimulation(ecosystem.data, grid.size, simulations,
-  min.percent.rule, percent)
+  min.percent.rule = T, percent = 1)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.
@@ -28,9 +28,9 @@ Data frame of results showing the minimum and maximum AOO calculated
   for each grid shift scenario
 }
 \description{
-\code{gridUncertaintySimulation} returns the number of area of occupancy
-(AOO) grid cells occupied by a species or ecosystem in incremental splits
-using \code{gridUncertaintyBase}.
+\code{gridUncertaintySimulation} returns the maximum and minimum number of
+area of occupancy (AOO) grid cells occupied by a species or ecosystem in
+incremental splits using \code{gridUncertaintyBase}.
 }
 \examples{
 AOO.df <- gridUncertaintySimulation(r, 10000, 10, T, 1)

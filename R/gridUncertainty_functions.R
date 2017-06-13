@@ -1,18 +1,27 @@
 #' Base function to compute AOO with grid uncertainty
 #'
-#' \code{gridUncertaintyBase} determines the number of area of occupancy (AOO)
-#' grid cells occupied by a species or ecosystem. It is the base function which
-#' is used by \code{gridUncertainty} and \code{gridUncertaintySimulation}
+#' \code{gridUncertaintyBase} helps determine the minimum number of area of
+#' occupancy (AOO) grid cells occupied by a species or ecosystem. It varies the
+#' location of the AOO grid by shifting in systematically in both x- and y-
+#' axes, returning summary statistics for the range of AOOs calculated, and the
+#' RasterLayer(s) containing the grids with the minimum AOO. It is the base
+#' function which is used by \code{gridUncertainty} and
+#' \code{gridUncertaintySimulation}
 #' @inheritParams createGrid
 #' @param split Specifies the number of ways to split the grid in ONE axis.
 #' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the \code{min.percent.rule}.
-#' @return List containing vector of length split*split of calculated AOO for
-#'   each shift position, a list of summary statistics for the vector, a list of
-#'   grids which generated the smallest AOO as RasterLayers, and the movements
-#'   which resulted in the grids with the smallest AOO.
+#' @return List containing the following:
+#' \itemize{
+#'  \item Vector of length split*split of calculated AOO for each shifted grid
+#'  \item Data frame of summary statistics for the results
+#'  \item Data frame showing the distance shifted in x and y directions used to
+#'  create the AOO grid(s) which return the smallest AOO
+#'  \item List of RasterLayer(s) containing the AOO grid(s) which return the
+#'  smallest AOO
+#' }
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
@@ -80,11 +89,12 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
               min.AOO.shifts = shift.grid[min.AOO.index, ]))
 }
 
-#' Function to compute AOO with grid uncertainty
+#' Function to compute AOO with grid uncertainty systematically with stopping rule
 #'
-#' \code{gridUncertainty} determines the number of area of occupancy (AOO)
-#' grid cells occupied by a species or ecosystem. It will only stop when the AOO
-#' calculated does not improve after a set number of splits
+#' \code{gridUncertainty} determines the number of area of occupancy (AOO) grid
+#' cells occupied by a species or ecosystem systematically. It will only stop
+#' when the AOO calculated does not improve (decrease) after a set number of
+#' split scenarios.
 #' @inheritParams createGrid
 #' @param n.AOO.improvement Specifies the minimum number of rounds the
 #'   calculated AOO is not improved before stopping the function.
@@ -92,8 +102,13 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the \code{min.percent.rule}
-#' @return Data frame of results showing the minimum and maximum AOO calculated
-#'   for each grid shift scenario
+#' @return A list containing the following:
+#' \itemize{
+#'  \item Data frame of results showing the minimum AOO calculated for each
+#'  shift scenario
+#'  \item List of rasterLayers which were used to generate the
+#'  minimum AOO specified for each shift scenario
+#' }
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
@@ -133,11 +148,11 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement, min.pe
   return(results)
 }
 
-#' Function to investigate behaviour of AOO under various splits
+#' Function to investigate behaviour of AOO under various split scenarios
 #'
-#' \code{gridUncertaintySimulation} returns the number of area of occupancy
-#' (AOO) grid cells occupied by a species or ecosystem in incremental splits
-#' using \code{gridUncertaintyBase}.
+#' \code{gridUncertaintySimulation} returns the maximum and minimum number of
+#' area of occupancy (AOO) grid cells occupied by a species or ecosystem in
+#' incremental splits using \code{gridUncertaintyBase}.
 #' @inheritParams createGrid
 #' @param simulations Specifies the maximum number of splits to be performed on
 #'   the generated grid

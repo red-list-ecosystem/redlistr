@@ -23,15 +23,24 @@ the \code{min.percent.rule}.}
 \item{split}{Specifies the number of ways to split the grid in ONE axis.}
 }
 \value{
-List containing vector of length split*split of calculated AOO for
-  each shift position, a list of summary statistics for the vector, a list of
-  grids which generated the smallest AOO as RasterLayers, and the movements
-  which resulted in the grids with the smallest AOO.
+List containing the following:
+\itemize{
+ \item Vector of length split*split of calculated AOO for each shifted grid
+ \item Data frame of summary statistics for the results
+ \item Data frame showing the distance shifted in x and y directions used to
+ create the AOO grid(s) which return the smallest AOO
+ \item List of RasterLayer(s) containing the AOO grid(s) which return the
+ smallest AOO
+}
 }
 \description{
-\code{gridUncertaintyBase} determines the number of area of occupancy (AOO)
-grid cells occupied by a species or ecosystem. It is the base function which
-is used by \code{gridUncertainty} and \code{gridUncertaintySimulation}
+\code{gridUncertaintyBase} helps determine the minimum number of area of
+occupancy (AOO) grid cells occupied by a species or ecosystem. It varies the
+location of the AOO grid by shifting in systematically in both x- and y-
+axes, returning summary statistics for the range of AOOs calculated, and the
+RasterLayer(s) containing the grids with the minimum AOO. It is the base
+function which is used by \code{gridUncertainty} and
+\code{gridUncertaintySimulation}
 }
 \examples{
 x <- gridUncertaintyBase(r1, 10000, 3, F)

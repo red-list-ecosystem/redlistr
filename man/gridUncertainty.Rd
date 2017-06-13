@@ -2,10 +2,10 @@
 % Please edit documentation in R/gridUncertainty_functions.R
 \name{gridUncertainty}
 \alias{gridUncertainty}
-\title{Function to compute AOO with grid uncertainty}
+\title{Function to compute AOO with grid uncertainty systematically with stopping rule}
 \usage{
-gridUncertainty(ecosystem.data, grid.size, n.AOO.improvement, min.percent.rule,
-  percent)
+gridUncertainty(ecosystem.data, grid.size, n.AOO.improvement,
+  min.percent.rule = T, percent = 1)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.
@@ -24,13 +24,19 @@ must be passed before a grid is counted as an AOO grid.}
 the \code{min.percent.rule}}
 }
 \value{
-Data frame of results showing the minimum and maximum AOO calculated
-  for each grid shift scenario
+A list containing the following:
+\itemize{
+ \item Data frame of results showing the minimum AOO calculated for each
+ shift scenario
+ \item List of rasterLayers which were used to generate the
+ minimum AOO specified for each shift scenario
+}
 }
 \description{
-\code{gridUncertainty} determines the number of area of occupancy (AOO)
-grid cells occupied by a species or ecosystem. It will only stop when the AOO
-calculated does not improve after a set number of splits
+\code{gridUncertainty} determines the number of area of occupancy (AOO) grid
+cells occupied by a species or ecosystem systematically. It will only stop
+when the AOO calculated does not improve (decrease) after a set number of
+split scenarios.
 }
 \examples{
 AOO.df <- gridUncertainty(r, 10000, 4, T, 1)
