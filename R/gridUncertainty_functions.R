@@ -138,10 +138,11 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement, min.pe
                                    min.percent.rule = min.percent.rule, percent = percent)
     out.df[i, 2] <- results$stats$min.AOO
     min.rasters[[i]] <- results$min.AOO.grid.list
+    logic.test <- vector()
     for (j in 1:(n.AOO.improvement-1)){
-      logic.list <- out.df[i-n.AOO.improvement, 2] <= out.df[(i-n.AOO.improvement+j), 2]
+      logic.test <- c(logic.test , out.df[i-n.AOO.improvement, 2] <= out.df[(i-n.AOO.improvement+j), 2])
     }
-    if (all(logic.list)) break # checking if the min.AOO decreases
+    if (all(logic.test)) break # checking if the min.AOO decreases
   }
   results <- list('min.AOO.df' = out.df,
                   'min.AOO.rasters' = min.rasters)
