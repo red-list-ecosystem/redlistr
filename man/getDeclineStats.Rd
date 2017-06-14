@@ -17,20 +17,18 @@ getDeclineStats(A.t1, A.t2, year.t1, year.t2)
 }
 \value{
 A dataframe with Proportional Rate of Decline (PRD), Absolute Rate of
-  Decline (ARD), Absolute Rate of Change (ARC), the two time periods, an
-  estimate of area change and the percentage lost between the two time
-  periods.
+  Decline (ARD), Absolute Rate of Change (ARC), the two areas and their
+  respective time in year, and an estimate of area change.
 }
 \description{
 \code{getDeclineStats} calculates the Proportional Rate of Decline (PRD),
 Absolute Rate of Decline (ARD) and Absolute Rate of Change (ARC), given two
-areas at two points in time. Also provides an estimate of area change and
-percentage lost between the two time periods.
+areas at two points in time. Also provides an absolute area change.
 }
 \examples{
 a.r1 <- getArea(r1) # a distribution raster
 a.r2 <- getArea(r2) # a distribution raster
-RLEstats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
@@ -38,11 +36,12 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
   Switzerland: IUCN. ix + 94pp. Available at the following web site:
   \url{iucnrle.org/}
+  Puyravaud, J.-P. 2003. Standardizing the calculation of the
+  annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 }
 \seealso{
-Other Change functions: \code{\link{getARC}},
-  \code{\link{getARD}}, \code{\link{getAreaChange}},
-  \code{\link{getArea}}, \code{\link{getPRD}}
+Other Change functions: \code{\link{getAreaChange}},
+  \code{\link{getArea}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

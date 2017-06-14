@@ -26,9 +26,8 @@ a.dif <- getAreaChange(r1, r2) # distribution rasters
 a.dif <- getAreaChange(r1, p2) # distribution raster and distribution polygon
 }
 \seealso{
-Other Change functions: \code{\link{getARC}},
-  \code{\link{getARD}}, \code{\link{getArea}},
-  \code{\link{getDeclineStats}}, \code{\link{getPRD}}
+Other Change functions: \code{\link{getArea}},
+  \code{\link{getDeclineStats}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
