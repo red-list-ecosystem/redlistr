@@ -44,46 +44,46 @@ getArea <- function(x, value.to.count){
   }
 }
 
-#' Area Change from Raster.
+#' Area change between two inputs in km2
 #'
-#' \code{getAreaChangefromRast} reports the difference in area of two raster
-#' objects.
+#' \code{getAreaChang} reports the difference in area between two inputs. These
+#' can be RasterLayers, SpatialPolygons, or numbers. Any combinations of these
+#' inputs are valid. If using number as input, ensure it is measured in km2
 #'
-#' @param x Raster object of distribution
-#' @param y Raster object of distribution
-#' @return Returns the difference in area of two raster objects in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}
+#' @param x RasterLayer or SpatialPolygons object of distribution or Numeric
+#'   representing area in km2
+#' @param y RasterLayer or SpatialPolygons object of distribution or Numeric
+#'   representing area in km2
+#' @return Returns the difference in area of the two inputs in km2
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
 #' @family Change functions
 #' @examples
-#' getAreaChangefromRast(r1, r2) # distribution rasters
+#' a.dif <- getAreaChange(r1, r2) # distribution rasters
+#' a.dif <- getAreaChange(r1, p2) # distribution raster and distribution polygon
 #' @export
 
-getAreaChangefromRast <- function (x, y){
-  a1 <- getArea(x)
-  a2 <- getArea(y)
-  a.dif <- a1 - a2
-  return(a.dif)
-}
-
-#' Area Change from Polygons.
-#'
-#' \code{getAreaChangefromShp} reports the difference in area of two polygon
-#' datasets
-#' @param x Polygon of distribution
-#' @param y Polygon of distribution
-#' @return Returns the difference in area of two polygon objects in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}
-#' @family Change functions
-#' @examples
-#' getAreaChangefromShp(p1, p2) # distribution rasters
-#' @export
-
-getAreaChangefromShp <- function(p1, p2){
-  a1 <- gArea(p1)
-  a2 <- gArea(p2)
-  a.dif.m2 <- a1 - a2
-  a.dif.km2 <- a.dif.m2/1000000
-  return (a.dif.km2)
+getAreaChange <- function(x, y){
+  if(class(x)[[1]] == 'RasterLayer'){
+    a.x <- getArea(x)
+  } else if (class(x)[[1]] == 'SpatialPolygons'){
+    a.x <- gArea(x) / 1000000
+  } else if (is.numeric((x))){
+    a.x <- x
+  } else {
+    stop('x is not a RasterLayer, SpatialPolygons, or Numeric')
+  }
+  if(class(y)[[1]] == 'RasterLayer'){
+    a.y <- getArea(y)
+  } else if (class(y)[[1]] == 'SpatialPolygons'){
+    a.y <- gArea(y) / 1000000
+  } else if (is.numeric((y))){
+    a.y <- y
+  } else {
+    stop('y is not a RasterLayer, SpatialPolygons, or Numeric')
+  }
+  a.dif.km2 <- (a.x - a.y)
+  return(a.dif.km2)
 }
 
 

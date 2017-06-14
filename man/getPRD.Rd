@@ -44,9 +44,7 @@ IUCN. ix + 94pp. Available at the following web site: \url{iucnrle.org/}
 }
 \seealso{
 Other Change functions: \code{\link{getARC}},
-  \code{\link{getARD}},
-  \code{\link{getAreaChangefromRast}},
-  \code{\link{getAreaChangefromShp}},
+  \code{\link{getARD}}, \code{\link{getAreaChange}},
   \code{\link{getArea}}, \code{\link{getDeclineStats}},
   \code{\link{getPercentLost}}
 }

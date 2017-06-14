@@ -41,9 +41,7 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 }
 \seealso{
 Other Change functions: \code{\link{getARC}},
-  \code{\link{getARD}},
-  \code{\link{getAreaChangefromRast}},
-  \code{\link{getAreaChangefromShp}},
+  \code{\link{getARD}}, \code{\link{getAreaChange}},
   \code{\link{getArea}}, \code{\link{getPRD}},
   \code{\link{getPercentLost}}
 }

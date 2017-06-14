@@ -23,9 +23,7 @@ getAreaChange(100,80)
 }
 \seealso{
 Other Change functions: \code{\link{getARC}},
-  \code{\link{getARD}},
-  \code{\link{getAreaChangefromRast}},
-  \code{\link{getAreaChangefromShp}},
+  \code{\link{getARD}}, \code{\link{getAreaChange}},
   \code{\link{getArea}}, \code{\link{getDeclineStats}},
   \code{\link{getPRD}}
 }

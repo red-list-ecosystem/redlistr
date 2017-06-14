@@ -35,10 +35,9 @@ annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 }
 \seealso{
 Other Change functions: \code{\link{getARD}},
-  \code{\link{getAreaChangefromRast}},
-  \code{\link{getAreaChangefromShp}},
-  \code{\link{getArea}}, \code{\link{getDeclineStats}},
-  \code{\link{getPRD}}, \code{\link{getPercentLost}}
+  \code{\link{getAreaChange}}, \code{\link{getArea}},
+  \code{\link{getDeclineStats}}, \code{\link{getPRD}},
+  \code{\link{getPercentLost}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

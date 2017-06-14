@@ -49,10 +49,9 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 }
 \seealso{
 Other Change functions: \code{\link{getARC}},
-  \code{\link{getAreaChangefromRast}},
-  \code{\link{getAreaChangefromShp}},
-  \code{\link{getArea}}, \code{\link{getDeclineStats}},
-  \code{\link{getPRD}}, \code{\link{getPercentLost}}
+  \code{\link{getAreaChange}}, \code{\link{getArea}},
+  \code{\link{getDeclineStats}}, \code{\link{getPRD}},
+  \code{\link{getPercentLost}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}
