@@ -25,8 +25,7 @@ a.r1 <- getArea(r1, 1) # area of cells labelled 1 in r1
 \seealso{
 Other Change functions: \code{\link{getARC}},
   \code{\link{getARD}}, \code{\link{getAreaChange}},
-  \code{\link{getDeclineStats}}, \code{\link{getPRD}},
-  \code{\link{getPercentLost}}
+  \code{\link{getDeclineStats}}, \code{\link{getPRD}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

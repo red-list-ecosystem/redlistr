@@ -86,7 +86,6 @@ getAreaChange <- function(x, y){
   return(a.dif.km2)
 }
 
-
 #' Annual Rate of Change.
 #'
 #' \code{getARC} calculates the Annual Rate of Change (ARC) given two areas and
@@ -185,25 +184,6 @@ getARD <- function (A.t1, A.t2, year.t1, year.t2){
   ARD <- (A.t2-A.t1)/(year.t2-year.t1)
   ARD <- -ARD # make it a positive number to be consistent with Keith et al 2009
   return (ARD)
-}
-
-#' Percent change
-#'
-#' \code{getPercentLost} reports the percentage change between two numbers (such
-#' as areas)
-#'
-#' @param A.t1 Area at t1
-#' @param A.t2 Area at t2
-#' @return The percentage change  between these two areas
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}
-#' @family Change functions
-#' @examples
-#' getAreaChange(100,80)
-#' @export
-
-getPercentLost <- function(A.t1, A.t2){
-  pc.lost <- ((A.t1 - A.t2)/A.t1)*100
-  return (pc.lost)
 }
 
 #' Change statistics.
