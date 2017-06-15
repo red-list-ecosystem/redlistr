@@ -166,8 +166,7 @@ getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent
 #' Red List of Ecosystems Criteria B.
 #'
 #' \code{getMinAOO} optimises the placement of the grid so the AOO is the
-#' smalest possible. It does this using \code{optim} with method SANN, it can
-#' take a couple of minutes to run.
+#' smalest possible. It does this using \code{constrOptim} with method SANN.
 #'
 #' @inheritParams makeAOOGrid
 #' @param trace If TRUE, tracing information on the progress of the optimisation
@@ -187,7 +186,7 @@ getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent
 #' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55N) #t1 = 1990
 #' ext <- extent(0, 6100, 0, 8700) # set the extent of raster r1, 100m resolution
 #' extent(r1) <- ext
-#' (getOptimAOO(r1, grid.size = 1000) -> AOO) # number of grid cells occupied by an ecosystem or species
+#' (getMinAOO(r1, grid.size = 1000) -> AOO) # number of grid cells occupied by an ecosystem or species
 #' @export
 
 getMinAOO <- function(ecosystem.data, grid.size,
@@ -199,12 +198,25 @@ getMinAOO <- function(ecosystem.data, grid.size,
                  min.percent.rule = min.percent.rule,
                  percent = percent)
   }
-  optim(c(0, 0), objective_fun,
-        method = "SANN",
-        control = list(parscale = c(grid.size/20, grid.size/20),
-                       temp = grid.size,
-                       tmax = 50,
-                       trace = trace,
-                       maxit = 500)) -> o
+
+  ub <- grid.size
+  lb <-  0
+  ci <- c(lb, lb, -ub, -ub)
+  ui <-  matrix(c(1, 0, -1,  0,
+                  0, 1,  0, -1), ncol = 2)
+  start <-  runif(2, min = 0, max = grid.size)
+  constrOptim(start,
+              objective_fun,
+              method = "SANN",
+              ui = ui,
+              ci = ci,
+              grad = NULL,
+              control = list(
+                temp = grid.size,
+                tmax = 50,
+                maxit = 500,
+                parscale = c(grid.size, grid.size),
+                trace = trace)
+  ) -> o
   o$value
 }

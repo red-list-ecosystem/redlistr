@@ -20,7 +20,8 @@ must be passed before a grid is counted as an AOO grid.}
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
 the \code{min.percent.rule}}
 
-\item{trace}{If TRUE, tracing information on the progress of the optimisation is produced.}
+\item{trace}{If TRUE, tracing information on the progress of the optimisation
+is produced.}
 }
 \value{
 The number of grid cells occupied by the ecosystem or species
@@ -33,15 +34,15 @@ is counted in the AOO. This functionality is important for assessing the IUCN
 Red List of Ecosystems Criteria B.
 }
 \details{
-\code{getMinAOO} optimises the placement of the grid so the AOO is the smalest
-possible. It does this using \code{optim} with method SANN, it can take a couple of minutes to run.
+\code{getMinAOO} optimises the placement of the grid so the AOO is the
+smalest possible. It does this using \code{constrOptim} with method SANN.
 }
 \examples{
 crs.UTM55N <- '+proj=utm +zone=55 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55N) #t1 = 1990
 ext <- extent(0, 6100, 0, 8700) # set the extent of raster r1, 100m resolution
 extent(r1) <- ext
-(getOptimAOO(r1, grid.size = 1000) -> AOO) # number of grid cells occupied by an ecosystem or species
+(getMinAOO(r1, grid.size = 1000) -> AOO) # number of grid cells occupied by an ecosystem or species
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
@@ -57,6 +58,6 @@ Other AOO functions: \code{\link{createGrid}},
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-  \email{calvinkflee@gmail.com},
- John Wilshire \email {john.h.wilshire@gmail.com}
+  \email{calvinkflee@gmail.com}, John Wilshire
+  \email{john.h.wilshire@gmail.com}
 }
