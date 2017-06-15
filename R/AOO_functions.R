@@ -165,15 +165,17 @@ getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent
 #' is counted in the AOO. This functionality is important for assessing the IUCN
 #' Red List of Ecosystems Criteria B.
 #'
-#' \code{getMinAOO} optimises the placement of the grid so the AOO is the smalest
-#' possible. It does this using \code{optim} with method SANN, it can take a couple of minutes to run.
+#' \code{getMinAOO} optimises the placement of the grid so the AOO is the
+#' smalest possible. It does this using \code{optim} with method SANN, it can
+#' take a couple of minutes to run.
 #'
 #' @inheritParams makeAOOGrid
-#' @param trace If TRUE, tracing information on the progress of the optimisation is produced.
+#' @param trace If TRUE, tracing information on the progress of the optimisation
+#'   is produced.
 #' @return The number of grid cells occupied by the ecosystem or species
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com},
-#'  John Wilshire \email {john.h.wilshire@@gmail.com}
+#'   \email{calvinkflee@@gmail.com}, John Wilshire
+#'   \email{john.h.wilshire@@gmail.com}
 #' @family AOO functions
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
@@ -187,6 +189,7 @@ getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent
 #' extent(r1) <- ext
 #' (getOptimAOO(r1, grid.size = 1000) -> AOO) # number of grid cells occupied by an ecosystem or species
 #' @export
+
 getMinAOO <- function(ecosystem.data, grid.size,
                       min.percent.rule = TRUE, percent = 1, trace = TRUE) {
   grid <- createGrid(ecosystem.data, grid.size) # create the inital grid
@@ -198,8 +201,10 @@ getMinAOO <- function(ecosystem.data, grid.size,
   }
   optim(c(0, 0), objective_fun,
         method = "SANN",
-        control = list(temp = grid.size,
+        control = list(parscale = c(grid.size/20, grid.size/20),
+                       temp = grid.size,
                        tmax = 50,
-                       trace = trace)) -> o
+                       trace = trace,
+                       maxit = 500)) -> o
   o$value
 }
