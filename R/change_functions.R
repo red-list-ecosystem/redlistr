@@ -97,9 +97,13 @@ getAreaLoss <- function(x, y){
 #' @param year.t1 Year of time t1
 #' @param A.t2 Area at time t2
 #' @param year.t2 Year of time t2
-#' @return A dataframe with Proportional Rate of Decline (PRD), Absolute Rate of
-#'   Decline (ARD), Absolute Rate of Change (ARC), the two areas and their
-#'   respective time in year, and an estimate of area change.
+#' @param method Method(s) used to calculate rate of decline. Either PRD, ARD,
+#'   or ARC. Defaults to include all three methods
+#' @return A dataframe with the absolute area change, and possibly a selection of:
+#' \itemize{
+#'  \item Proportional Rate of Decline (PRD)
+#'  \item Absolute Rate of Decline (ARD)
+#'  \item Absolute Rate of Change (ARC)
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family Change functions
@@ -113,25 +117,26 @@ getAreaLoss <- function(x, y){
 #' @examples
 #' a.r1 <- getArea(r1) # a distribution raster
 #' a.r2 <- getArea(r2) # a distribution raster
-#' decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+#' decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012, method = c('ARD', 'ARC')
 #' @export
 
-getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2){
-  # consider raw code rather than a function in here
-  ARD <- -((A.t2-A.t1)/(year.t2-year.t1))
-  # Absolute rate of change (also known as Annual Change(R)) in Puyrvaud
-  PRD <- 100 * (1-(A.t2/A.t1)^(1/(year.t2-year.t1)))
-  # Proportional rate of change (also known as trajectory (r))
-  ARC <- (1/(year.t2-year.t1))*log(A.t2/A.t1)
-  # Annual rate of change from Puyravaud 2004 (also known as instantaneous rate of change)
-  area.loss <- getAreaLoss(A.t1, A.t2)
-  out <- data.frame(area.t1 = A.t1,
-                    area.t2 = A.t2,
-                    year.t1 = year.t1,
-                    year.t2 = year.t2,
-                    abs.rate.decl = ARD,
-                    prop.rate.decl = PRD,
-                    annual.rate.change = ARC,
-                    area.loss = area.loss)
+getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2, methods = c('ARD', 'PRD', 'ARC')){
+  out <- data.frame(area.loss = (A.t1-A.t2))
+  if(any(methods == 'ARD')){
+    ARD <- -((A.t2-A.t1)/(year.t2-year.t1))
+    # Absolute rate of change (also known as Annual Change(R)) in Puyrvaud
+    out <- cbind(out, ARD = ARD)
+  }
+  if(any(methods == 'PRD')){
+    PRD <- 100 * (1-(A.t2/A.t1)^(1/(year.t2-year.t1)))
+    # Proportional rate of change (also known as trajectory (r))
+    out <- cbind(out, PRD = PRD)
+  }
+  if(any(methods == 'ARC')){
+    ARC <- (1/(year.t2-year.t1))*log(A.t2/A.t1)
+    # Annual rate of change from Puyravaud 2004 (also known as instantaneous rate of change)
+    out <- cbind(out, ARC = ARC)
+  }
   return (out)
 }
+
