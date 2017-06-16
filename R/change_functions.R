@@ -63,7 +63,7 @@ getArea <- function(x, value.to.count){
 #' a.dif <- getAreaChange(r1, p2) # distribution raster and distribution polygon
 #' @export
 
-getAreaChange <- function(x, y){
+getAreaLoss <- function(x, y){
   if(class(x)[[1]] == 'RasterLayer'){
     a.x <- getArea(x)
   } else if (class(x)[[1]] == 'SpatialPolygons'){
@@ -124,7 +124,7 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2){
   # Proportional rate of change (also known as trajectory (r))
   ARC <- (1/(year.t2-year.t1))*log(A.t2/A.t1)
   # Annual rate of change from Puyravaud 2004 (also known as instantaneous rate of change)
-  area.change <- A.t1 - A.t2
+  area.loss <- getAreaLoss(A.t1, A.t2)
   out <- data.frame(area.t1 = A.t1,
                     area.t2 = A.t2,
                     year.t1 = year.t1,
@@ -132,6 +132,6 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2){
                     abs.rate.decl = ARD,
                     prop.rate.decl = PRD,
                     annual.rate.change = ARC,
-                    area.change = area.change)
+                    area.loss = area.loss)
   return (out)
 }
