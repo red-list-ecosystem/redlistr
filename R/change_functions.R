@@ -91,15 +91,16 @@ getAreaLoss <- function(x, y){
 #'
 #' \code{getDeclineStats} calculates the Proportional Rate of Decline (PRD),
 #' Absolute Rate of Decline (ARD) and Absolute Rate of Change (ARC), given two
-#' areas at two points in time. Also provides an absolute area change.
+#' areas at two points in time. Also provides the total area difference.
 #'
 #' @param A.t1 Area at time t1
 #' @param year.t1 Year of time t1
 #' @param A.t2 Area at time t2
 #' @param year.t2 Year of time t2
-#' @param method Method(s) used to calculate rate of decline. Either PRD, ARD,
-#'   or ARC. Defaults to include all three methods
-#' @return A dataframe with the absolute area change, and possibly a selection of:
+#' @param method Method(s) used to calculate rate of decline. Either 'PRD',
+#'   'ARD', or 'ARC'. Defaults to include all three methods. See vignette to see
+#'   a more detailed explanation for each of them.
+#' @return A dataframe with total area difference, and possibly a selection of:
 #' \itemize{
 #'  \item Proportional Rate of Decline (PRD)
 #'  \item Absolute Rate of Decline (ARD)
