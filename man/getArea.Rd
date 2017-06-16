@@ -23,7 +23,7 @@ a.r1 <- getArea(r1) # area of all non-NA cells in r1
 a.r1 <- getArea(r1, 1) # area of cells labelled 1 in r1
 }
 \seealso{
-Other Change functions: \code{\link{getAreaChange}},
+Other Change functions: \code{\link{getAreaLoss}},
   \code{\link{getDeclineStats}}
 }
 \author{

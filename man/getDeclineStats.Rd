@@ -4,7 +4,8 @@
 \alias{getDeclineStats}
 \title{Change statistics.}
 \usage{
-getDeclineStats(A.t1, A.t2, year.t1, year.t2)
+getDeclineStats(A.t1, A.t2, year.t1, year.t2, methods = c("ARD", "PRD",
+  "ARC"))
 }
 \arguments{
 \item{A.t1}{Area at time t1}
@@ -14,11 +15,9 @@ getDeclineStats(A.t1, A.t2, year.t1, year.t2)
 \item{year.t1}{Year of time t1}
 
 \item{year.t2}{Year of time t2}
-}
-\value{
-A dataframe with Proportional Rate of Decline (PRD), Absolute Rate of
-  Decline (ARD), Absolute Rate of Change (ARC), the two areas and their
-  respective time in year, and an estimate of area change.
+
+\item{method}{Method(s) used to calculate rate of decline. Either PRD, ARD,
+or ARC. Defaults to include all three methods}
 }
 \description{
 \code{getDeclineStats} calculates the Proportional Rate of Decline (PRD),
@@ -28,7 +27,7 @@ areas at two points in time. Also provides an absolute area change.
 \examples{
 a.r1 <- getArea(r1) # a distribution raster
 a.r2 <- getArea(r2) # a distribution raster
-decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012, method = c('ARD', 'ARC')
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
@@ -40,7 +39,7 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 }
 \seealso{
-Other Change functions: \code{\link{getAreaChange}},
+Other Change functions: \code{\link{getAreaLoss}},
   \code{\link{getArea}}
 }
 \author{
