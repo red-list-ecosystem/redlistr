@@ -23,7 +23,7 @@ test_that("decline stats work", {
   year.t2 <- 2015
   dummy.decline.df <- getDeclineStats(A.t1, A.t2, year.t1, year.t2)
 
-  expect_equal(dummy.decline.df$abs.rate.decl, 10)
-  expect_equal(dummy.decline.df$prop.rate.decl, 12.94494, tolerance=1e-5)
-  expect_equal(dummy.decline.df$annual.rate.change, -0.1386294, tolerance=1e-5)
+  expect_equal(dummy.decline.df$ARD, 10)
+  expect_equal(dummy.decline.df$PRD, 12.94494, tolerance=1e-5)
+  expect_equal(dummy.decline.df$ARC, -0.1386294, tolerance=1e-5)
 })

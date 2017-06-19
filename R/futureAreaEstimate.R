@@ -18,9 +18,9 @@
 #'   \item{forecast.area.arc}{future area as estimated with annual rate of
 #'   change .} \item{forecast.area.ard}{future area as estimated with absolute
 #'   rate of decline.}
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}
-#' @seealso \code{\link{getArea}}, \code{\link{getPRD}}, \code{\link{getARD}},
-#'   \code{\link{getARC}}
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
+#' @family change_functions
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
@@ -34,6 +34,7 @@
 #' ARC = getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
 #' area2050 <- futureAreaEstimate(A.t1 = a.r1, 2000, PRD, ARD, ARC, nYears = 50)
 #' @export
+
 futureAreaEstimate <- function(A.t1, year.t1, PRD, ARD, ARC, nYears){
   A.PRD.t3 <- A.t1 * (1 -(PRD/100))^nYears
   A.ARC.t3 <- A.t1 * (1 + ARC)^nYears
@@ -42,9 +43,6 @@ futureAreaEstimate <- function(A.t1, year.t1, PRD, ARD, ARC, nYears){
   if (A.ARC.t3 < 0) A.ARC.t3 = 0
   if (A.ARD.t3 < 0) A.ARD.t3 = 0
   y.t3 <- year.t1+nYears
-  pc.change.prd <- getPercentLost (A.t1,A.PRD.t3)
-  pc.change.arc <- getPercentLost (A.t1,A.ARC.t3)
-  pc.change.ard <- getPercentLost (A.t1,A.ARD.t3)
   out <- data.frame(area.t1 = A.t1,
                     year.t1 = year.t1,
                     prop.rate.decl = PRD,
@@ -53,9 +51,6 @@ futureAreaEstimate <- function(A.t1, year.t1, PRD, ARD, ARC, nYears){
                     forecast.year = y.t3,
                     forecast.area.prd = A.PRD.t3,
                     forecast.area.arc = A.ARC.t3,
-                    forecast.area.ard = A.ARD.t3,
-                    pc.change.prd = pc.change.prd,
-                    pc.change.arc = pc.change.arc,
-                    pc.change.ard = pc.change.ard)
+                    forecast.area.ard = A.ARD.t3)
   return(out)
 }
