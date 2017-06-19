@@ -1,0 +1,20 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# redlistr
+
+## Overview
+
+redlistr is a package that was developed to assist in the assessments of
+ecosystems under the IUCN Red List of Ecosystems criteria.
