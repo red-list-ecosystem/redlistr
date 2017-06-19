@@ -8,7 +8,7 @@
 #' function which is used by \code{gridUncertainty} and
 #' \code{gridUncertaintySimulation}
 #' @inheritParams createGrid
-#' @param split Specifies the number of ways to split the grid in ONE axis.
+#' @param splits Specifies the number of ways to split the grid in ONE axis.
 #' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
@@ -42,6 +42,7 @@
 #' x$min.AOO.shifts # dataframe containing information of the index of the shift
 #' which created the grids with the smallest AOO and the x and y shifts for them.
 #' @export
+#' @import raster
 
 gridUncertaintyBase <- function(ecosystem.data, grid.size,
                                 splits, min.percent.rule = TRUE, percent = 1){
@@ -74,15 +75,13 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
                 shift.grid[min.AOO.index, 2], "meters."))
 
   out.df <- data.frame(n.shifts = length(grid.shifted.list),
-                       mean.AOO = mean(AOO.list),
-                       var.AOO = var(AOO.list),
-                       sd.AOO = sd(AOO.list),
                        min.AOO = min(AOO.list),
                        max.AOO = max(AOO.list))
 
   hist.breaks <- seq(min(AOO.list), max(AOO.list), 1)
   hist(AOO.list, breaks = hist.breaks, col = "darkred", main = "Histogram: AOO Uncertainty")
-  return(list(AOO.list = AOO.list, stats = out.df,
+  return(list(AOO.list = AOO.list,
+              summary.df = out.df,
               min.AOO.rasters = grid.shifted.list[min.AOO.index],
               min.AOO.shifts = shift.grid[min.AOO.index, ]))
 }
@@ -127,6 +126,7 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
 #' x$min.AOO.rasters # list of RasterLayers of the grids which all return the
 #' minimum AOO.
 #' @export
+#' @import raster
 
 gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
                                       n.sim = 10, min.percent.rule = T, percent = 1){
@@ -157,15 +157,13 @@ gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
   }
   min.AOO <- min(results.df$AOO)
   min.AOO.index <- which(results.df$AOO == min.AOO)
-  stat.df <- data.frame(n.sims = n.sim,
-                        mean.AOO = mean(results.df$AOO),
-                        var.AOO = var(results.df$AOO),
+  out.df <- data.frame(n.sims = n.sim,
                         min.AOO = min(results.df$AOO),
                         max.AOO = max(results.df$AOO))
   min.AOO.rasters <- output.rasters[min.AOO.index]
   names(min.AOO.rasters) <- min.AOO.index
 
-  return(list(AOO.stats = stat.df,
+  return(list(summary.df = out.df,
               shift.df = results.df,
               min.AOO.rasters = min.AOO.rasters))
 }
@@ -185,6 +183,8 @@ gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the \code{min.percent.rule}.
+#' @param max.n.rounds Specifies the maximum number of rounds to calculate AOOs.
+#'   Generally unused except to limit computation time.
 #' @return List containing the following:
 #' \itemize{
 #'  \item Data frame of summary statistics for the results
@@ -211,6 +211,7 @@ gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
 #' x$min.AOO.rasters # list of RasterLayers of the grids which all return the
 #' minimum AOO.
 #' @export
+#' @import raster
 
 gridUncertaintyRandom <- function(ecosystem.data, grid.size,
                                   n.AOO.improvement, min.percent.rule = T,
@@ -268,15 +269,14 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size,
 
   min.AOO <- min(results.df$AOO)
   min.AOO.index <- which(results.df$AOO == min.AOO)
-  stat.df <- data.frame(n.sims = max(results.df$sim.no),
+  out.df <- data.frame(n.sims = max(results.df$sim.no),
                         mean.AOO = mean(results.df$AOO),
-                        var.AOO = var(results.df$AOO),
                         min.AOO = min(results.df$AOO),
                         max.AOO = max(results.df$AOO))
   min.AOO.rasters <- output.rasters[min.AOO.index]
   names(min.AOO.rasters) <- min.AOO.index
 
-  return(list(AOO.stats = stat.df,
+  return(list(summary.df = out.df,
               shift.df = results.df,
               min.AOO.rasters = min.AOO.rasters))
 }

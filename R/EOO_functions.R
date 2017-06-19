@@ -17,6 +17,8 @@
 #' @examples
 #' EOO.polygon <- makeEOO(r1)
 #' @export
+#' @import sp
+#' @import raster
 
 makeEOO <- function (ecosystem.data){
   # Makes an EOO spatial polygon using the centre point of each pixel as the boundary
@@ -24,7 +26,7 @@ makeEOO <- function (ecosystem.data){
   if (nrow(EOO.points) <= 1) { # handling single pixels since chull fails for 1 pixel
     EOO.polygon <- rasterToPolygons(ecosystem.data)
   } else {
-    EOO.chull <- chull(EOO.points)
+    EOO.chull <- grDevices::chull(EOO.points)
     EOO.envelope <- EOO.points[EOO.chull,]
     c <- data.frame(EOO.envelope) # turn into a dataframe
     c[,3] <- NULL # get rid of the ID column ## FAILS HERE WHEN ECOSYSTEM IS 1 Pixel
@@ -54,7 +56,7 @@ makeEOO <- function (ecosystem.data){
 
 getAreaEOO <- function(EOO.polygon){
   # Returns the area of the makeEOO output (spatialpolygons object)
-  EOO.aream2 <- sapply(slot(EOO.polygon, "polygons"), slot, "area")
+  EOO.aream2 <- sapply(methods::slot(EOO.polygon, "polygons"), methods::slot, "area")
   # get the area from the slots in the polygon dataset
   EOO.areakm2 <- EOO.aream2/1000000
   return(EOO.areakm2)

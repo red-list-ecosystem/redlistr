@@ -188,7 +188,11 @@ Ecosystems guidelines ([Bland et al 2016](https://portals.iucn.org/library/sites
 Now it is possible to extrapolate, using only two estimates of an ecosystems' area, to the full 50 year period required for a Red List of Ecosystems assessment. 
 
 ```{r}
-extrapolated.area <- futureAreaEstimate(a.r1, year.t1 = 1990, PRD = prd, ARD = ard, ARC = arc, nYears = 50)
+extrapolated.area <- futureAreaEstimate(a.2000, year.t1 = 2000, 
+                                        PRD = decline.stats$PRD, 
+                                        ARD = decline.stats$ARD, 
+                                        ARC = decline.stats$ARC, 
+                                        nYears = 50)
 extrapolated.area
 ```
 

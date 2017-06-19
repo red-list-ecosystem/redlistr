@@ -16,9 +16,17 @@ getDeclineStats(A.t1, A.t2, year.t1, year.t2, methods = c("ARD", "PRD",
 
 \item{year.t2}{Year of time t2}
 
-\item{method}{Method(s) used to calculate rate of decline. Either 'PRD',
+\item{methods}{Method(s) used to calculate rate of decline. Either 'PRD',
 'ARD', or 'ARC'. Defaults to include all three methods. See vignette to see
 a more detailed explanation for each of them.}
+}
+\value{
+A dataframe with total area difference, and possibly a selection of:
+\itemize{
+ \item Proportional Rate of Decline (PRD)
+ \item Absolute Rate of Decline (ARD)
+ \item Absolute Rate of Change (ARC)
+ }
 }
 \description{
 \code{getDeclineStats} calculates the Proportional Rate of Decline (PRD),
@@ -28,7 +36,8 @@ areas at two points in time. Also provides the total area difference.
 \examples{
 a.r1 <- getArea(r1) # a distribution raster
 a.r2 <- getArea(r2) # a distribution raster
-decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012, method = c('ARD', 'ARC')
+decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
+                                 method = c('ARD', 'ARC')
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

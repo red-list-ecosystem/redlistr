@@ -22,6 +22,9 @@ must be passed before a grid is counted as an AOO grid.}
 
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
 the \code{min.percent.rule}.}
+
+\item{max.n.rounds}{Specifies the maximum number of rounds to calculate AOOs.
+Generally unused except to limit computation time.}
 }
 \value{
 List containing the following:

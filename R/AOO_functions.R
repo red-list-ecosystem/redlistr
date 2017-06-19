@@ -12,16 +12,18 @@
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family AOO functions
-#' @seealso \code{\link{getRLEReport}}
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' createGrid(raster1, 10000) # a 10-km grid with extent of raster1 with resolution
-#' createGrid(raster1, 2000) # a 2-km grid with extent of raster1 with resolution
+#' mangrove.2000 <- raster(system.file("extdata",
+#'                         "example_distribution_2000.tif", package = "redlistr"))
+#' createGrid(mangrove.2000, 10000) # a 10-km grid with extent of mangrove.2000
+#' createGrid(mangrove.2000, 2000) # a 2-km grid with extent of mangrove.2000
 #' @export
+#' @import raster
 
 createGrid <- function(ecosystem.data, grid.size){
   grid <- raster(ecosystem.data)
@@ -60,6 +62,7 @@ createGrid <- function(ecosystem.data, grid.size){
 #' AOO_grid <- makeAOOGrid(r1, n, one.percent.rule = F)
 #' AOO_grid # shapefile of grid cells occupied by an ecosystem or species
 #' @export
+#' @import raster
 
 makeAOOGrid <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
@@ -122,13 +125,16 @@ getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent 
 #'   Please use a CRS with units measured in metres.
 #' @param grid Custom grid to be used to calculate AOO. Usually the output of
 #'   \code{gridUncertainty}
-#' @param one.percent.rule Logical.If \code{TRUE} one percent of the grid cell
+#' @param min.percent.rule Logical.If \code{TRUE} one percent of the grid cell
 #'   must be occupied before it is counted in the AOO.
+#' @param percent Numeric. The minimum percent to be applied as a threshold for
+#'   the \code{min.percent.rule}
 #' @return Value. The AOO calculated with the input distribution and grid.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family AOO functions
 #' @export
+#' @import raster
 
 getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem

@@ -22,8 +22,10 @@ A regular grid raster with extent \code{ecosystem.data} and grid size
 compute AOO.
 }
 \examples{
-createGrid(raster1, 10000) # a 10-km grid with extent of raster1 with resolution
-createGrid(raster1, 2000) # a 2-km grid with extent of raster1 with resolution
+mangrove.2000 <- raster(system.file("extdata",
+                        "example_distribution_2000.tif", package = "redlistr"))
+createGrid(mangrove.2000, 10000) # a 10-km grid with extent of mangrove.2000
+createGrid(mangrove.2000, 2000) # a 2-km grid with extent of mangrove.2000
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
@@ -33,8 +35,6 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   \url{iucnrle.org/}
 }
 \seealso{
-\code{\link{getRLEReport}}
-
 Other AOO functions: \code{\link{getAOOSilent}},
   \code{\link{getAOO}}, \code{\link{makeAOOGrid}}
 }
