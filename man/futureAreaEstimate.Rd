@@ -49,10 +49,7 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   Switzerland: IUCN. ix + 94pp. Available at the following web site:
   \url{iucnrle.org/}
 }
-\seealso{
-\code{\link{getArea}}, \code{\link{getPRD}}, \code{\link{getARD}},
-  \code{\link{getARC}}
-}
 \author{
-Nicholas Murray \email{murr.nick@gmail.com}
+Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
+  \email{calvinkflee@gmail.com}
 }
