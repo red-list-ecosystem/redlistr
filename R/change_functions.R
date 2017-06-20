@@ -49,7 +49,7 @@ getArea <- function(x, value.to.count){
 
 #' Area change between two inputs in km2
 #'
-#' \code{getAreaChange} reports the difference in area between two inputs. These
+#' \code{getAreaLoss} reports the difference in area between two inputs. These
 #' can be RasterLayers, SpatialPolygons, or numbers. Any combinations of these
 #' inputs are valid. If using number as input, ensure it is measured in km2
 #'
@@ -67,8 +67,7 @@ getArea <- function(x, value.to.count){
 #' extent(r1) <- extent(0, 6100, 0, 8700)
 #' r2 <- raster(ifelse((volcano<145), NA, 1), crs = crs.UTM55S)
 #' extent(r2) <- extent(0, 6100, 0, 8700)
-#'
-#' a.dif <- getAreaChange(r1, r2) # distribution rasters
+#' a.dif <- getAreaLoss(r1, r2) # distribution rasters
 #' @export
 
 getAreaLoss <- function(x, y){
@@ -128,13 +127,13 @@ getAreaLoss <- function(x, y){
 #' a.r1 <- 23.55
 #' a.r2 <- 15.79
 #' decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
-#'                                  methods = c('ARD', 'ARC')
+#'                                  methods = c('ARD', 'ARC'))
 #' @export
 
 getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
-                             methods = NA){
+                             methods){
   out <- data.frame(area.loss = (A.t1-A.t2))
-  if(is.na(methods)){
+  if(missing(methods)){
     stop("Please select method(s) to be used for calculating the rate of decline.")
   }
   if(any(methods == 'ARD')){

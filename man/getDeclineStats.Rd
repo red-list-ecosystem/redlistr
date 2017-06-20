@@ -4,7 +4,7 @@
 \alias{getDeclineStats}
 \title{Change statistics.}
 \usage{
-getDeclineStats(A.t1, A.t2, year.t1, year.t2, methods = NA)
+getDeclineStats(A.t1, A.t2, year.t1, year.t2, methods)
 }
 \arguments{
 \item{A.t1}{Area at time t1}
@@ -37,7 +37,7 @@ are usually the results from \code{getArea}.
 a.r1 <- 23.55
 a.r2 <- 15.79
 decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
-                                 methods = c('ARD', 'ARC')
+                                 methods = c('ARD', 'ARC'))
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

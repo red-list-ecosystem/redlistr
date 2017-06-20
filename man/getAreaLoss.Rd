@@ -17,7 +17,7 @@ representing area in km2}
 Returns the difference in area of the two inputs in km2
 }
 \description{
-\code{getAreaChange} reports the difference in area between two inputs. These
+\code{getAreaLoss} reports the difference in area between two inputs. These
 can be RasterLayers, SpatialPolygons, or numbers. Any combinations of these
 inputs are valid. If using number as input, ensure it is measured in km2
 }
@@ -27,8 +27,7 @@ r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
 extent(r1) <- extent(0, 6100, 0, 8700)
 r2 <- raster(ifelse((volcano<145), NA, 1), crs = crs.UTM55S)
 extent(r2) <- extent(0, 6100, 0, 8700)
-
-a.dif <- getAreaChange(r1, r2) # distribution rasters
+a.dif <- getAreaLoss(r1, r2) # distribution rasters
 }
 \seealso{
 Other Change functions: \code{\link{getArea}},

@@ -177,7 +177,8 @@ To estimate the rate of changing using these methods, we use the
 `getDeclineStats` function. 
 
 ```{r Using getDeclineStats}
-decline.stats <- getDeclineStats(a.2000, a.2017, 2000, 2017)
+decline.stats <- getDeclineStats(a.2000, a.2017, 2000, 2017, 
+                                 methods = c('ARD', 'PRD', 'ARC'))
 decline.stats
 ```
 
@@ -189,8 +190,8 @@ Now it is possible to extrapolate, using only two estimates of an ecosystems' ar
 
 ```{r}
 extrapolated.area <- futureAreaEstimate(a.2000, year.t1 = 2000, 
-                                        PRD = decline.stats$PRD, 
                                         ARD = decline.stats$ARD, 
+                                        PRD = decline.stats$PRD, 
                                         ARC = decline.stats$ARC, 
                                         nYears = 50)
 extrapolated.area
