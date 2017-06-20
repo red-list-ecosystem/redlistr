@@ -30,11 +30,10 @@ is counted in the AOO. This functionality is important for assessing the IUCN
 Red List of Ecosystems Criteria B.
 }
 \examples{
-n <- createGrid(r1, 10000)
-plot (n)
-plot (r1, add = TRUE)
-AOO <- getAOO(r1, n, one.percent.rule = F)
-AOO # number of grid cells occupied by an ecosystem or species
+crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+extent(r1) <- extent(0, 6100, 0, 8700)
+AOO <- getAOO(r1, 10000, one.percent.rule = TRUE, percent = 1)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

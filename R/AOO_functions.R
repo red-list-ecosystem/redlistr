@@ -18,10 +18,10 @@
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' mangrove.2000 <- raster(system.file("extdata",
-#'                         "example_distribution_2000.tif", package = "redlistr"))
-#' createGrid(mangrove.2000, 10000) # a 10-km grid with extent of mangrove.2000
-#' createGrid(mangrove.2000, 2000) # a 2-km grid with extent of mangrove.2000
+#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' extent(r1) <- extent(0, 6100, 0, 8700)
+#' createGrid(r1, 10000)
 #' @export
 #' @import raster
 
@@ -56,11 +56,10 @@ createGrid <- function(ecosystem.data, grid.size){
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' n <- createGrid(r1, 10000)
-#' plot (n)
-#' plot (r1, add = TRUE)
-#' AOO_grid <- makeAOOGrid(r1, n, one.percent.rule = F)
-#' AOO_grid # shapefile of grid cells occupied by an ecosystem or species
+#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' extent(r1) <- extent(0, 6100, 0, 8700)
+#' AOO_grid <- makeAOOGrid(r1, 10000, one.percent.rule = TRUE, percent = 1)
 #' @export
 #' @import raster
 
@@ -104,11 +103,10 @@ makeAOOGrid <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, per
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' n <- createGrid(r1, 10000)
-#' plot (n)
-#' plot (r1, add = TRUE)
-#' AOO <- getAOO(r1, n, one.percent.rule = F)
-#' AOO # number of grid cells occupied by an ecosystem or species
+#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' extent(r1) <- extent(0, 6100, 0, 8700)
+#' AOO <- getAOO(r1, 10000, one.percent.rule = TRUE, percent = 1)
 #' @export
 
 getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1){
@@ -133,7 +131,6 @@ getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent 
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family AOO functions
-#' @export
 #' @import raster
 
 getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent = 1) {
@@ -157,8 +154,6 @@ getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent
     outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshol
   }
   # end getAOO
-
   AOO.number = length(outGrid) ## different from getAOO
-
   return (AOO.number)
 }

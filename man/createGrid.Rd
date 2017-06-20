@@ -22,10 +22,10 @@ A regular grid raster with extent \code{ecosystem.data} and grid size
 compute AOO.
 }
 \examples{
-mangrove.2000 <- raster(system.file("extdata",
-                        "example_distribution_2000.tif", package = "redlistr"))
-createGrid(mangrove.2000, 10000) # a 10-km grid with extent of mangrove.2000
-createGrid(mangrove.2000, 2000) # a 2-km grid with extent of mangrove.2000
+crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+extent(r1) <- extent(0, 6100, 0, 8700)
+createGrid(r1, 10000)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
