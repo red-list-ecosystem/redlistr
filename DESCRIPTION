@@ -2,9 +2,8 @@ Package: redlistr
 Title: Tools for the IUCN Red List of Ecosystems and Species
 Version: 1.0.0
 Authors@R: c(
-  person("Nicholas", "Murray", email = "murr.nick@gmail.com",
-  role = c("cre","aut")),
-  person("Calvin", "Lee", role = "ctb"))
+  person("Calvin", "Lee", role = c("cre", "aut"), email = "calvinkflee@gmail.com"),
+  person("Nicholas", "Murray", role = "aut", email = "murr.nick@gmail.com"))
 Description: redlistr is a toolbox created by members of the International
     Union for Conservation of Nature (IUCN) Red List of Ecosystems
     Committee for Scientific Standards. Primarily, it is a set of tools suitable
@@ -24,7 +23,8 @@ Depends:
 License: GPL (>=2)
 LazyData: true
 RoxygenNote: 6.0.1
-Suggests: knitr,
+Suggests: devtools,
+    knitr,
     rmarkdown,
     testthat
 VignetteBuilder: knitr
