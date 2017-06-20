@@ -12,7 +12,7 @@ gridUncertainty(ecosystem.data, grid.size, n.AOO.improvement,
 Please use a CRS with units measured in metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
-same units as your coordiante reference system)}
+same units as your coordinate reference system)}
 
 \item{n.AOO.improvement}{Specifies the minimum number of rounds the
 calculated AOO is not improved before stopping the function.}
@@ -39,8 +39,11 @@ when the AOO calculated does not improve (decrease) after a set number of
 split scenarios.
 }
 \examples{
-AOO.df <- gridUncertainty(r, 10000, 4, T, 1)
-AOO <- min(AOO.df$min.AOO)
+crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+extent(r1) <- extent(0, 6100, 0, 8700)
+x <- gridUncertaintyRandom(r1, grid.size = 10000, n.AOO.improvement = 5,
+                           min.percent.rule = TRUE, percent = 1)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

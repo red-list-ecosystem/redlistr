@@ -11,7 +11,7 @@ makeAOOGrid(ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1)
 Please use a CRS with units measured in metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
-same units as your coordiante reference system)}
+same units as your coordinate reference system)}
 
 \item{min.percent.rule}{Logical. If \code{TRUE}, a minimum area threshold
 must be passed before a grid is counted as an AOO grid.}

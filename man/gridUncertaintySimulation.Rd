@@ -12,7 +12,7 @@ gridUncertaintySimulation(ecosystem.data, grid.size, simulations,
 Please use a CRS with units measured in metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
-same units as your coordiante reference system)}
+same units as your coordinate reference system)}
 
 \item{simulations}{Specifies the maximum number of splits to be performed on
 the generated grid}
@@ -31,12 +31,6 @@ Data frame of results showing the minimum and maximum AOO calculated
 \code{gridUncertaintySimulation} returns the maximum and minimum number of
 area of occupancy (AOO) grid cells occupied by a species or ecosystem in
 incremental splits using \code{gridUncertaintyBase}.
-}
-\examples{
-AOO.df <- gridUncertaintySimulation(r, 10000, 10, T, 1)
-plot(AOO.df$n.splits, AOO.df$min.AOO, type = 'l', col = 'red',
-     ylim = c(0, 10), xlab = 'Number of splits', ylab = 'Minimum AOO')
-lines(AOO.df$n.splits, AOO.df$max.AOO, col = 'blue')
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

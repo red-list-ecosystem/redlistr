@@ -12,7 +12,7 @@ gridUncertaintyRandomManual(ecosystem.data, grid.size, n.sim = 10,
 Please use a CRS with units measured in metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
-same units as your coordiante reference system)}
+same units as your coordinate reference system)}
 
 \item{n.sim}{Specifies the number of random grids to be created and tested.}
 
@@ -38,16 +38,7 @@ occupancy (AOO) grid cells occupied by a species or ecosystem. It varies the
 location of the AOO grid by shifting in randomly in both x- and y-
 axes, returning summary statistics for the range of AOOs calculated, and the
 RasterLayer(s) containing the grids with the minimum AOO. Requires manual
-number of simulations input
-}
-\examples{
-x <- gridUncertaintyRandom(sample.mang, 10000, 50, T, 1)
-x$shift.df # vector of length 50 of calculated AOO  and random movement for
-each randomly generated grid
-x$AOO.stats # data frame returning the number of shifts performed and the
-summary statistics for the calculated AOOs.
-x$min.AOO.rasters # list of RasterLayers of the grids which all return the
-minimum AOO.
+input for the number of simulations to perform.
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

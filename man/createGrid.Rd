@@ -11,7 +11,7 @@ createGrid(ecosystem.data, grid.size)
 Please use a CRS with units measured in metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
-same units as your coordiante reference system)}
+same units as your coordinate reference system)}
 }
 \value{
 A regular grid raster with extent \code{ecosystem.data} and grid size

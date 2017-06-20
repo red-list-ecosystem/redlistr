@@ -12,7 +12,7 @@ gridUncertaintyBase(ecosystem.data, grid.size, splits,
 Please use a CRS with units measured in metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
-same units as your coordiante reference system)}
+same units as your coordinate reference system)}
 
 \item{splits}{Specifies the number of ways to split the grid in ONE axis.}
 
@@ -41,17 +41,6 @@ axes, returning summary statistics for the range of AOOs calculated, and the
 RasterLayer(s) containing the grids with the minimum AOO. It is the base
 function which is used by \code{gridUncertainty} and
 \code{gridUncertaintySimulation}
-}
-\examples{
-x <- gridUncertaintyBase(r1, 10000, 3, F)
-x$AOO.list # vector of length 9 of calculated AOO for each grid position
-x$stats # dataframe returning the number of shifts performed, summary statistics
-for the calculated AOOs, and the shift values which created the grid
-position(s) with the smallest AOO.
-x$min.AOO.rasters # list of RasterLayers of the grids which all return the
-minimum AOO.
-x$min.AOO.shifts # dataframe containing information of the index of the shift
-which created the grids with the smallest AOO and the x and y shifts for them.
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

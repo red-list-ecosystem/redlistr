@@ -31,17 +31,6 @@
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
-#' @examples
-#' x <- gridUncertaintyBase(r1, 10000, 3, F)
-#' x$AOO.list # vector of length 9 of calculated AOO for each grid position
-#' x$stats # dataframe returning the number of shifts performed, summary statistics
-#' for the calculated AOOs, and the shift values which created the grid
-#' position(s) with the smallest AOO.
-#' x$min.AOO.rasters # list of RasterLayers of the grids which all return the
-#' minimum AOO.
-#' x$min.AOO.shifts # dataframe containing information of the index of the shift
-#' which created the grids with the smallest AOO and the x and y shifts for them.
-#' @export
 #' @import raster
 
 gridUncertaintyBase <- function(ecosystem.data, grid.size,
@@ -93,7 +82,7 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
 #' location of the AOO grid by shifting in randomly in both x- and y-
 #' axes, returning summary statistics for the range of AOOs calculated, and the
 #' RasterLayer(s) containing the grids with the minimum AOO. Requires manual
-#' number of simulations input
+#' input for the number of simulations to perform.
 #' @inheritParams createGrid
 #' @param n.sim Specifies the number of random grids to be created and tested.
 #' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
@@ -117,15 +106,6 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
-#' @examples
-#' x <- gridUncertaintyRandom(sample.mang, 10000, 50, T, 1)
-#' x$shift.df # vector of length 50 of calculated AOO  and random movement for
-#' each randomly generated grid
-#' x$AOO.stats # data frame returning the number of shifts performed and the
-#' summary statistics for the calculated AOOs.
-#' x$min.AOO.rasters # list of RasterLayers of the grids which all return the
-#' minimum AOO.
-#' @export
 #' @import raster
 
 gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
@@ -203,13 +183,11 @@ gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' x <- gridUncertaintyRandom(sample.mang, 10000, 50, T, 1)
-#' x$shift.df # vector of length 50 of calculated AOO  and random movement for
-#' each randomly generated grid
-#' x$AOO.stats # data frame returning the number of shifts performed and the
-#' summary statistics for the calculated AOOs.
-#' x$min.AOO.rasters # list of RasterLayers of the grids which all return the
-#' minimum AOO.
+#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' extent(r1) <- extent(0, 6100, 0, 8700)
+#' x <- gridUncertaintyRandom(r1, grid.size = 10000, n.AOO.improvement = 50,
+#'                            min.percent.rule = TRUE, percent = 1)
 #' @export
 #' @import raster
 
@@ -309,8 +287,11 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' AOO.df <- gridUncertainty(r, 10000, 4, T, 1)
-#' AOO <- min(AOO.df$min.AOO)
+#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' extent(r1) <- extent(0, 6100, 0, 8700)
+#' x <- gridUncertaintyRandom(r1, grid.size = 10000, n.AOO.improvement = 5,
+#'                            min.percent.rule = TRUE, percent = 1)
 #' @export
 
 gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
@@ -370,12 +351,6 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
-#' @examples
-#' AOO.df <- gridUncertaintySimulation(r, 10000, 10, T, 1)
-#' plot(AOO.df$n.splits, AOO.df$min.AOO, type = 'l', col = 'red',
-#'      ylim = c(0, 10), xlab = 'Number of splits', ylab = 'Minimum AOO')
-#' lines(AOO.df$n.splits, AOO.df$max.AOO, col = 'blue')
-#' @export
 
 gridUncertaintySimulation <- function(ecosystem.data, grid.size,
                                       simulations, min.percent.rule = T, percent = 1){
