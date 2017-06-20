@@ -9,8 +9,10 @@
 #'   \email{calvinkflee@@gmail.com}
 #' @family Change functions
 #' @examples
+#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' extent(r1) <- extent(0, 6100, 0, 8700)
 #' a.r1 <- getArea(r1) # area of all non-NA cells in r1
-#' a.r1 <- getArea(r1, 1) # area of cells labelled 1 in r1
 #' @export
 #' @import raster
 
@@ -47,7 +49,7 @@ getArea <- function(x, value.to.count){
 
 #' Area change between two inputs in km2
 #'
-#' \code{getAreaChang} reports the difference in area between two inputs. These
+#' \code{getAreaChange} reports the difference in area between two inputs. These
 #' can be RasterLayers, SpatialPolygons, or numbers. Any combinations of these
 #' inputs are valid. If using number as input, ensure it is measured in km2
 #'
@@ -60,8 +62,13 @@ getArea <- function(x, value.to.count){
 #'   \email{calvinkflee@@gmail.com}
 #' @family Change functions
 #' @examples
+#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' extent(r1) <- extent(0, 6100, 0, 8700)
+#' r2 <- raster(ifelse((volcano<145), NA, 1), crs = crs.UTM55S)
+#' extent(r2) <- extent(0, 6100, 0, 8700)
+#'
 #' a.dif <- getAreaChange(r1, r2) # distribution rasters
-#' a.dif <- getAreaChange(r1, p2) # distribution raster and distribution polygon
 #' @export
 
 getAreaLoss <- function(x, y){
@@ -91,7 +98,8 @@ getAreaLoss <- function(x, y){
 #'
 #' \code{getDeclineStats} calculates the Proportional Rate of Decline (PRD),
 #' Absolute Rate of Decline (ARD) and Absolute Rate of Change (ARC), given two
-#' areas at two points in time. Also provides the total area difference.
+#' areas at two points in time. Also provides the total area difference. Inputs
+#' are usually the results from \code{getArea}.
 #'
 #' @param A.t1 Area at time t1
 #' @param year.t1 Year of time t1
@@ -117,10 +125,10 @@ getAreaLoss <- function(x, y){
 #'   Puyravaud, J.-P. 2003. Standardizing the calculation of the
 #'   annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 #' @examples
-#' a.r1 <- getArea(r1) # a distribution raster
-#' a.r2 <- getArea(r2) # a distribution raster
+#' a.r1 <- 23.55
+#' a.r2 <- 15.79
 #' decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
-#'                                  method = c('ARD', 'ARC')
+#'                                  methods = c('ARD', 'ARC')
 #' @export
 
 getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
@@ -173,12 +181,12 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
 #' @examples
-#' a.r1 = getArea(r1) # a distribution raster
-#' a.r2 = getArea(r2) # a distribution raster
-#' PRD = getPRD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-#' ARD = getARD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-#' ARC = getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-#' area2050 <- futureAreaEstimate(A.t1 = a.r1, 2000, PRD, ARD, ARC, nYears = 50)
+#' a.r1 <- 23.55
+#' a.r2 <- 15.79
+#' decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
+#'                        methods = 'PRD')
+#' a.2040.PRD <- futureAreaEstimate(a.r1, a.r2, year.t1 = 1990, nYears = 50,
+#'                                  PRD = decline.stats$PRD)
 #' @export
 
 futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){

@@ -32,12 +32,12 @@ A dataframe with the forecast year, and a combination of:
 future date using known rates of decline.
 }
 \examples{
-a.r1 = getArea(r1) # a distribution raster
-a.r2 = getArea(r2) # a distribution raster
-PRD = getPRD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-ARD = getARD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-ARC = getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
-area2050 <- futureAreaEstimate(A.t1 = a.r1, 2000, PRD, ARD, ARC, nYears = 50)
+a.r1 <- 23.55
+a.r2 <- 15.79
+decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
+                       methods = 'PRD')
+a.2040.PRD <- futureAreaEstimate(a.r1, a.r2, year.t1 = 1990, nYears = 50,
+                                 PRD = decline.stats$PRD)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

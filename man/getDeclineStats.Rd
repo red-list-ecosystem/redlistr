@@ -30,13 +30,14 @@ A dataframe with total area difference, and a selection of:
 \description{
 \code{getDeclineStats} calculates the Proportional Rate of Decline (PRD),
 Absolute Rate of Decline (ARD) and Absolute Rate of Change (ARC), given two
-areas at two points in time. Also provides the total area difference.
+areas at two points in time. Also provides the total area difference. Inputs
+are usually the results from \code{getArea}.
 }
 \examples{
-a.r1 <- getArea(r1) # a distribution raster
-a.r2 <- getArea(r2) # a distribution raster
+a.r1 <- 23.55
+a.r2 <- 15.79
 decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
-                                 method = c('ARD', 'ARC')
+                                 methods = c('ARD', 'ARC')
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
