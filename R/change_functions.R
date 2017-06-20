@@ -98,9 +98,9 @@ getAreaLoss <- function(x, y){
 #' @param A.t2 Area at time t2
 #' @param year.t2 Year of time t2
 #' @param methods Method(s) used to calculate rate of decline. Either 'PRD',
-#'   'ARD', or 'ARC'. Defaults to include all three methods. See vignette to see
-#'   a more detailed explanation for each of them.
-#' @return A dataframe with total area difference, and possibly a selection of:
+#'   'ARD', and/or 'ARC'. See vignette to see a more detailed explanation for
+#'   each of them.
+#' @return A dataframe with total area difference, and a selection of:
 #' \itemize{
 #'  \item Proportional Rate of Decline (PRD)
 #'  \item Absolute Rate of Decline (ARD)
@@ -124,8 +124,11 @@ getAreaLoss <- function(x, y){
 #' @export
 
 getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
-                             methods = c('ARD', 'PRD', 'ARC')){
+                             methods = NA){
   out <- data.frame(area.loss = (A.t1-A.t2))
+  if(is.na(methods)){
+    stop("Please select method(s) to be used for calculating the rate of decline.")
+  }
   if(any(methods == 'ARD')){
     ARD <- -((A.t2-A.t1)/(year.t2-year.t1))
     # Absolute rate of change (also known as Annual Change(R)) in Puyrvaud
@@ -144,3 +147,60 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
   return (out)
 }
 
+#' Future Area Estimate
+#'
+#' \code{futureAreaEstimate} calculates the expected area of a distribution at a
+#' future date using known rates of decline.
+#'
+#' @param A.t1 Area at time t1
+#' @param year.t1 Year of time t1
+#' @param nYears Number of years since t1 for area prediction
+#' @param ARD Absolute rate of decline
+#' @param PRD Proportional rate of decline
+#' @param ARC Annual rate of change
+#' @return A dataframe with the forecast year, and a combination of:
+#' \itemize{
+#'  \item Future area as estimated with absolute rate of decline (ARD)
+#'  \item Future area as estimated with proportional rate of decline (PRD)
+#'  \item Future area as estimated with absolute rate of change (ARC)
+#'  }
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
+#' @family change_functions
+#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
+#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
+#'   \url{iucnrle.org/}
+#' @examples
+#' a.r1 = getArea(r1) # a distribution raster
+#' a.r2 = getArea(r2) # a distribution raster
+#' PRD = getPRD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+#' ARD = getARD(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+#' ARC = getARC(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012)
+#' area2050 <- futureAreaEstimate(A.t1 = a.r1, 2000, PRD, ARD, ARC, nYears = 50)
+#' @export
+
+futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){
+  y.t3 <- year.t1+nYears
+  out <- data.frame(forecast.year = y.t3)
+  if(!is.na(ARD)){
+    A.ARD.t3 <- A.t1 - (ARD*nYears)
+    if(A.ARD.t3 < 0) A.ARD.t3 = 0
+    out <- cbind(out, A.ARD.t3 = A.ARD.t3)
+  }
+  if(!is.na(PRD)){
+    A.PRD.t3 <- A.t1 * (1 -(PRD/100))^nYears
+    if(A.PRD.t3 < 0) A.PRD.t3 = 0
+    out <- cbind(out, A.PRD.t3 = A.PRD.t3)
+  }
+  if(!is.na(ARC)){
+    A.ARC.t3 <- A.t1 * (1 + ARC)^nYears
+    if(A.ARC.t3 < 0) A.ARC.t3 = 0
+    out <- cbind(out, A.ARC.t3 = A.ARC.t3)
+  }
+  if(all(c(is.na(PRD), is.na(ARD), is.na(ARC)))){
+    stop("Please input at least one of 'ARD', 'PRD', or 'ARC'.")
+  }
+  return(out)
+}

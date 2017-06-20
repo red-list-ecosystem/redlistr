@@ -3,7 +3,6 @@
 export(createGrid)
 export(futureAreaEstimate)
 export(getAOO)
-export(getAOOSilent)
 export(getArea)
 export(getAreaEOO)
 export(getAreaLoss)
