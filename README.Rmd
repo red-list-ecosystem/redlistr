@@ -21,3 +21,12 @@ knitr::opts_chunk$set(
 redlistr is a package that was developed to assist in the assessments of
 ecosystems or species under the IUCN Red List of Ecosystems and Threatened
 Species criteria.
+
+## Installation
+Currently, `redlistr` can only be installed via GitHub, which requires the
+`devtools` package:
+```{r, eval = FALSE}
+install.packages("devtools")
+devtools::install_github("red-list-ecosystem/redlistr")
+```
+

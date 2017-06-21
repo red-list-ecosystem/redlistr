@@ -33,8 +33,8 @@ makeEOO <- function (ecosystem.data){
     EOO.envelope <- EOO.points[EOO.chull,]
     c <- data.frame(EOO.envelope) # turn into a dataframe
     c[,3] <- NULL # get rid of the ID column ## FAILS HERE WHEN ECOSYSTEM IS 1 Pixel
-    d <- as.matrix(c) #sp package needs a matrix
-    e <- rbind(d, d[1,]) #this adds a row at the bottom to close the ring
+    d <- as.matrix(c) # sp package needs a matrix
+    e <- rbind(d, d[1,]) # this adds a row at the bottom to close the ring
     f <- Polygon(e) # creates a polygon object
     g <- Polygons(list(f), 1) # wrap it in a polygons object
     EOO.polygon <- SpatialPolygons(list(g)) # wrap it in a spatial polygons object
