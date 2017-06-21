@@ -14,7 +14,10 @@ knitr::opts_chunk$set(
 
 # redlistr
 
+[![Build Status](https://travis-ci.org/red-list-ecosystem/redlistr.svg?branch=master)](https://travis-ci.org/red-list-ecosystem/redlistr)
+
 ## Overview
 
 redlistr is a package that was developed to assist in the assessments of
-ecosystems under the IUCN Red List of Ecosystems criteria.
+ecosystems or species under the IUCN Red List of Ecosystems and Threatened
+Species criteria.
