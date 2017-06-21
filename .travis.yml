@@ -9,3 +9,5 @@ addons:
     packages:
       - libgdal-dev
       - libproj-dev
+
+group: edge
