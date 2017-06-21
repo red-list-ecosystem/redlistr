@@ -58,12 +58,8 @@ vector (shapefile) format. We will be using the `sp`, `raster`, and `rgeos`
 packages which `redlistr` is built on top of.
 
 ```{r Loading packages, message=FALSE}
-# install.packages(c("raster", "sp", "rgeos"))
-library(raster)
-library(sp)
 library(rgeos)
-library(devtools) # required for the GitHub version of redlistr
-load_all("C:/Users/kfle/Desktop/GitHub/redlistr")
+library(redlistr)
 ```
 
 We will first have to import the data we want to analyse. In this vignette, we
@@ -186,7 +182,9 @@ Each method represent a different shape of decline. For further information abou
 the choice of each of these methods to extrapolate refer to the IUCN Red List of
 Ecosystems guidelines ([Bland et al 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
 
-Now it is possible to extrapolate, using only two estimates of an ecosystems' area, to the full 50 year period required for a Red List of Ecosystems assessment. 
+Now, it is possible to extrapolate, using only two estimates of an ecosystems'
+area, to the full 50 year period required for a Red List of Ecosystems
+assessment.
 
 ```{r}
 extrapolated.area <- futureAreaEstimate(a.2000, year.t1 = 2000, 
@@ -197,9 +195,28 @@ extrapolated.area <- futureAreaEstimate(a.2000, year.t1 = 2000,
 extrapolated.area
 ```
 
-This tells us that 50 years from our first estimate in year `r extrapolated.area$forecast.year` km2 , all things aside, we expect this ecosystem to have declined by `r extrapolated.area$prd`%. It is important to note that this relatively simple exercise is founded on assumptions that should be fully understood before submitting your ecosystem assessment to the IUCN Red List of Ecosystems Committee for Scientific Standards. Please see the guidelines (Bland et al 2016) for more information.
+This tells us that 50 years from our first estimate in the year 
+`r extrapolated.area$forecast.year`.
+
+As we included all three methods of calculating rate of decline currently included in
+the package, the results produced shows three estimated areas under the various
+decline scenarios. It is important to note that this relatively simple exercise is founded on 
+assumptions that should be fully understood before submitting your ecosystem 
+assessment to the IUCN Red List of Ecosystems Committee for Scientific
+Standards. Please see the guidelines ([Bland et al 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf))
+for more information.
 
 ## 4. Assessing Criterion B (distribution size)
 
 
-Criterion B utilizes measures of the geographic distribution of an ecosystem type to identify ecosystems that are at risk from catastrophic disturbances. The geographic distribution of an ecosystem type is assessed under criterion B with two standardized metrics: the extent of occurrence (EOO) and the area of occupancy (AOO) (Gaston and Fuller, 2009, Keith et al., 2013). It must be emphasised that EOO and AOO are not used to estimate the mapped area of an ecosystem like the methods we used in Criterion A; they are simply spatial metrics that allow us to standardise an estimate of risk spreading. Thus, it is critical that these measures are used consistently across all assessments, and the use of non-standard measures invalidates comparison against the thresholds. Refer to the guidelines for more information on AOO and EOO.
+Criterion B utilizes measures of the geographic distribution of an ecosystem
+type to identify ecosystems that are at risk from catastrophic disturbances. The
+geographic distribution of an ecosystem type is assessed under criterion B with
+two standardized metrics: the extent of occurrence (EOO) and the area of
+occupancy (AOO) (Gaston and Fuller, 2009, Keith et al., 2013). It must be
+emphasised that EOO and AOO are not used to estimate the mapped area of an
+ecosystem like the methods we used in Criterion A; they are simply spatial
+metrics that allow us to standardise an estimate of risk spreading. Thus, it is
+critical that these measures are used consistently across all assessments, and
+the use of non-standard measures invalidates comparison against the thresholds.
+Refer to the guidelines for more information on AOO and EOO.
