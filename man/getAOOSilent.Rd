@@ -28,7 +28,8 @@ input of the grid parameter. Used for \code{gridUncertainty}.
 }
 \seealso{
 Other AOO functions: \code{\link{createGrid}},
-  \code{\link{getAOO}}, \code{\link{makeAOOGrid}}
+  \code{\link{getAOO}}, \code{\link{getMinAOO}},
+  \code{\link{makeAOOGrid}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

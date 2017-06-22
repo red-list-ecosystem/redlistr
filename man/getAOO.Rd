@@ -44,7 +44,8 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 }
 \seealso{
 Other AOO functions: \code{\link{createGrid}},
-  \code{\link{getAOOSilent}}, \code{\link{makeAOOGrid}}
+  \code{\link{getAOOSilent}}, \code{\link{getMinAOO}},
+  \code{\link{makeAOOGrid}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

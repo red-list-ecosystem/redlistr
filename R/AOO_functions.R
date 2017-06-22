@@ -71,15 +71,15 @@ makeAOOGrid <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, per
   x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
   names(x) <- 'count'
   grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-  if (min.percent.rule == FALSE){
-    outGrid <- grid.shp
-  }
-  if (min.percent.rule == TRUE){
+
+  if (min.percent.rule){
     cell.res <- res(ecosystem.data)
     area <- cell.res[1] * cell.res[2]
     one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
     threshold <- one.pc.grid * percent / area
     outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshol
+  } else {
+    outGrid <- grid.shp
   }
   return (outGrid)
 }
@@ -108,7 +108,6 @@ makeAOOGrid <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, per
 #' extent(r1) <- extent(0, 6100, 0, 8700)
 #' AOO <- getAOO(r1, 10000, min.percent.rule = TRUE, percent = 1)
 #' @export
-
 getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1){
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   AOO.number = length(makeAOOGrid(ecosystem.data, grid.size, min.percent.rule, percent))
@@ -143,17 +142,82 @@ getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent
   x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
   names(x) <- 'count'
   grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-  if (min.percent.rule == FALSE){
-    outGrid <- grid.shp
-  }
-  if (min.percent.rule == TRUE){
+
+  if (min.percent.rule){
     cell.res <- res(ecosystem.data)
     area <- cell.res[1] * cell.res[2]
     one.pc.grid <- grid.size[1] * grid.size[2] / 100 # 1pc of grid cell
     threshold <- one.pc.grid * percent / area
     outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshol
+  } else {
+    outGrid <- grid.shp
   }
   # end getAOO
   AOO.number = length(outGrid) ## different from getAOO
   return (AOO.number)
+}
+
+
+#' Compute the Minimum Area of Occupancy (AOO)
+#'
+#' \code{getAOO} determines the number of area of occupancy (AOO) grid cells
+#' occupied by a species or ecosystem. It includes capability for specifying
+#' whether at least one percent of the grid cell needs to be occupied before it
+#' is counted in the AOO. This functionality is important for assessing the IUCN
+#' Red List of Ecosystems Criteria B.
+#'
+#' \code{getMinAOO} optimises the placement of the grid so the AOO is the
+#' smalest possible. It does this using \code{constrOptim} with method SANN.
+#'
+#' @inheritParams makeAOOGrid
+#' @param trace If TRUE, tracing information on the progress of the optimisation
+#'   is produced.
+#' @return The number of grid cells occupied by the ecosystem or species
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}, John Wilshire
+#'   \email{john.h.wilshire@@gmail.com}
+#' @family AOO functions
+#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
+#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
+#'   \url{iucnrle.org/}
+#' @examples
+#' crs.UTM55N <- '+proj=utm +zone=55 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55N) #t1 = 1990
+#' ext <- extent(0, 6100, 0, 8700) # set the extent of raster r1, 100m resolution
+#' extent(r1) <- ext
+#' (getMinAOO(r1, grid.size = 1000) -> AOO) # number of grid cells occupied by an ecosystem or species
+#' @export
+
+getMinAOO <- function(ecosystem.data, grid.size,
+                      min.percent.rule = TRUE, percent = 1, trace = TRUE) {
+  grid <- createGrid(ecosystem.data, grid.size) # create the inital grid
+  objective_fun <- function(x) {
+    getAOOSilent(ecosystem.data,
+                 grid = shift(grid, x = x[1], y = x[2]),
+                 min.percent.rule = min.percent.rule,
+                 percent = percent)
+  }
+
+  ub <- grid.size
+  lb <-  0
+  ci <- c(lb, lb, -ub, -ub)
+  ui <-  matrix(c(1, 0, -1,  0,
+                  0, 1,  0, -1), ncol = 2)
+  start <-  runif(2, min = 0, max = grid.size)
+  constrOptim(start,
+              objective_fun,
+              method = "SANN",
+              ui = ui,
+              ci = ci,
+              grad = NULL,
+              control = list(
+                temp = grid.size,
+                tmax = 50,
+                maxit = 500,
+                parscale = c(grid.size, grid.size),
+                trace = trace)
+  ) -> o
+  o$value
 }

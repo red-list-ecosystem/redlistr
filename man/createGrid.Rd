@@ -36,7 +36,8 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 }
 \seealso{
 Other AOO functions: \code{\link{getAOOSilent}},
-  \code{\link{getAOO}}, \code{\link{makeAOOGrid}}
+  \code{\link{getAOO}}, \code{\link{getMinAOO}},
+  \code{\link{makeAOOGrid}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
