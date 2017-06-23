@@ -17,12 +17,6 @@
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{iucnrle.org/}
-#' @examples
-#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-#' extent(r1) <- extent(0, 6100, 0, 8700)
-#' createGrid(r1, 10000)
-#' @export
 #' @import raster
 
 createGrid <- function(ecosystem.data, grid.size){
@@ -63,7 +57,7 @@ createGrid <- function(ecosystem.data, grid.size){
 #' @export
 #' @import raster
 
-makeAOOGrid <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1) {
+makeAOOGrid <- function(ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- createGrid(ecosystem.data, grid.size)
   eco.points <- rasterToPoints(ecosystem.data)
@@ -109,7 +103,7 @@ makeAOOGrid <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, per
 #' AOO <- getAOO(r1, 10000, min.percent.rule = TRUE, percent = 1)
 #' @export
 
-getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1){
+getAOO <- function(ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1){
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   AOO.number = length(makeAOOGrid(ecosystem.data, grid.size, min.percent.rule, percent))
   return(AOO.number)
@@ -133,7 +127,7 @@ getAOO <- function (ecosystem.data, grid.size, min.percent.rule = TRUE, percent 
 #' @family AOO functions
 #' @import raster
 
-getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent = 1) {
+getAOOSilent <- function(ecosystem.data, grid, min.percent.rule = TRUE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- grid # below is different from getAOO
   grid.size <- res(grid)
@@ -155,5 +149,6 @@ getAOOSilent <- function (ecosystem.data, grid, min.percent.rule = TRUE, percent
   }
   # end getAOO
   AOO.number = length(outGrid) ## different from getAOO
-  return (AOO.number)
+  return(list(AOO.number = AOO.number,
+              out.grid = outGrid))
 }

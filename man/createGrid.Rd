@@ -21,12 +21,6 @@ A regular grid raster with extent \code{ecosystem.data} and grid size
 \code{createGrid} produces empty grid which can be used as the basis to help
 compute AOO.
 }
-\examples{
-crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-extent(r1) <- extent(0, 6100, 0, 8700)
-createGrid(r1, 10000)
-}
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red

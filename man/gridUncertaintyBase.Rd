@@ -27,9 +27,8 @@ List containing the following:
 \itemize{
  \item Vector of length split*split of calculated AOO for each shifted grid
  \item Data frame of summary statistics for the results
- \item Data frame showing the distance shifted in x and y directions used to
  create the AOO grid(s) which return the smallest AOO
- \item List of RasterLayer(s) containing the AOO grid(s) which return the
+ \item Data frame of the shift(s) required to create the AOO grid(s) with the
  smallest AOO
 }
 }

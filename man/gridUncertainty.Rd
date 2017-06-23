@@ -5,7 +5,7 @@
 \title{Function to compute AOO with grid uncertainty systematically with stopping rule}
 \usage{
 gridUncertainty(ecosystem.data, grid.size, n.AOO.improvement,
-  min.percent.rule = T, percent = 1)
+  min.percent.rule = T, percent = 1, max.rounds = 1000)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.
@@ -22,14 +22,16 @@ must be passed before a grid is counted as an AOO grid.}
 
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
 the \code{min.percent.rule}.}
+
+\item{max.rounds}{Specifies the max number of rounds to run the function.}
 }
 \value{
 A list containing the following:
 \itemize{
  \item Data frame of results showing the minimum AOO calculated for each
  shift scenario
- \item List of rasterLayers which were used to generate the
- minimum AOO specified for each shift scenario
+ \item Single SpatialPolygonsDataFrame containing the AOO grid which would
+ produce the minimum AOO calculated
 }
 }
 \description{

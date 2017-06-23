@@ -17,9 +17,8 @@
 #' \itemize{
 #'  \item Vector of length split*split of calculated AOO for each shifted grid
 #'  \item Data frame of summary statistics for the results
-#'  \item Data frame showing the distance shifted in x and y directions used to
 #'  create the AOO grid(s) which return the smallest AOO
-#'  \item List of RasterLayer(s) containing the AOO grid(s) which return the
+#'  \item Data frame of the shift(s) required to create the AOO grid(s) with the
 #'  smallest AOO
 #' }
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
@@ -38,11 +37,13 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
   grid <- createGrid(ecosystem.data, grid.size)
   intervals <- grid.size/splits
 
-  x.shift <- seq(0, grid.size, (intervals))
+  x.shift <- seq(0, grid.size, intervals)
   x.shift <- x.shift[1:length(x.shift)-1] # Removing the final grid which is identical to first
-  y.shift <- seq(0, grid.size, (intervals))
+  y.shift <- seq(0, grid.size, intervals)
   y.shift <- y.shift[1:length(y.shift)-1]
-  shift.grid <- expand.grid(x.shift = x.shift, y.shift = y.shift) # Create the movement grid
+  # Create the movement grid with jiggle
+  shift.grid <- expand.grid(x.shift = (x.shift + sample(0:(grid.size*0.05), 1)),
+                            y.shift = (y.shift + sample(0:(grid.size*0.05), 1)))
 
   grid.shifted.list <- apply(shift.grid, 1, function(gridList){
     # Pull out the values for each shift
@@ -52,26 +53,24 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
     return(grid.shift)
   })
 
-  AOO.list <- sapply(grid.shifted.list, getAOOSilent, # List of AOO for each scenario
+  AOO.list <- lapply(grid.shifted.list, getAOOSilent, # List of AOO for each scenario
                      ecosystem.data = ecosystem.data,
                      min.percent.rule = min.percent.rule,
                      percent = percent)
-  min.AOO <- min(AOO.list)
-  min.AOO.index <- which(AOO.list==min.AOO)
-
-  message(paste("Minimum AOO (", min.AOO, ") is obtained when the grid is shifted in x by",
-                shift.grid[min.AOO.index, 1], "meters and in y by",
-                shift.grid[min.AOO.index, 2], "meters."))
+  AOO.numbers <- list()
+  for(i in 1:length(AOO.list)){
+    AOO.numbers[[i]] <- AOO.list[[i]]$AOO.number
+  }
+  AOO.numbers <- unlist(AOO.numbers)
+  min.AOO <- min(AOO.numbers)
+  min.AOO.index <- which(AOO.numbers==min.AOO)
 
   out.df <- data.frame(n.shifts = length(grid.shifted.list),
-                       min.AOO = min(AOO.list),
-                       max.AOO = max(AOO.list))
+                       min.AOO = min(AOO.numbers),
+                       max.AOO = max(AOO.numbers))
 
-  hist.breaks <- seq(min(AOO.list), max(AOO.list), 1)
-  hist(AOO.list, breaks = hist.breaks, col = "darkred", main = "Histogram: AOO Uncertainty")
-  return(list(AOO.list = AOO.list,
+  return(list(AOO.numbers = AOO.numbers,
               summary.df = out.df,
-              min.AOO.rasters = grid.shifted.list[min.AOO.index],
               min.AOO.shifts = shift.grid[min.AOO.index, ]))
 }
 
@@ -272,12 +271,13 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size,
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the \code{min.percent.rule}.
+#' @param max.rounds Specifies the max number of rounds to run the function.
 #' @return A list containing the following:
 #' \itemize{
 #'  \item Data frame of results showing the minimum AOO calculated for each
 #'  shift scenario
-#'  \item List of rasterLayers which were used to generate the
-#'  minimum AOO specified for each shift scenario
+#'  \item Single SpatialPolygonsDataFrame containing the AOO grid which would
+#'  produce the minimum AOO calculated
 #' }
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
@@ -295,27 +295,26 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size,
 #' @export
 
 gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
-                            min.percent.rule = T, percent = 1){
-  out.df <- data.frame(n.splits = integer,
-                       min.AOO = integer)
-  min.AOO.rasters <- list()
+                            min.percent.rule = T, percent = 1, max.rounds = 1000){
+  out.df <- data.frame()
+  min.grids.shift <- list()
   for (i in 1:n.AOO.improvement){ # First runs before checking for improvement
     out.df[i, 1] <- i
     results <- gridUncertaintyBase(ecosystem.data = ecosystem.data,
                                    grid.size = grid.size, splits = i,
                                    min.percent.rule = min.percent.rule,
                                    percent = percent)
-    out.df[i, 2] <- results$stats$min.AOO
-    min.rasters[[i]] <- results$min.AOO.grid.list
+    out.df[i, 2] <- results$summary.df$min.AOO
+    min.grids.shift[[i]] <- results$min.AOO.shifts
   }
-  for (i in n.AOO.improvement+1:1000){ #arbitrary large number
+  for (i in n.AOO.improvement+1:max.rounds){ #arbitrary large number
     out.df[i, 1] <- i
     results <- gridUncertaintyBase(ecosystem.data = ecosystem.data,
                                    grid.size = grid.size, splits = i,
                                    min.percent.rule = min.percent.rule,
                                    percent = percent)
-    out.df[i, 2] <- results$stats$min.AOO
-    min.AOO.rasters[[i]] <- results$min.AOO.grid.list
+    out.df[i, 2] <- results$summary.df$min.AOO
+    min.grids.shift[[i]] <- results$min.AOO.shifts
     logic.test <- vector()
     for (j in 1:(n.AOO.improvement-1)){
       logic.test <- c(logic.test, out.df[(i-n.AOO.improvement), 2] <=
@@ -323,12 +322,27 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
     }
     if (all(logic.test)) break # Stop the function when AOO no longer decreases
   }
-  results <- list('min.AOO.df' = out.df,
-                  'min.AOO.rasters' = min.AOO.rasters)
-  return(results)
-}
+  names(out.df) <- c('n.splits', 'min.AOO')
+  # Find splits which generated the smallest AOOs
+  min.AOO.split.index <- which(out.df$min.AOO == min(out.df$min.AOO))
+  min.AOO.split.n <- min(min.AOO.split.index) # Only need one of them
 
-## TODO: add slight movement to each grid shift to reduce caclulating repeated grids?
+  # Get one the shifts needed to get this min AOO
+  min.AOO.x.shift <- min.grids.shift[[min.AOO.split.n]]$x.shift[1]
+  min.AOO.y.shift <- min.grids.shift[[min.AOO.split.n]]$y.shift[1]
+
+  # Recreate this AOO grid
+  original.grid <- createGrid(ecosystem.data, grid.size)
+  min.AOO.grid.shifts <- shift(original.grid,
+                               min.AOO.x.shift,
+                               min.AOO.y.shift)
+  min.AOO.grid <- getAOOSilent(ecosystem.data, min.AOO.grid.shifts,
+                               min.percent.rule = min.percent.rule, percent = percent)
+
+  results.list <- list('min.AOO.df' = out.df,
+                       'min.AOO.grid' = min.AOO.grid)
+  return(results.list)
+}
 
 #' Function to investigate behaviour of AOO under various split scenarios
 #'
