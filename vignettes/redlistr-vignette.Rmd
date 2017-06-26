@@ -144,7 +144,7 @@ Now, it is possible to extrapolate, using only two estimates of an ecosystems'
 area, to the full 50 year period required for a Red List of Ecosystems
 assessment.
 
-```{r}
+```{r Estimating future area}
 extrapolated.area <- futureAreaEstimate(a.2000, year.t1 = 2000, 
                                         ARD = decline.stats$ARD, 
                                         PRD = decline.stats$PRD, 
@@ -153,7 +153,7 @@ extrapolated.area <- futureAreaEstimate(a.2000, year.t1 = 2000,
 extrapolated.area
 ```
 
-This tells us that 50 years from our first estimate in the year 
+50 years from our first estimate is the year
 `r extrapolated.area$forecast.year`.
 
 As we included all three methods of calculating rate of decline currently included in
@@ -163,6 +163,13 @@ assumptions that should be fully understood before submitting your ecosystem
 assessment to the IUCN Red List of Ecosystems Committee for Scientific
 Standards. Please see the guidelines ([Bland et al., 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf))
 for more information.
+
+If we were to use the Proportional Rate of Decline (PRD) for our example assessment, our results here will be suitiable for criterion A2b (Any 50 year period), and the percent loss of area is:
+```{r Percent loss}
+predicted.percent.loss <- (extrapolated.area$A.PRD.t3 - a.2000)/a.2000 * 100
+predicted.percent.loss
+```
+
 
 ## 4. Assessing Criterion B (distribution size)
 
@@ -222,11 +229,12 @@ the `percent` parameter.
 Finally, we can use the created grid to calculate the AOO for our mangroves.
 ```{r Getting number of AOO grids}
 n.AOO <- length(AOO.grid)
-n.AOO
 
 # the getAOO function can also be used to directly get the AOO
 # n.AOO <- getAOO(mangrove.2017, grid.size = 10000, 
 #                 min.percent.rule = T, percent = 1)
+
+n.AOO
 ```
 
 
@@ -242,15 +250,30 @@ AOO until additional shifts no longer produce improved results.
 
 ```{r gridUncertainty}
 gU.results <- gridUncertainty(mangrove.2017, 10000,
-                              n.AOO.improvement = 5, 
+                              n.AOO.improvement = 3, 
                               min.percent.rule = T, percent = 1)
 
+gU.results$min.AOO.df
+```
+The results here shows that the minimum AOO does indeed change in response to 
+where the AOO grid is placed, and that our original AOO value of `r n.AOO` is
+not the true minimum AOO. The true minimum AOO (and the one which should be used
+for the assessment) is `r gU.results$min.AOO.grid$AOO.number`.
 
+It is also possible to plot out the grid which was used to produce the minimum 
+AOO result, which can be used to report our final results.
 
+```{r Plotting out minimum AOO grid, fig.width=7, fig.height=7}
+plot(gU.results$min.AOO.grid$out.grid)
+plot(mangrove.2017, add = T, col = "green", legend = FALSE)
 ```
 
-
-
-
-
+## 5. Final words
+We have demonstrated in this vignette a typical workflow for assessing an
+example ecosystem under the RLE. The methods outlined here can easily be adapted
+for the Red List of Threatened Species as well, with slight adjustments in the
+parameters (specifically the grid.size parameter for `getAOO` or
+`gridUncertainty`). We hope that with this tool, we can ensure a consistent
+implementation for both red lists criteria, minimising any misclassification as
+a result of using different software and methods.
 
