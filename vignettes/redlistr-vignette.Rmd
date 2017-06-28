@@ -90,8 +90,8 @@ a.2017 <- getArea(mangrove.2017)
 a.2017
 ```
 
-The results: at time 1 (2000), the ecosystem was `r a.2000` km^2^, and at time
-2, (2017) the ecosystem was `r a.2017` km^2^.
+The results: at time 1 (2000), the ecosystem was `r a.2000` km2, and at time
+2, (2017) the ecosystem was `r a.2017` km2.
 
 ## 4. Assessing Criterion A
 
@@ -106,7 +106,7 @@ to assess the amount of change observed in your data.
 Area change can be calculated using the `getAreaLoss` function. It simply
 calculates the difference in area between two datasets. It can accept data from
 numbers, `RasterLayers` or `SpatialPolygons`. Make sure to use area measure in
-km^2^ if you are using numbers as the input.
+km2 if you are using numbers as the input.
 
 ```{r Using getAreaChange}
 area.lost <- getAreaLoss(a.2000, a.2017)
@@ -116,13 +116,14 @@ area.lost <- getAreaLoss(a.2000, a.2017)
 
 ### Rate of change
 
-In the Red List of Ecosystems, two methods are suggested to determine the rate
+In the Red List of Ecosystems, two methods are suggested to determine the rate 
 of decline of an ecosystem, each of which assumes a different functional form of
-the decline (IUCN, 2015).  The proportional rate of decline (PRD) is a fraction
-of the previous year's remaining area, while the absolute rate of decline (ARD)
-is a constant fraction of the area of the ecosystem at the beginning of the
-decline (IUCN, 2015). These rates of decline allow the use of two or more data 
-points to extrapolate to the full 50 year timeframe required in an assessment.
+the decline ([Bland et al., 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
+The proportional rate of decline (PRD) is a fraction of the previous year's
+remaining area, while the absolute rate of decline (ARD) is a constant fraction
+of the area of the ecosystem at the beginning of the decline ([Bland et al., 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
+These rates of decline allow the use of two or more data points to extrapolate
+to the full 50 year timeframe required in an assessment.
 
 The annual rate of change (ARC) uses a compound interest law to determine the 
 instantaneous rate of change ([Puyravaud 2003](http://www.sciencedirect.com/science/article/pii/S0378112702003353)). 
@@ -204,18 +205,18 @@ EOO.area
 ```
 
 The calculated EOO area for this subset of mangroves in Victoria is `r EOO.area`
-km^2^. This result can then be combined with additional information required
+km2. This result can then be combined with additional information required
 under B1(a-c) to assess the ecosystem under subcriteria B1.
 
 ### Subcriterion B2 (calculating AOO)
 For subcriterion B2, we will need to calculate the number of 10x10 km grid cells
 occupied by our distribution. We begin by creating the appopriate grid cells.
-```{r Creating AOO grid, fig.width=7, fig.height=7}
-AOO.grid <- makeAOOGrid(mangrove.2017, grid.size = 10000, 
-                        min.percent.rule = T, percent = 1)
+```{r Creating AOO grid}
+AOO.grid.all <- makeAOOGrid(mangrove.2017, grid.size = 10000,
+                            min.percent.rule = F)
+AOO.grid.one.percent <- makeAOOGrid(mangrove.2017, grid.size = 10000, 
+                                    min.percent.rule = T, percent = 1)
 
-plot(AOO.grid)
-plot(mangrove.2017, add = T, col = "green", legend = FALSE)
 ```
 
 In addition to the size of the grids used (which will be different for species
@@ -223,16 +224,36 @@ assessments), there is also an option in the `makeAOOGrid` function to specify
 whether a minimum of percent of the grid cell area must be occupied before they
 are included as an AOO grid. Typically, this is used for ecosystems with highly
 skewed distribution of patch sizes ([Bland et al., 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
-You can also modify the actual percentage required before an AOO is included in
-the `percent` parameter.
+
+Here, we demonstrate the differences between including, or not including the one percent rule:
+
+```{r AOO grid plots, fig.width=7, fig.height=7}
+plot(AOO.grid.all)
+plot(mangrove.2017, add = T, col = "green", legend = FALSE)
+plot(AOO.grid.one.percent)
+plot(mangrove.2017, add = T, col = "green", legend = FALSE)
+```
+
+For our example, due to the small overall size of the ecosystem, a one percent
+rule might be too strict, though we might still want to exclude the very small
+patches of mangroves in the Southeast. To do so, we can modify the `percent`
+parameter, which adjusts the threshold for the AOO grids:
+
+```{r AOO Grid 0.1percent, fig.width=7, fig.height=7}
+AOO.grid.min.percent <- makeAOOGrid(mangrove.2017, grid.size = 10000,
+                                    min.percent.rule = T, percent = 0.1)
+plot(AOO.grid.min.percent)
+plot(mangrove.2017, add = T, col = "green", legend = FALSE)
+```
 
 Finally, we can use the created grid to calculate the AOO for our mangroves.
+
 ```{r Getting number of AOO grids}
-n.AOO <- length(AOO.grid)
+n.AOO <- length(AOO.grid.min.percent)
 
 # the getAOO function can also be used to directly get the AOO
 # n.AOO <- getAOO(mangrove.2017, grid.size = 10000, 
-#                 min.percent.rule = T, percent = 1)
+#                 min.percent.rule = T, percent = 0.1)
 
 n.AOO
 ```
@@ -245,13 +266,17 @@ number. To take this into account, we have included a few additional functions.
 We will be using `gridUncertainty` in this vignette.
 
 `gridUncertainty` works by moving the AOO grid created systematically (with a
-small random movement around fixed points), and continues looking for a minimum
-AOO until additional shifts no longer produce improved results.
+small random movement around fixed points), and continues looking for a minimum 
+AOO until additional shifts no longer produce improved results. To demonstrate
+the capabilities of the function, we will be using a 0.1 percent threshold
+again.
 
 ```{r gridUncertainty}
 gU.results <- gridUncertainty(mangrove.2017, 10000,
-                              n.AOO.improvement = 3, 
-                              min.percent.rule = T, percent = 1)
+                              n.AOO.improvement = 5, 
+                              min.percent.rule = T, percent = 0.1)
+# If it takes your computer very long to run this command, consider reducing 
+# n.AOO.improvement
 
 gU.results$min.AOO.df
 ```
