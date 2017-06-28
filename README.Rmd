@@ -32,7 +32,7 @@ also included.
 
 Also included are the two standard measures of the size of an 
 ecosystems' geographic distribution specified in the red list of ecosystems
-guidelines [Bland et al. 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf).
+guidelines ([Bland et al. 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
 These are the Extent of Occurrence (EOO) and Area of Occupancy (AOO). As many of
 these measures are also useful for assessing species under the IUCN Red List of
 Threatened Species criteria, we expect this package will also be useful for
