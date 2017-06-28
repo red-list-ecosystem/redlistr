@@ -3,10 +3,11 @@
 #' \code{gridUncertaintyBase} helps determine the minimum number of area of
 #' occupancy (AOO) grid cells occupied by a species or ecosystem. It varies the
 #' location of the AOO grid by shifting in systematically in both x- and y-
-#' axes, returning summary statistics for the range of AOOs calculated, and the
-#' RasterLayer(s) containing the grids with the minimum AOO. It is the base
-#' function which is used by \code{gridUncertainty} and
-#' \code{gridUncertaintySimulation}
+#' axes, adding a small amount of random movement (five percent of the
+#' \code{grid.size}) at each point. It then returns summary statistics for the
+#' range of AOOs calculated, and the RasterLayer(s) containing the grids with
+#' the minimum AOO. It is the base function which is used by
+#' \code{gridUncertainty} and \code{gridUncertaintySimulation}
 #' @inheritParams createGrid
 #' @param splits Specifies the number of ways to split the grid in ONE axis.
 #' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
