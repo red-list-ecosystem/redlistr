@@ -1,21 +1,21 @@
 ---
-title: "Calculating spatial metrics for red list of ecosystems assessment"
+title: "Calculating spatial metrics for IUCN red list assessments"
 author: "Calvin K.F. Lee, Nicholas J. Murray"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Calculating spatial metrics for red list of ecosystems assessment}
+  %\VignetteIndexEntry{Calculating spatial metrics for IUCN red list assessments}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 ## 1. Introduction
-In this vignette, we will be providing an example of using the tools within
-`redlistr` aimed at assessing the spatial criteria of the IUCN Red List of
-Ecosystems. These criteria assess the change in the extent of an ecosystem over
+In this vignette, we provide an example of using the tools within
+`redlistr` to assess the spatial criteria of the [IUCN Red List of
+Ecosystems](http://iucnrle.org/). These criteria assess the change in the extent of an ecosystem over
 time (Criterion A) and properties of the geographic distribution size (Criterion
 B). Both of these criteria require the use of maps of ecosystem distributions.
 
-We begin by loading the packages we will need for the assessment. Please ensure
+We begin by loading the packages we need for the assessment. Please ensure
 that these are already installed.
 ```{r Loading packages, message=FALSE}
 library(rgeos)
@@ -23,14 +23,14 @@ library(redlistr)
 ```
 
 ## 2. Importing data
-We will first have to import the data we want to analyse. In this vignette, we 
+We first import the spatial data we want to analyse. In this vignette, we 
 will be using two example distributions included with the package. They are 
 mangrove distributions from the northern regions of Western Port Bay, Victoria,
 Australia. The first distribution is from Giri et al., 
 ([2011](http://onlinelibrary.wiley.com/doi/10.1111/j.1466-8238.2010.00584.x/abstract)),
 and represents mangrove distribution in 2000. The second distribution is a 
 classification map generated using the `XGBoost` package and data from Landsat 
-8, and represents mangrove distribution in 2017. Both of these distributions are
+8, and represents mangrove distribution in 2017. Both of these geographic distributions are
 stored as rasters, and a raster value of 1 denotes presence.
 
 To import your own data, you can use the `raster` function in the `raster`
@@ -46,7 +46,7 @@ mangrove.2017 <- raster(system.file("extdata", "example_distribution_2017.tif",
 
 ```
 
-We can plot the data to view the two distributions to get a general idea of how
+We plot the data to view the two distributions to get a general idea of how
 the distribution might have changed over time.
 
 ```{r Plotting the two rasters, fig.show='hold', fig.width=7, fig.height=7}
@@ -54,21 +54,21 @@ plot(mangrove.2000, col = "grey30", legend = FALSE, main = "Mangrove Distributio
 plot(mangrove.2017, add = T, col = "darkorange", legend = FALSE)
 ```
 
-We can see that there has been some decrease in mangrove cover, though the loss
-does not seem to be too extensive.
+We can see that there has been some change in mangrove cover, although the losses
+appear to be relatively minor.
 
-At this stage it is also important to check that data are at least in the right
-location. This can be acheived by simply plotting the map and checking the
-coordinates, or check the distribution maps against satellite images. This can
-be acheived using packages such as `ggmap`, `plotgooglemaps`, `googleVis` etc.
+At this stage it is important to check that the data are georectified (in the right
+location on Earth). This can be acheived by simply plotting the map and checking the
+coordinates. Otherwise,  check the distribution maps against satellite images, perhaps
+by using packages such as `ggmap`, `plotgooglemaps`, `googleVis` etc.
 It is also important to check that the data are suitable for the task at hand.
 
 ## 3. Basic information for the data
-We can now use some of features of `redlistr` to get some basic information on
-the ecosystem. However, before proceeing it is wise to check that the data and
-their respective resolutions (grain size), and spatial properties. Specifically,
-the coordinate reference system (CRS) of the datasets must be consistent as we
-are comparing their areas.
+We now use some of features of `redlistr` to get some basic information on
+the ecosystem distribution. However, before proceeding it is necessary to know the data by 
+investigating their resolution (grain size), extent and spatial properties. Specifically,
+the coordinate reference system (CRS) of the datasets must be consistent for 
+comparing area.
 
 ```{r Checking CRS and resolutions}
 crs(mangrove.2000)@projargs == crs(mangrove.2017)@projargs
@@ -79,8 +79,8 @@ measurement in the projection used should be metres.
 
 We start by calculating the area of the dataset. Area is calculated here using 
 the pixel count method, where the number of pixels classified as the ecosystem 
-of interest is multiplied by the area of each pixel is used to determine the
-area of the whole ecosystem. The area calculated is provided in square
+of interest is multiplied by the area of each pixel, giving the
+area of the ecosystem distribution. The area calculated is provided in square
 kilometres.
 
 ```{r Calculate area of rasters}
@@ -143,7 +143,7 @@ Ecosystems guidelines ([Bland et al., 2016](https://portals.iucn.org/library/sit
 
 Now, it is possible to extrapolate, using only two estimates of an ecosystems'
 area, to the full 50 year period required for a Red List of Ecosystems
-assessment.
+assessment. 
 
 ```{r Estimating future area}
 extrapolated.area <- futureAreaEstimate(a.2000, year.t1 = 2000, 
@@ -162,7 +162,9 @@ the package, the results produced shows three estimated areas under the various
 decline scenarios. It is important to note that this relatively simple exercise is founded on 
 assumptions that should be fully understood before submitting your ecosystem 
 assessment to the IUCN Red List of Ecosystems Committee for Scientific
-Standards. Please see the guidelines ([Bland et al., 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf))
+Standards. Furthermore, the guidelines suggest using area estimates from more than two time 
+points to estimate change, and providing a measure of uncertainty if possible. Please see 
+the guidelines ([Bland et al., 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf))
 for more information.
 
 If we were to use the Proportional Rate of Decline (PRD) for our example assessment, our results here will be suitiable for criterion A2b (Any 50 year period), and the percent loss of area is:
@@ -181,7 +183,8 @@ the area of occupancy (AOO) [(Gaston and Fuller, (2009)](http://onlinelibrary.wi
 [Keith et al., (2013)](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111)). 
 It must be emphasised that EOO and AOO are not used to estimate the mapped area
 of an ecosystem like the methods we used in Criterion A; they are simply spatial
-metrics that allow us to standardise an estimate of risk spreading. Thus, it is 
+metrics that allow us to standardise an estimate of risk due to spatially explicit 
+catastrophes [(Murray et al., (2017)](http://onlinelibrary.wiley.com/doi/10.1111/ddi.12533/abstract). Thus, it is 
 critical that these measures are used consistently across all assessments, and
 the use of non-standard measures invalidates comparison against the thresholds. 
 Please refer to the guidelines ([Bland et al., 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf))
@@ -190,7 +193,7 @@ for more information on AOO and EOO.
 ### Subcriterion B1 (calculating EOO)
 For subcriterion B1, we will need to calculate the extent of occurrence (EOO) of our
 data. We begin by creating the minimum convex polygon enclosing all occurrences
-of our data.
+of our focal ecosystem.
 ```{r Make EOO, fig.width=7, fig.height=7}
 EOO.polygon <- makeEOO(mangrove.2017)
 plot(EOO.polygon)
@@ -234,8 +237,9 @@ plot(AOO.grid.one.percent)
 plot(mangrove.2017, add = T, col = "green", legend = FALSE)
 ```
 
-For our example, due to the small overall size of the ecosystem, a one percent
-rule might be too strict, though we might still want to exclude the very small
+For our example, due to the small overall size of the ecosystem and the likelihood
+of continued connectivity between the remaining patches, the one percent
+rule is not recommended, though we might still want to exclude the very small
 patches of mangroves in the Southeast. To do so, we can modify the `percent`
 parameter, which adjusts the threshold for the AOO grids:
 
@@ -261,12 +265,12 @@ n.AOO
 
 #### Grid uncertainty functions
 Although we have a number for AOO `r n.AOO`, this may not be the actual minimum
-AOO for this ecosystem, as the placement of the AOO grids will influence this
+AOO for this ecosystem, because the placement of the AOO grid will influence this
 number. To take this into account, we have included a few additional functions.
 We will be using `gridUncertainty` in this vignette.
 
-`gridUncertainty` works by moving the AOO grid created systematically (with a
-small random movement around fixed points), and continues looking for a minimum 
+`gridUncertainty` simply moves the AOO grid systematically (with a
+small random movement around fixed points), and continues searching  for a minimum 
 AOO until additional shifts no longer produce improved results. To demonstrate
 the capabilities of the function, we will be using a 0.1 percent threshold
 again.
@@ -280,7 +284,7 @@ gU.results <- gridUncertainty(mangrove.2017, 10000,
 
 gU.results$min.AOO.df
 ```
-The results here shows that the minimum AOO does indeed change in response to 
+The result here shows that the minimum AOO does indeed change in response to 
 where the AOO grid is placed, and that our original AOO value of `r n.AOO` is
 not the true minimum AOO. The true minimum AOO (and the one which should be used
 for the assessment) is `r gU.results$min.AOO.grid$AOO.number`.
@@ -298,7 +302,7 @@ We have demonstrated in this vignette a typical workflow for assessing an
 example ecosystem under the RLE. The methods outlined here can easily be adapted
 for the Red List of Threatened Species as well, with slight adjustments in the
 parameters (specifically the grid.size parameter for `getAOO` or
-`gridUncertainty`). We hope that with this tool, we can ensure a consistent
+`gridUncertainty`). We hope that with this package, we help ensure a consistent
 implementation for both red lists criteria, minimising any misclassification as
 a result of using different software and methods.
 
