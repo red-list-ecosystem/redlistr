@@ -7,7 +7,7 @@
 getArea(x, value.to.count)
 }
 \arguments{
-\item{x}{A raster object with cells containing no data identified as NA}
+\item{x}{A raster object. No data value should be NA}
 
 \item{value.to.count}{Optional. Value of the cells to be counted}
 }

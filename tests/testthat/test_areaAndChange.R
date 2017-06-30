@@ -1,8 +1,14 @@
 context("Get Area")
 
+test_that("input cannot be in lonlat crs",{
+  r.crs <- raster(nrows=10, ncols=10)
+  expect_error(getArea(r.crs), "Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system")
+})
+
 test_that("accepts different input types", {
   # Dummy rasters for testing
   r <- raster(nrows=10, ncols=10)
+  crs(r) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
   r.bin <- r
   values(r.bin) <- 1
   r.multiple <- r

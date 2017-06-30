@@ -2,7 +2,7 @@
 #'
 #' \code{getArea} reports the area of a raster object using the pixel counting
 #' method.
-#' @param x A raster object with cells containing no data identified as NA
+#' @param x A raster object. No data value should be NA
 #' @param value.to.count Optional. Value of the cells to be counted
 #' @return The area of the cells of interest
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
@@ -17,6 +17,9 @@
 #' @import raster
 
 getArea <- function(x, value.to.count){
+  if(isLonLat(x) == T){
+    stop('Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
+  }
   if(length(raster::unique(x)) != 1 & missing(value.to.count)){
     warning("The input raster is not binary, counting ALL non NA cells\n")
     cell.res <- res(x)
