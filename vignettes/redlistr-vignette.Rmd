@@ -307,6 +307,10 @@ plot(gU.results$min.AOO.grid$out.grid)
 plot(mangrove.2017, add = T, col = "green", legend = FALSE)
 ```
 
+#### Exporting results
+The results of the above plot from `gridUncertainty` is a shapefile, which can
+be exported with the `raster::shapefile` function.
+
 #### One percent rule
 In addition to the size of the grids used (which will be different for species 
 assessments), there is also an option in the `makeAOOGrid` function to specify 
@@ -331,11 +335,11 @@ the AOO grids. Here, we set it to 0.1% to demonstrate its functionalities.
 AOO.grid.min.percent <- makeAOOGrid(mangrove.2017, grid.size = 10000,
                                     min.percent.rule = T, percent = 0.1)
 par(mfrow = c(2,2))
-plot(AOO.grid)
+plot(AOO.grid, main = 'AOO grid without one percent rule')
 plot(mangrove.2017, add = T, col = "green", legend = FALSE)
-plot(AOO.grid.one.percent)
+plot(AOO.grid.one.percent, main = 'AOO grid with one percent rule')
 plot(mangrove.2017, add = T, col = "green", legend = FALSE)
-plot(AOO.grid.min.percent)
+plot(AOO.grid.min.percent, main = 'AOO grid with one percent rule at 0.1%')
 plot(mangrove.2017, add = T, col = "green", legend = FALSE)
 ```
 
