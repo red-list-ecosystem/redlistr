@@ -61,8 +61,8 @@ this package is built upon many of the functions available in these three
 packages.
 
 For a more detailed tutorial explaining how to use this package, please refer to
-the 'Example red list of ecosystems assessment' vignette available with the
-package.
+the 'Calculating spatial metrics for IUCN red list assessments' vignette
+available with the package.
 
 Lastly, this is a work in progress and we aim to continually add new functions to 
 newer versions of package. Suggestions are welcomed, as would offers for 

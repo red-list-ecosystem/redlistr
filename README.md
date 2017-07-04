@@ -16,7 +16,7 @@ In conducting an assessment with this package, we assume that you are familiar w
 
 We also assume that you are reasonably familiar with the `R` programming language, and have some experience in conducting analyses of vector and raster data within the `R` environment. Of particular use will be familiarity with the `raster`, `sp` and `rgeos` packages. This is certainly not a prerequisite, but this package is built upon many of the functions available in these three packages.
 
-For a more detailed tutorial explaining how to use this package, please refer to the 'Example red list of ecosystems assessment' vignette available with the package.
+For a more detailed tutorial explaining how to use this package, please refer to the 'Calculating spatial metrics for IUCN red list assessments' vignette available with the package.
 
 Lastly, this is a work in progress and we aim to continually add new functions to newer versions of package. Suggestions are welcomed, as would offers for collaborative development.
 
