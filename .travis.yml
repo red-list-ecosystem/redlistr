@@ -7,12 +7,12 @@ dist: trusty
 r:
   - oldrel
   - release
+  - devel
 
 warnings_are_errors: true
 
 os:
   - linux
-  - osx
 
 addons:
   apt:
