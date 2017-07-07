@@ -1,9 +1,11 @@
 #' Calculates the Area of a Raster.
 #'
-#' \code{getArea} reports the area of a raster object using the pixel counting
-#' method.
-#' @param x A raster object. No data value should be NA
-#' @param value.to.count Optional. Value of the cells to be counted
+#' \code{getArea} reports the area of a RasterLayer object using the pixel
+#' counting method, or the area of a SpatialPolygons object using rgeos::gArea
+#' @param x Either a RasterLayer or SpatialPolygons object. For a RasterLayer,
+#'   no data value should be NA
+#' @param value.to.count Optional. Value of the cells in a RasterLayer to be
+#'   counted
 #' @return The area of the cells of interest
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -17,37 +19,42 @@
 #' @import raster
 
 getArea <- function(x, value.to.count){
-  if(isLonLat(x) == T){
+  if(isLonLat(x)){
     stop('Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
   }
-  if(length(raster::unique(x)) != 1 & missing(value.to.count)){
-    warning("The input raster is not binary, counting ALL non NA cells\n")
-    cell.res <- res(x)
-    cell.width <- cell.res[1]
-    x.df <- plyr::count(values(x))
-    n.cell <- sum(x.df[which(!is.na(x.df[, 1])), ]$freq)
-    aream2 <- (cell.width * cell.width) * n.cell
-    areakm2 <- aream2/1000000
-    return (areakm2)
-  }
-  else if(length(raster::unique(x)) != 1){
-    cell.res <- res(x)
-    cell.width <- cell.res[1]
-    x.df <- plyr::count(values(x))
-    n.cell <- x.df[which(x.df[, 1] == value.to.count), ]$freq
-    aream2 <- (cell.width * cell.width) * n.cell
-    areakm2 <- aream2/1000000
-    return (areakm2)
-  }
-  else{
-    cell.res <- res(x)
-    cell.width <- cell.res[1]
-    x.df <- plyr::count(values(x))
-    n.cell <- x.df[which(x.df[, 1] == TRUE), ]$freq
-    aream2 <- (cell.width * cell.width) * n.cell
-    areakm2 <- aream2/1000000
-    return (areakm2)
-  }
+  if(class(x) == 'RasterLayer'){
+    if(length(raster::unique(x)) != 1 & missing(value.to.count)){
+      warning("The input raster is not binary, counting ALL non NA cells\n")
+      cell.res <- res(x)
+      cell.width <- cell.res[1]
+      x.df <- plyr::count(values(x))
+      n.cell <- sum(x.df[which(!is.na(x.df[, 1])), ]$freq)
+      aream2 <- (cell.width * cell.width) * n.cell
+      areakm2 <- aream2/1000000
+      return (areakm2)
+    }
+    else if(length(raster::unique(x)) != 1){
+      cell.res <- res(x)
+      cell.width <- cell.res[1]
+      x.df <- plyr::count(values(x))
+      n.cell <- x.df[which(x.df[, 1] == value.to.count), ]$freq
+      aream2 <- (cell.width * cell.width) * n.cell
+      areakm2 <- aream2/1000000
+      return (areakm2)
+    }
+    else{
+      cell.res <- res(x)
+      cell.width <- cell.res[1]
+      x.df <- plyr::count(values(x))
+      n.cell <- x.df[which(x.df[, 1] == TRUE), ]$freq
+      aream2 <- (cell.width * cell.width) * n.cell
+      areakm2 <- aream2/1000000
+      return (areakm2)
+    }
+  } else if(class(x) == 'SpatialPolygons'){
+    areakm2 <- rgeos::gArea(x) / 1000000
+    return(areakm2)
+  } else stop('Input must be either RasterLayer or SpatialPolygons')
 }
 
 #' Area change between two inputs in km2
@@ -74,19 +81,15 @@ getArea <- function(x, value.to.count){
 #' @export
 
 getAreaLoss <- function(x, y){
-  if(class(x)[[1]] == 'RasterLayer'){
+  if((class(x) == 'RasterLayer') | (class(x) == 'SpatialPolygons')){
     a.x <- getArea(x)
-  } else if (class(x)[[1]] == 'SpatialPolygons'){
-    a.x <- rgeos::gArea(x) / 1000000
   } else if (is.numeric((x))){
     a.x <- x
   } else {
     stop('x is not a RasterLayer, SpatialPolygons, or Numeric')
   }
-  if(class(y)[[1]] == 'RasterLayer'){
+  if((class(y) == 'RasterLayer') | (class(y) == 'SpatialPolygons')){
     a.y <- getArea(y)
-  } else if (class(y)[[1]] == 'SpatialPolygons'){
-    a.y <- rgeos::gArea(y) / 1000000
   } else if (is.numeric((y))){
     a.y <- y
   } else {
