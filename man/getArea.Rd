@@ -7,16 +7,18 @@
 getArea(x, value.to.count)
 }
 \arguments{
-\item{x}{A raster object. No data value should be NA}
+\item{x}{Either a RasterLayer or SpatialPolygons object. For a RasterLayer,
+no data value should be NA}
 
-\item{value.to.count}{Optional. Value of the cells to be counted}
+\item{value.to.count}{Optional. Value of the cells in a RasterLayer to be
+counted}
 }
 \value{
 The area of the cells of interest
 }
 \description{
-\code{getArea} reports the area of a raster object using the pixel counting
-method.
+\code{getArea} reports the area of a RasterLayer object using the pixel
+counting method, or the area of a SpatialPolygons object using rgeos::gArea
 }
 \examples{
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
