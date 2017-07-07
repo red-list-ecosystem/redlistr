@@ -46,7 +46,7 @@ mangrove.2017 <- raster(system.file("extdata", "example_distribution_2017.tif",
 To import your own raster data, you can use the `raster::raster` function, which
 can handle many different types of georeferenced spatial data. More information
 on the `raster` package can be found 
-[here](https://cran.r-project.org/web/packages/raster/raster.pdf).
+[here](https://CRAN.R-project.org/package=raster/raster.pdf).
 
 ### Importing data as shapefile or .KML file
 To import data as a shapefile (.shp), we can use the `rgdal::readOGR` function.
