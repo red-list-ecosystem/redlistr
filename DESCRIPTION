@@ -15,7 +15,6 @@ Imports:
     grDevices,
     methods,
     plyr,
-    rgdal,
     rgeos
 Depends:
     R (>= 3.3.3),
@@ -24,8 +23,10 @@ Depends:
 License: GPL (>=3)
 LazyData: true
 RoxygenNote: 6.0.1
-Suggests: devtools,
+Suggests:
+    devtools,
     knitr,
+    rgdal,
     rmarkdown,
     testthat
 VignetteBuilder: knitr
