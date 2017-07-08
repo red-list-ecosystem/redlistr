@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 # redlistr
 
 [![Build Status](https://travis-ci.org/red-list-ecosystem/redlistr.svg?branch=master)](https://travis-ci.org/red-list-ecosystem/redlistr)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/redlistr)](http://cran.r-project.org/package=redlistr)
 
 ## Overview
 The `redlistr` package was developed to assist users conduct assessments for the
@@ -69,10 +70,12 @@ newer versions of package. Suggestions are welcomed, as would offers for
 collaborative development.
 
 ## Installation
-Currently, `redlistr` can only be installed via GitHub, which requires the
-`devtools` package:
+`redlistr` is now on CRAN! You can also install the development version from GitHub.
 ```{r, eval = FALSE}
-install.packages("devtools")
+# Easiest way to get redlistr:
+install.packages("redlistr")
+
+# For the development version from GitHub:
+# install.packages("devtools")
 devtools::install_github("red-list-ecosystem/redlistr")
 ```
-

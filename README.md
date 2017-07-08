@@ -3,7 +3,7 @@
 redlistr
 ========
 
-[![Build Status](https://travis-ci.org/red-list-ecosystem/redlistr.svg?branch=master)](https://travis-ci.org/red-list-ecosystem/redlistr)
+[![Build Status](https://travis-ci.org/red-list-ecosystem/redlistr.svg?branch=master)](https://travis-ci.org/red-list-ecosystem/redlistr) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/redlistr)](http://cran.r-project.org/package=redlistr)
 
 Overview
 --------
@@ -23,9 +23,13 @@ Lastly, this is a work in progress and we aim to continually add new functions t
 Installation
 ------------
 
-Currently, `redlistr` can only be installed via GitHub, which requires the `devtools` package:
+`redlistr` is now on CRAN! You can also install the development version from GitHub.
 
 ``` r
-install.packages("devtools")
+# Easiest way to get redlistr:
+install.packages("redlistr")
+
+# For the development version from GitHub:
+# install.packages("devtools")
 devtools::install_github("red-list-ecosystem/redlistr")
 ```
