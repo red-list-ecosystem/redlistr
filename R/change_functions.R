@@ -126,7 +126,7 @@ getAreaLoss <- function(x, y){
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{iucnrle.org/}
+#'   \url{https://iucnrle.org/}
 #'   Puyravaud, J.-P. 2003. Standardizing the calculation of the
 #'   annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 #' @examples
@@ -184,7 +184,7 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{iucnrle.org/}
+#'   \url{https://iucnrle.org/}
 #' @examples
 #' a.r1 <- 23.55
 #' a.r2 <- 15.79

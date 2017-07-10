@@ -32,13 +32,6 @@ Data frame of results showing the minimum and maximum AOO calculated
 area of occupancy (AOO) grid cells occupied by a species or ecosystem in
 incremental splits using \code{gridUncertaintyBase}.
 }
-\references{
-Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-  Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-  List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-  Switzerland: IUCN. ix + 94pp. Available at the following web site:
-  \url{iucnrle.org/}
-}
 \seealso{
 Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
   \code{\link{gridUncertaintyRandomManual}},

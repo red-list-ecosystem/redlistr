@@ -26,11 +26,6 @@
 #'   \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
 #' @seealso \code{\link{createGrid}} \code{\link{getAOOSilent}}
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{iucnrle.org/}
 #' @import raster
 
 gridUncertaintyBase <- function(ecosystem.data, grid.size,
@@ -101,11 +96,6 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
 #'   \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
 #' @seealso \code{\link{createGrid}} \code{\link{getAOOSilent}}
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{iucnrle.org/}
 #' @import raster
 
 gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
@@ -177,11 +167,6 @@ gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
 #'   \email{murr.nick@@gmail.com}
 #' @family gridUncertainty functions
 #' @seealso \code{\link{createGrid}} \code{\link{getAOOSilent}}
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{iucnrle.org/}
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 #' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
@@ -282,11 +267,6 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size,
 #' }
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{iucnrle.org/}
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 #' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
@@ -361,11 +341,6 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
 #'   for each grid shift scenario.
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{iucnrle.org/}
 
 gridUncertaintySimulation <- function(ecosystem.data, grid.size,
                                       simulations, min.percent.rule = T, percent = 1){

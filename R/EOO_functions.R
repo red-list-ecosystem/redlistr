@@ -13,7 +13,7 @@
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{iucnrle.org/}
+#'   \url{https://iucnrle.org/}
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 #' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
