@@ -16,7 +16,6 @@ Imports:
     grDevices,
     methods,
     plyr,
-    rgdal,
     rgeos
 Depends:
     R (>= 3.3.3),
@@ -25,6 +24,7 @@ Depends:
 Suggests:
     devtools,
     knitr,
+    rgdal,
     rmarkdown,
     testthat
 License: GPL (>=3)
