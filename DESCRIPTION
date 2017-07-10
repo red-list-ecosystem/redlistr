@@ -11,6 +11,7 @@ Description: A toolbox created by members of the International Union for
     ecosystems against the IUCN Red List of Threatened Species and the IUCN Red
     List of Ecosystems categories and criteria. See the IUCN website for
     detailed guidelines, the criteria, publications and other information.
+URL: https://github.com/red-list-ecosystem/redlistr
 BugReports: https://github.com/red-list-ecosystem/redlistr/issues
 Imports:
     grDevices,
