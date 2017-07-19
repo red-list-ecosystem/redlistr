@@ -4,7 +4,7 @@
 \alias{getAOO}
 \title{Compute Area of Occupancy (AOO)}
 \usage{
-getAOO(ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1)
+getAOO(ecosystem.data, grid.size, min.percent.rule = FALSE, percent = 1)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.

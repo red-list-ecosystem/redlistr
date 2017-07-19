@@ -4,7 +4,8 @@
 \alias{makeAOOGrid}
 \title{Create Area of Occupancy (AOO) grid for an ecosystem or species distribution}
 \usage{
-makeAOOGrid(ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1)
+makeAOOGrid(ecosystem.data, grid.size, min.percent.rule = FALSE,
+  percent = 1)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.

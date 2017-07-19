@@ -57,7 +57,7 @@ createGrid <- function(ecosystem.data, grid.size){
 #' @export
 #' @import raster
 
-makeAOOGrid <- function(ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1) {
+makeAOOGrid <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- createGrid(ecosystem.data, grid.size)
   eco.points <- rasterToPoints(ecosystem.data)
@@ -103,7 +103,7 @@ makeAOOGrid <- function(ecosystem.data, grid.size, min.percent.rule = TRUE, perc
 #' AOO <- getAOO(r1, 10000, min.percent.rule = TRUE, percent = 1)
 #' @export
 
-getAOO <- function(ecosystem.data, grid.size, min.percent.rule = TRUE, percent = 1){
+getAOO <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, percent = 1){
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   AOO.number = length(makeAOOGrid(ecosystem.data, grid.size, min.percent.rule, percent))
   return(AOO.number)
@@ -127,7 +127,7 @@ getAOO <- function(ecosystem.data, grid.size, min.percent.rule = TRUE, percent =
 #' @family AOO functions
 #' @import raster
 
-getAOOSilent <- function(ecosystem.data, grid, min.percent.rule = TRUE, percent = 1) {
+getAOOSilent <- function(ecosystem.data, grid, min.percent.rule = FALSE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- grid # below is different from getAOO
   grid.size <- res(grid)
