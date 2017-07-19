@@ -13,7 +13,7 @@ Please use a CRS with units measured in metres.}
 \item{grid}{Custom grid to be used to calculate AOO. Usually the output of
 \code{gridUncertainty}}
 
-\item{min.percent.rule}{Logical.If \code{TRUE} one percent of the grid cell
+\item{min.percent.rule}{Logical. If \code{TRUE} one percent of the grid cell
 must be occupied before it is counted in the AOO.}
 
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for

@@ -117,7 +117,7 @@ getAOO <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, percent 
 #'   Please use a CRS with units measured in metres.
 #' @param grid Custom grid to be used to calculate AOO. Usually the output of
 #'   \code{gridUncertainty}
-#' @param min.percent.rule Logical.If \code{TRUE} one percent of the grid cell
+#' @param min.percent.rule Logical. If \code{TRUE} one percent of the grid cell
 #'   must be occupied before it is counted in the AOO.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the \code{min.percent.rule}
@@ -128,10 +128,9 @@ getAOO <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, percent 
 #' @import raster
 
 getAOOSilent <- function(ecosystem.data, grid, min.percent.rule = FALSE, percent = 1) {
-  # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- grid # below is different from getAOO
   grid.size <- res(grid)
-  # here to end of if is the same as getAOO
+  # here to end is the same as getAOO
   eco.points <- rasterToPoints(ecosystem.data)
   xy <- as.matrix(eco.points)[,c(1,2)] # select xy column only
   x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
