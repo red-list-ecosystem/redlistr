@@ -29,7 +29,7 @@
 #' @import raster
 
 gridUncertaintyBase <- function(ecosystem.data, grid.size,
-                                splits, min.percent.rule = TRUE, percent = 1){
+                                splits, min.percent.rule = FALSE, percent = 1){
   grid <- createGrid(ecosystem.data, grid.size)
   intervals <- grid.size/splits
 
@@ -98,8 +98,8 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
 #' @seealso \code{\link{createGrid}} \code{\link{getAOOSilent}}
 #' @import raster
 
-gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
-                                      n.sim = 10, min.percent.rule = T, percent = 1){
+gridUncertaintyRandomManual <- function(ecosystem.data, grid.size, n.sim = 10,
+                                        min.percent.rule = FALSE, percent = 1){
   grid <- createGrid(ecosystem.data = ecosystem.data, grid.size = grid.size)
   results.df <- data.frame(sim.no = integer(),
                            x.shift = integer(),
@@ -176,9 +176,9 @@ gridUncertaintyRandomManual <- function(ecosystem.data, grid.size,
 #' @export
 #' @import raster
 
-gridUncertaintyRandom <- function(ecosystem.data, grid.size,
-                                  n.AOO.improvement, min.percent.rule = T,
-                                  percent = 1, max.n.rounds = 1000){
+gridUncertaintyRandom <- function(ecosystem.data, grid.size, n.AOO.improvement,
+                                  min.percent.rule = FALSE, percent = 1,
+                                  max.n.rounds = 1000){
   grid <- createGrid(ecosystem.data = ecosystem.data, grid.size = grid.size)
   results.df <- data.frame(sim.no = integer(),
                            x.shift = integer(),
@@ -276,7 +276,8 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size,
 #' @export
 
 gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
-                            min.percent.rule = T, percent = 1, max.rounds = 1000){
+                            min.percent.rule = FALSE, percent = 1,
+                            max.rounds = 1000){
   out.df <- data.frame()
   min.grids.shift <- list()
   for (i in 1:n.AOO.improvement){ # First runs before checking for improvement
@@ -342,8 +343,8 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
 
-gridUncertaintySimulation <- function(ecosystem.data, grid.size,
-                                      simulations, min.percent.rule = T, percent = 1){
+gridUncertaintySimulation <- function(ecosystem.data, grid.size, simulations,
+                                      min.percent.rule = FALSE, percent = 1){
   out.df <- data.frame('n.splits' = rep(0, simulations),
                        'min.AOO' = rep(0, simulations),
                        'max.AOO' = rep(0, simulations))

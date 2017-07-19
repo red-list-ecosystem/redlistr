@@ -5,7 +5,7 @@
 \title{Function to compute AOO with grid uncertainty randomly with stop rule}
 \usage{
 gridUncertaintyRandom(ecosystem.data, grid.size, n.AOO.improvement,
-  min.percent.rule = T, percent = 1, max.n.rounds = 1000)
+  min.percent.rule = FALSE, percent = 1, max.n.rounds = 1000)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.

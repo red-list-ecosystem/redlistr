@@ -5,7 +5,7 @@
 \title{Function to investigate behaviour of AOO under various split scenarios}
 \usage{
 gridUncertaintySimulation(ecosystem.data, grid.size, simulations,
-  min.percent.rule = T, percent = 1)
+  min.percent.rule = FALSE, percent = 1)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.

@@ -5,7 +5,7 @@
 \title{Base function to compute AOO with grid uncertainty systematically}
 \usage{
 gridUncertaintyBase(ecosystem.data, grid.size, splits,
-  min.percent.rule = TRUE, percent = 1)
+  min.percent.rule = FALSE, percent = 1)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.

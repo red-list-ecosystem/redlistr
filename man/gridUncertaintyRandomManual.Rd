@@ -5,7 +5,7 @@
 \title{Manual function to compute AOO with grid uncertainty randomly}
 \usage{
 gridUncertaintyRandomManual(ecosystem.data, grid.size, n.sim = 10,
-  min.percent.rule = T, percent = 1)
+  min.percent.rule = FALSE, percent = 1)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.
