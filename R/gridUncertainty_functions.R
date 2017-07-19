@@ -257,7 +257,6 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size, n.AOO.improvement,
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the \code{min.percent.rule}.
-#' @param max.rounds Specifies the max number of rounds to run the function.
 #' @return A list containing the following:
 #' \itemize{
 #'  \item Data frame of results showing the minimum AOO calculated for each
@@ -276,20 +275,10 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size, n.AOO.improvement,
 #' @export
 
 gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
-                            min.percent.rule = FALSE, percent = 1,
-                            max.rounds = 1000){
+                            min.percent.rule = FALSE, percent = 1){
   out.df <- data.frame()
   min.grids.shift <- list()
   for (i in 1:n.AOO.improvement){ # First runs before checking for improvement
-    out.df[i, 1] <- i
-    results <- gridUncertaintyBase(ecosystem.data = ecosystem.data,
-                                   grid.size = grid.size, splits = i,
-                                   min.percent.rule = min.percent.rule,
-                                   percent = percent)
-    out.df[i, 2] <- results$summary.df$min.AOO
-    min.grids.shift[[i]] <- results$min.AOO.shifts
-  }
-  for (i in n.AOO.improvement+1:max.rounds){ #arbitrary large number
     out.df[i, 1] <- i
     results <- gridUncertaintyBase(ecosystem.data = ecosystem.data,
                                    grid.size = grid.size, splits = i,
@@ -302,7 +291,22 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
       logic.test <- c(logic.test, out.df[(i-n.AOO.improvement), 2] <=
                         out.df[(i-n.AOO.improvement+j), 2])
     }
-    if (all(logic.test)) break # Stop the function when AOO no longer decreases
+  }
+  while(all(logic.test) == FALSE){
+    i = n.AOO.improvement+1
+    out.df[i, 1] <- i
+    results <- gridUncertaintyBase(ecosystem.data = ecosystem.data,
+                                   grid.size = grid.size, splits = i,
+                                   min.percent.rule = min.percent.rule,
+                                   percent = percent)
+    out.df[i, 2] <- results$summary.df$min.AOO
+    min.grids.shift[[i]] <- results$min.AOO.shifts
+    logic.test <- vector()
+    for (j in 1:(n.AOO.improvement-1)){
+      logic.test <- c(logic.test, out.df[(i-n.AOO.improvement), 2] <=
+                        out.df[(i-n.AOO.improvement+j), 2])
+    }
+    i + 1
   }
   names(out.df) <- c('n.splits', 'min.AOO')
   # Find splits which generated the smallest AOOs
