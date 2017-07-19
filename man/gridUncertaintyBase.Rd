@@ -25,6 +25,9 @@ the \code{min.percent.rule}.}
 
 \item{restriction}{Logical. If \code{TRUE}, allows user to specify areas to
 focus where grid search is done. Used in gridUncertaintyRestricted.}
+
+\item{min.grids.shift}{Dataframe object with two columns (x.shift and
+y.shift) specifying the coordinates to restrict the AOO grid placement.}
 }
 \value{
 List containing the following:
@@ -52,6 +55,7 @@ the minimum AOO. It is the base function which is used by
 
 Other gridUncertainty functions: \code{\link{gridUncertaintyRandomManual}},
   \code{\link{gridUncertaintyRandom}},
+  \code{\link{gridUncertaintyRestricted}},
   \code{\link{gridUncertaintySimulation}},
   \code{\link{gridUncertainty}}
 }

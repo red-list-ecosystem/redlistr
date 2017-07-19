@@ -45,6 +45,7 @@ input for the number of simulations to perform.
 
 Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
   \code{\link{gridUncertaintyRandom}},
+  \code{\link{gridUncertaintyRestricted}},
   \code{\link{gridUncertaintySimulation}},
   \code{\link{gridUncertainty}}
 }

@@ -36,6 +36,7 @@ incremental splits using \code{gridUncertaintyBase}.
 Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
   \code{\link{gridUncertaintyRandomManual}},
   \code{\link{gridUncertaintyRandom}},
+  \code{\link{gridUncertaintyRestricted}},
   \code{\link{gridUncertainty}}
 }
 \author{

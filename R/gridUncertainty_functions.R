@@ -17,6 +17,8 @@
 #'   the \code{min.percent.rule}.
 #' @param restriction Logical. If \code{TRUE}, allows user to specify areas to
 #'   focus where grid search is done. Used in gridUncertaintyRestricted.
+#' @param min.grids.shift Dataframe object with two columns (x.shift and
+#'   y.shift) specifying the coordinates to restrict the AOO grid placement.
 #' @return List containing the following:
 #' \itemize{
 #'  \item Vector of length split*split of calculated AOO for each shifted grid
@@ -49,7 +51,7 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
     # apply to get index of the restricted shift.grid we want
     shift.grid.restricted.index <- apply(min.grids.shift, 1, function(grids){
       min.AOO.x <- grids['x.shift']
-      xlims <- c(min.AOO.x - intervals, min.AOO.x + intervals)
+      x.lims <- c(min.AOO.x - intervals, min.AOO.x + intervals)
       min.AOO.y <- grids['y.shift']
       y.lims <- c(min.AOO.y - intervals, min.AOO.y + intervals)
       index <- which(x.lims[1] < shift.grid$x.shift &
@@ -290,7 +292,7 @@ gridUncertaintyRandom <- function(ecosystem.data, grid.size, n.AOO.improvement,
 #' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
 #' extent(r1) <- extent(0, 6100, 0, 8700)
 #' x <- gridUncertainty(r1, grid.size = 10000, n.AOO.improvement = 5,
-#'                            min.percent.rule = TRUE, percent = 1)
+#'                            min.percent.rule = FALSE, percent = 1)
 #' @export
 
 gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
@@ -376,4 +378,94 @@ gridUncertaintySimulation <- function(ecosystem.data, grid.size, simulations,
     out.df[i, 3] <- results$stats$max.AOO
   }
   return(out.df)
+}
+
+#' Function to compute AOO with grid uncertainty systematically with stopping
+#' rule and restrictions
+#'
+#' \code{gridUncertaintyRestricted} determines the number of area of occupancy (AOO) grid
+#' cells occupied by a species or ecosystem systematically. It will only stop
+#' when the AOO calculated does not improve (decrease) after a set number of
+#' split scenarios. The number of grids within each split is restricted to only
+#' include those which are already found nearby to ones already with the minimum
+#' AOO.
+#' @inheritParams gridUncertainty
+#' @return A list containing the following:
+#' \itemize{
+#'  \item Data frame of results showing the minimum AOO calculated for each
+#'  shift scenario
+#'  \item Single SpatialPolygonsDataFrame containing the AOO grid which would
+#'  produce the minimum AOO calculated
+#' }
+#' @author Calvin Lee \email{calvinkflee@@gmail.com}
+#' @family gridUncertainty functions
+
+gridUncertaintyRestricted <- function(ecosystem.data, grid.size, n.AOO.improvement,
+                                      min.percent.rule = FALSE, percent = 1){
+  out.df <- data.frame()
+  min.grids.shift.list <- list()
+  n.shifts <- vector()
+  for (i in 1:n.AOO.improvement){ # First runs before checking for improvement
+    out.df[i, 1] <- i
+    results <- gridUncertaintyBase(ecosystem.data = ecosystem.data,
+                                   grid.size = grid.size, splits = i,
+                                   min.percent.rule = min.percent.rule,
+                                   percent = percent, restriction = FALSE)
+    out.df[i, 2] <- results$summary.df$min.AOO
+    min.grids.shift.list[[i]] <- results$min.AOO.shifts
+    n.shifts <- c(n.shifts, results$summary.df$n.shifts)
+    logic.test <- vector()
+    for (j in 1:(n.AOO.improvement-1)){
+      logic.test <- c(logic.test, out.df[(i-n.AOO.improvement), 2] <=
+                        out.df[(i-n.AOO.improvement+j), 2])
+    }
+  }
+
+  i <- n.AOO.improvement + 1
+  logic.test <- FALSE
+  while(all(logic.test) == FALSE){
+    # Find grids which generated the smallest AOOs
+    min.AOO.split.index <- which(out.df[, 2] == min(out.df[, 2]))
+    min.grids.shift <- data.frame()
+    for(j in 1:length(min.AOO.split.index)){
+      min.grids.shift <- rbind(min.grids.shift, min.grids.shift.list[[j]])
+    }
+    out.df[i, 1] <- i
+    results <- gridUncertaintyBase(ecosystem.data = ecosystem.data,
+                                   grid.size = grid.size, splits = i,
+                                   min.percent.rule = min.percent.rule,
+                                   percent = percent,
+                                   restriction = T,
+                                   min.grids.shift = min.grids.shift)
+    out.df[i, 2] <- results$summary.df$min.AOO
+    min.grids.shift.list[[i]] <- results$min.AOO.shifts
+    n.shifts <- c(n.shifts, results$summary.df$n.shifts)
+    logic.test <- vector()
+    for (j in 1:(n.AOO.improvement-1)){
+      logic.test <- c(logic.test, out.df[(i-n.AOO.improvement), 2] <=
+                        out.df[(i-n.AOO.improvement+j), 2])
+    }
+    i <- i + 1
+  }
+
+  names(out.df) <- c('n.splits', 'min.AOO')
+  # Only need to report one grid which resulted in true min.AOO
+  min.AOO.split.n <- min(min.AOO.split.index)
+
+  # Get one the shifts needed to get this min AOO
+  min.AOO.x.shift <- min.grids.shift.list[[min.AOO.split.n]]$x.shift[1]
+  min.AOO.y.shift <- min.grids.shift.list[[min.AOO.split.n]]$y.shift[1]
+
+  # Recreate this AOO grid
+  original.grid <- createGrid(ecosystem.data, grid.size)
+  min.AOO.grid.shifts <- shift(original.grid,
+                               min.AOO.x.shift,
+                               min.AOO.y.shift)
+  min.AOO.grid <- getAOOSilent(ecosystem.data, min.AOO.grid.shifts,
+                               min.percent.rule = min.percent.rule, percent = percent)
+
+  results.list <- list('min.AOO.df' = out.df,
+                       'min.AOO.grid' = min.AOO.grid,
+                       'total shifts' = sum(n.shifts))
+  return(results.list)
 }

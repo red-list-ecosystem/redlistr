@@ -56,6 +56,7 @@ x <- gridUncertaintyRandom(r1, grid.size = 10000, n.AOO.improvement = 50,
 
 Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
   \code{\link{gridUncertaintyRandomManual}},
+  \code{\link{gridUncertaintyRestricted}},
   \code{\link{gridUncertaintySimulation}},
   \code{\link{gridUncertainty}}
 }
