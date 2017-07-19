@@ -7,13 +7,16 @@
 #' \code{grid.size}) at each point. It then returns summary statistics for the
 #' range of AOOs calculated, and the RasterLayer(s) containing the grids with
 #' the minimum AOO. It is the base function which is used by
-#' \code{gridUncertainty} and \code{gridUncertaintySimulation}
+#' \code{gridUncertainty}, \code{gridUncertaintySimulation}, and
+#' \code{gridUncertaintyRestricted}
 #' @inheritParams createGrid
 #' @param splits Specifies the number of ways to split the grid in ONE axis.
 #' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the \code{min.percent.rule}.
+#' @param restriction Logical. If \code{TRUE}, allows user to specify areas to
+#'   focus where grid search is done. Used in gridUncertaintyRestricted.
 #' @return List containing the following:
 #' \itemize{
 #'  \item Vector of length split*split of calculated AOO for each shifted grid
@@ -29,7 +32,8 @@
 #' @import raster
 
 gridUncertaintyBase <- function(ecosystem.data, grid.size,
-                                splits, min.percent.rule = FALSE, percent = 1){
+                                splits, min.percent.rule = FALSE, percent = 1,
+                                restriction = FALSE, min.grids.shift){
   grid <- createGrid(ecosystem.data, grid.size)
   intervals <- grid.size/splits
 
@@ -41,6 +45,22 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
   shift.grid <- expand.grid(x.shift = (x.shift + sample(0:(grid.size*0.05), 1)),
                             y.shift = (y.shift + sample(0:(grid.size*0.05), 1)))
 
+  if(restriction){ # Only modift shift.grid when restriction = T
+    # apply to get index of the restricted shift.grid we want
+    shift.grid.restricted.index <- apply(min.grids.shift, 1, function(grids){
+      min.AOO.x <- grids['x.shift']
+      xlims <- c(min.AOO.x - intervals, min.AOO.x + intervals)
+      min.AOO.y <- grids['y.shift']
+      y.lims <- c(min.AOO.y - intervals, min.AOO.y + intervals)
+      index <- which(x.lims[1] < shift.grid$x.shift &
+                       shift.grid$ x.shift < x.lims[2] &
+                       y.lims[1] < shift.grid$y.shift &
+                       shift.grid$y.shift< y.lims[2])
+      return(index)
+      shift.grid.restricted.index <- unique(unlist(shift.grid.restricted.index))
+      shift.grid <- shift.grid[shift.grid.restricted.index, ]
+    })
+  }
   grid.shifted.list <- apply(shift.grid, 1, function(gridList){
     # Pull out the values for each shift
     current.xshift <- gridList["x.shift"]
@@ -48,7 +68,6 @@ gridUncertaintyBase <- function(ecosystem.data, grid.size,
     grid.shift <- shift(grid, x = current.xshift, y = current.yshift)
     return(grid.shift)
   })
-
   AOO.list <- lapply(grid.shifted.list, getAOOSilent, # List of AOO for each scenario
                      ecosystem.data = ecosystem.data,
                      min.percent.rule = min.percent.rule,
@@ -286,14 +305,10 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
                                    percent = percent)
     out.df[i, 2] <- results$summary.df$min.AOO
     min.grids.shift[[i]] <- results$min.AOO.shifts
-    logic.test <- vector()
-    for (j in 1:(n.AOO.improvement-1)){
-      logic.test <- c(logic.test, out.df[(i-n.AOO.improvement), 2] <=
-                        out.df[(i-n.AOO.improvement+j), 2])
-    }
   }
+  i <- n.AOO.improvement + 1
+  logic.test <- FALSE
   while(all(logic.test) == FALSE){
-    i = n.AOO.improvement+1
     out.df[i, 1] <- i
     results <- gridUncertaintyBase(ecosystem.data = ecosystem.data,
                                    grid.size = grid.size, splits = i,
@@ -306,7 +321,7 @@ gridUncertainty <- function(ecosystem.data, grid.size, n.AOO.improvement,
       logic.test <- c(logic.test, out.df[(i-n.AOO.improvement), 2] <=
                         out.df[(i-n.AOO.improvement+j), 2])
     }
-    i + 1
+    i <- i + 1
   }
   names(out.df) <- c('n.splits', 'min.AOO')
   # Find splits which generated the smallest AOOs

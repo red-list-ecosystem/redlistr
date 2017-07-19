@@ -5,7 +5,8 @@
 \title{Base function to compute AOO with grid uncertainty systematically}
 \usage{
 gridUncertaintyBase(ecosystem.data, grid.size, splits,
-  min.percent.rule = FALSE, percent = 1)
+  min.percent.rule = FALSE, percent = 1, restriction = FALSE,
+  min.grids.shift)
 }
 \arguments{
 \item{ecosystem.data}{Raster object of an ecosystem or species distribution.
@@ -21,6 +22,9 @@ must be passed before a grid is counted as an AOO grid.}
 
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
 the \code{min.percent.rule}.}
+
+\item{restriction}{Logical. If \code{TRUE}, allows user to specify areas to
+focus where grid search is done. Used in gridUncertaintyRestricted.}
 }
 \value{
 List containing the following:
@@ -40,7 +44,8 @@ axes, adding a small amount of random movement (five percent of the
 \code{grid.size}) at each point. It then returns summary statistics for the
 range of AOOs calculated, and the RasterLayer(s) containing the grids with
 the minimum AOO. It is the base function which is used by
-\code{gridUncertainty} and \code{gridUncertaintySimulation}
+\code{gridUncertainty}, \code{gridUncertaintySimulation}, and
+\code{gridUncertaintyRestricted}
 }
 \seealso{
 \code{\link{createGrid}} \code{\link{getAOOSilent}}
