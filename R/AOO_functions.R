@@ -3,8 +3,9 @@
 #' \code{createGrid} produces empty grid which can be used as the basis to help
 #' compute AOO.
 #'
-#' @param ecosystem.data Raster object of an ecosystem or species distribution.
-#'   Please use a CRS with units measured in metres.
+#' @param input.data Object of an ecosystem or species distribution. Accepts either
+#'   raster or spatial points formats. Please use a CRS with units measured in
+#'   metres.
 #' @param grid.size A number specifying the width of the desired grid square (in
 #'   same units as your coordinate reference system)
 #' @return A regular grid raster with extent \code{ecosystem.data} and grid size
@@ -19,8 +20,12 @@
 #'   \url{https://iucnrle.org/}
 #' @import raster
 
-createGrid <- function(ecosystem.data, grid.size){
-  grid <- raster(ecosystem.data)
+createGrid <- function(input.data, grid.size){
+  if(class(input.data) == "SpatialPoints" |
+     class(input.data) == "SpatialPointsDataFrame"){
+    grid <- raster(extent(input.data@bbox))
+    crs(grid) <- crs(input.data)
+  } else grid <- raster(input.data)
   res(grid) <- grid.size
   grid.expanded <- extend(grid, c(2,2)) # grow the grid by 2 each way
   grid.expanded[] <- 1:(ncell(grid.expanded))
