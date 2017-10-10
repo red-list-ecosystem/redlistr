@@ -62,11 +62,15 @@ createGrid <- function(input.data, grid.size){
 #' @export
 #' @import raster
 
-makeAOOGrid <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, percent = 1) {
+makeAOOGrid <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-  grid <- createGrid(ecosystem.data, grid.size)
-  eco.points <- rasterToPoints(ecosystem.data)
-  xy <- as.matrix(eco.points)[,c(1,2)] # select xy column only
+  grid <- createGrid(input.data, grid.size)
+  if(class(input.data) == "RasterLayer"){
+    input.points <- rasterToPoints(input.data)
+    xy <- as.matrix(input.points)[,c(1,2)] # select xy column only
+  } else {
+    xy <- input.data@coords
+  }
   x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
   names(x) <- 'count'
   grid.shp <- rasterToPolygons(x, dissolve=FALSE)
@@ -74,11 +78,11 @@ makeAOOGrid <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, per
     outGrid <- grid.shp
   }
   if (min.percent.rule == TRUE){
-    cell.res <- res(ecosystem.data)
+    cell.res <- res(input.data)
     area <- cell.res[1] * cell.res[2]
     one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
     threshold <- one.pc.grid * percent / area
-    outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshol
+    outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshol
   }
   return (outGrid)
 }
@@ -108,9 +112,9 @@ makeAOOGrid <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, per
 #' AOO <- getAOO(r1, 10000, min.percent.rule = TRUE, percent = 1)
 #' @export
 
-getAOO <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, percent = 1){
+getAOO <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-  AOO.number = length(makeAOOGrid(ecosystem.data, grid.size, min.percent.rule, percent))
+  AOO.number <- length(makeAOOGrid(input.data, grid.size, min.percent.rule, percent))
   return(AOO.number)
 }
 
