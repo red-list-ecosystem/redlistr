@@ -2,8 +2,9 @@
 #'
 #' \code{makeEOO} creates a  minimum convex polygon enclosing all occurrences of
 #' the provided data
-#' @param ecosystem.data Raster object of an ecosystem or species distribution.
-#'   Please use a CRS with units measured in metres.
+#' @param input.data Object of an ecosystem or species distribution. Accepts either
+#'   raster or spatial points formats. Please use a CRS with units measured in
+#'   metres.
 #' @return An object of class SpatialPolygons representing the EOO of
 #'   \code{ecosystem.data}. Also inherits its CRS.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
@@ -23,17 +24,19 @@
 #' @import sp
 #' @import raster
 
-makeEOO <- function (ecosystem.data){
-  # Makes an EOO spatial polygon using the centre point of each pixel as the boundary
-  EOO.points <- rasterToPoints(ecosystem.data)
+makeEOO <- function(input.data){
+  if(class(input.data) == "RasterLayer"){
+    # Makes an EOO spatial polygon using the centre point of each pixel as the boundary
+    EOO.points <- rasterToPoints(input.data)
+  } else EOO.points <- input.data@coords # accessing coordinates of shapefile
   if (nrow(EOO.points) <= 1) { # handling single pixels since chull fails for 1 pixel
-    EOO.polygon <- rasterToPolygons(ecosystem.data)
+    EOO.polygon <- rasterToPolygons(input.data)
   } else {
     EOO.chull <- grDevices::chull(EOO.points)
     EOO.envelope <- EOO.points[EOO.chull,]
     EOO.polygon <- SpatialPolygons(list(Polygons(list(Polygon(EOO.envelope[,1:2])), ID=1)))
   }
-  proj4string(EOO.polygon) <- crs(ecosystem.data)
+  proj4string(EOO.polygon) <- crs(input.data)
   return(EOO.polygon)
 }
 
