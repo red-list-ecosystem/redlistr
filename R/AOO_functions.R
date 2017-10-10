@@ -8,7 +8,7 @@
 #'   metres.
 #' @param grid.size A number specifying the width of the desired grid square (in
 #'   same units as your coordinate reference system)
-#' @return A regular grid raster with extent \code{ecosystem.data} and grid size
+#' @return A regular grid raster with extent \code{input.data} and grid size
 #'   \code{grid.size}. Each grid square has a unique identification number.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}

@@ -6,7 +6,7 @@
 #'   raster or spatial points formats. Please use a CRS with units measured in
 #'   metres.
 #' @return An object of class SpatialPolygons representing the EOO of
-#'   \code{ecosystem.data}. Also inherits its CRS.
+#'   \code{input.data}. Also inherits its CRS.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions
