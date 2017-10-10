@@ -4,12 +4,13 @@
 \alias{gridUncertaintyRandomManual}
 \title{Manual function to compute AOO with grid uncertainty randomly}
 \usage{
-gridUncertaintyRandomManual(ecosystem.data, grid.size, n.sim = 10,
+gridUncertaintyRandomManual(input.data, grid.size, n.sim = 10,
   min.percent.rule = FALSE, percent = 1)
 }
 \arguments{
-\item{ecosystem.data}{Raster object of an ecosystem or species distribution.
-Please use a CRS with units measured in metres.}
+\item{input.data}{Object of an ecosystem or species distribution. Accepts either
+raster or spatial points formats. Please use a CRS with units measured in
+metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
 same units as your coordinate reference system)}

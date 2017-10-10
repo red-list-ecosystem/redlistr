@@ -4,11 +4,12 @@
 \alias{getAOOSilent}
 \title{Alternate function for getting AOO (with custom grid)}
 \usage{
-getAOOSilent(ecosystem.data, grid, min.percent.rule = FALSE, percent = 1)
+getAOOSilent(input.data, grid, min.percent.rule = FALSE, percent = 1)
 }
 \arguments{
-\item{ecosystem.data}{Raster object of an ecosystem or species distribution.
-Please use a CRS with units measured in metres.}
+\item{input.data}{Object of an ecosystem or species distribution. Accepts either
+raster or spatial points formats. Please use a CRS with units measured in
+metres.}
 
 \item{grid}{Custom grid to be used to calculate AOO. Usually the output of
 \code{gridUncertainty}}

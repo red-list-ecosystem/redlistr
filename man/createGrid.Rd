@@ -4,17 +4,18 @@
 \alias{createGrid}
 \title{Create empty Area of Occupancy (AOO) Grid.}
 \usage{
-createGrid(ecosystem.data, grid.size)
+createGrid(input.data, grid.size)
 }
 \arguments{
-\item{ecosystem.data}{Raster object of an ecosystem or species distribution.
-Please use a CRS with units measured in metres.}
+\item{input.data}{Object of an ecosystem or species distribution. Accepts either
+raster or spatial points formats. Please use a CRS with units measured in
+metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
 same units as your coordinate reference system)}
 }
 \value{
-A regular grid raster with extent \code{ecosystem.data} and grid size
+A regular grid raster with extent \code{input.data} and grid size
   \code{grid.size}. Each grid square has a unique identification number.
 }
 \description{
