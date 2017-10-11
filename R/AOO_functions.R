@@ -3,11 +3,12 @@
 #' \code{createGrid} produces empty grid which can be used as the basis to help
 #' compute AOO.
 #'
-#' @param ecosystem.data Raster object of an ecosystem or species distribution.
-#'   Please use a CRS with units measured in metres.
+#' @param input.data Object of an ecosystem or species distribution. Accepts either
+#'   raster or spatial points formats. Please use a CRS with units measured in
+#'   metres.
 #' @param grid.size A number specifying the width of the desired grid square (in
 #'   same units as your coordinate reference system)
-#' @return A regular grid raster with extent \code{ecosystem.data} and grid size
+#' @return A regular grid raster with extent \code{input.data} and grid size
 #'   \code{grid.size}. Each grid square has a unique identification number.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -19,8 +20,12 @@
 #'   \url{https://iucnrle.org/}
 #' @import raster
 
-createGrid <- function(ecosystem.data, grid.size){
-  grid <- raster(ecosystem.data)
+createGrid <- function(input.data, grid.size){
+  if(class(input.data) == "SpatialPoints" |
+     class(input.data) == "SpatialPointsDataFrame"){
+    grid <- raster(extent(input.data@bbox))
+    crs(grid) <- crs(input.data)
+  } else grid <- raster(input.data)
   res(grid) <- grid.size
   grid.expanded <- extend(grid, c(2,2)) # grow the grid by 2 each way
   grid.expanded[] <- 1:(ncell(grid.expanded))
@@ -57,11 +62,15 @@ createGrid <- function(ecosystem.data, grid.size){
 #' @export
 #' @import raster
 
-makeAOOGrid <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, percent = 1) {
+makeAOOGrid <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1) {
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-  grid <- createGrid(ecosystem.data, grid.size)
-  eco.points <- rasterToPoints(ecosystem.data)
-  xy <- as.matrix(eco.points)[,c(1,2)] # select xy column only
+  grid <- createGrid(input.data, grid.size)
+  if(class(input.data) == "RasterLayer"){
+    input.points <- rasterToPoints(input.data)
+    xy <- as.matrix(input.points)[,c(1,2)] # select xy column only
+  } else {
+    xy <- input.data@coords
+  }
   x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
   names(x) <- 'count'
   grid.shp <- rasterToPolygons(x, dissolve=FALSE)
@@ -69,11 +78,11 @@ makeAOOGrid <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, per
     outGrid <- grid.shp
   }
   if (min.percent.rule == TRUE){
-    cell.res <- res(ecosystem.data)
+    cell.res <- res(input.data)
     area <- cell.res[1] * cell.res[2]
     one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
     threshold <- one.pc.grid * percent / area
-    outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshol
+    outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshol
   }
   return (outGrid)
 }
@@ -103,9 +112,9 @@ makeAOOGrid <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, per
 #' AOO <- getAOO(r1, 10000, min.percent.rule = TRUE, percent = 1)
 #' @export
 
-getAOO <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, percent = 1){
+getAOO <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-  AOO.number = length(makeAOOGrid(ecosystem.data, grid.size, min.percent.rule, percent))
+  AOO.number <- length(makeAOOGrid(input.data, grid.size, min.percent.rule, percent))
   return(AOO.number)
 }
 
@@ -113,8 +122,9 @@ getAOO <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, percent 
 #'
 #' \code{getAOOSilent} is identical to \code{getAOO}, but allows the custom
 #' input of the grid parameter. Used for \code{gridUncertainty}.
-#' @param ecosystem.data Raster object of an ecosystem or species distribution.
-#'   Please use a CRS with units measured in metres.
+#' @param input.data Object of an ecosystem or species distribution. Accepts either
+#'   raster or spatial points formats. Please use a CRS with units measured in
+#'   metres.
 #' @param grid Custom grid to be used to calculate AOO. Usually the output of
 #'   \code{gridUncertainty}
 #' @param min.percent.rule Logical. If \code{TRUE} one percent of the grid cell
@@ -127,12 +137,16 @@ getAOO <- function(ecosystem.data, grid.size, min.percent.rule = FALSE, percent 
 #' @family AOO functions
 #' @import raster
 
-getAOOSilent <- function(ecosystem.data, grid, min.percent.rule = FALSE, percent = 1) {
+getAOOSilent <- function(input.data, grid, min.percent.rule = FALSE, percent = 1) {
   grid <- grid # below is different from getAOO
   grid.size <- res(grid)
   # here to end is the same as getAOO
-  eco.points <- rasterToPoints(ecosystem.data)
-  xy <- as.matrix(eco.points)[,c(1,2)] # select xy column only
+  if(class(input.data) == "RasterLayer"){
+    input.points <- rasterToPoints(input.data)
+    xy <- as.matrix(input.points)[,c(1,2)] # select xy column only
+  } else {
+    xy <- input.data@coords
+  }
   x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
   names(x) <- 'count'
   grid.shp <- rasterToPolygons(x, dissolve=FALSE)
@@ -140,14 +154,14 @@ getAOOSilent <- function(ecosystem.data, grid, min.percent.rule = FALSE, percent
     outGrid <- grid.shp
   }
   if (min.percent.rule == TRUE){
-    cell.res <- res(ecosystem.data)
+    cell.res <- res(input.data)
     area <- cell.res[1] * cell.res[2]
     one.pc.grid <- grid.size[1] * grid.size[2] / 100 # 1pc of grid cell
     threshold <- one.pc.grid * percent / area
-    outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshol
+    outGrid <- grid.shp[grid.shp$count > threshold,] # select only grids that meet one percent threshold
   }
   # end getAOO
-  AOO.number = length(outGrid) ## different from getAOO
+  AOO.number <- length(outGrid)
   return(list(AOO.number = AOO.number,
               out.grid = outGrid))
 }

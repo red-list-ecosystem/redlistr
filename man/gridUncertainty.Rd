@@ -4,12 +4,13 @@
 \alias{gridUncertainty}
 \title{Function to compute AOO with grid uncertainty systematically with stopping rule}
 \usage{
-gridUncertainty(ecosystem.data, grid.size, n.AOO.improvement,
+gridUncertainty(input.data, grid.size, n.AOO.improvement,
   min.percent.rule = FALSE, percent = 1)
 }
 \arguments{
-\item{ecosystem.data}{Raster object of an ecosystem or species distribution.
-Please use a CRS with units measured in metres.}
+\item{input.data}{Object of an ecosystem or species distribution. Accepts either
+raster or spatial points formats. Please use a CRS with units measured in
+metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
 same units as your coordinate reference system)}
