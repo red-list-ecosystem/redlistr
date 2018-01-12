@@ -153,7 +153,7 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
     out <- cbind(out, PRD = PRD)
   }
   if(any(methods == 'ARC')){
-    ARC <- (1/(year.t2-year.t1))*log(A.t2/A.t1)
+    ARC <- (1/(year.t2-year.t1))*log(A.t2/A.t1) * 100
     # Annual rate of change from Puyravaud 2004 (also known as instantaneous rate of change)
     out <- cbind(out, ARC = ARC)
   }
