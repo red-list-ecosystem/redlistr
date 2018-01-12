@@ -4,15 +4,16 @@
 \alias{makeEOO}
 \title{Creates Extent of occurrence (EOO) Polygon}
 \usage{
-makeEOO(ecosystem.data)
+makeEOO(input.data)
 }
 \arguments{
-\item{ecosystem.data}{Raster object of an ecosystem or species distribution.
-Please use a CRS with units measured in metres.}
+\item{input.data}{Object of an ecosystem or species distribution. Accepts either
+raster or spatial points formats. Please use a CRS with units measured in
+metres.}
 }
 \value{
 An object of class SpatialPolygons representing the EOO of
-  \code{ecosystem.data}. Also inherits its CRS.
+  \code{input.data}. Also inherits its CRS.
 }
 \description{
 \code{makeEOO} creates a  minimum convex polygon enclosing all occurrences of
