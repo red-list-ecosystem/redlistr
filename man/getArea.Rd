@@ -14,7 +14,7 @@ no data value should be NA}
 counted}
 }
 \value{
-The area of the cells of interest
+The total area of the cells of interest in km2
 }
 \description{
 \code{getArea} reports the area of a RasterLayer object using the pixel

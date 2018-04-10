@@ -6,7 +6,7 @@
 #'   no data value should be NA
 #' @param value.to.count Optional. Value of the cells in a RasterLayer to be
 #'   counted
-#' @return The area of the cells of interest
+#' @return The total area of the cells of interest in km2
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family Change functions
