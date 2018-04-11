@@ -1,6 +1,7 @@
 # redlistr 1.0.0.9003
 * Fixed an error in getArea where a raster with a single class wouldn't be
 calculated properly
+* Updated tests to reflect changes to getDeclineStats
 
 # redlistr 1.0.0.9002
 * Changed getDeclineStats so ARC now returns a percentage

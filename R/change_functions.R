@@ -37,7 +37,7 @@ getArea <- function(x, value.to.count){
       cell.res <- res(x)
       cell.width <- cell.res[1]
       x.df <- plyr::count(values(x))
-      n.cell <- x.df$freq
+      n.cell <- x.df[which(x.df[, 1] == value.to.count), ]$freq
       aream2 <- (cell.width * cell.width) * n.cell
       areakm2 <- aream2/1000000
       return (areakm2)

@@ -31,6 +31,6 @@ test_that("decline stats work", {
                                       methods = c('ARD', 'PRD', 'ARC'))
   expect_equal(dummy.decline.df$ARD, 10)
   expect_equal(dummy.decline.df$PRD, 12.94494, tolerance=1e-5)
-  expect_equal(dummy.decline.df$ARC, -0.1386294, tolerance=1e-5)
+  expect_equal(dummy.decline.df$ARC, -13.86294, tolerance=1e-5)
   expect_error(getDeclineStats(A.t1, A.t2, year.t1, year.t2))
 })
