@@ -19,7 +19,7 @@ Imports:
     plyr,
     rgeos
 Depends:
-    R (>= 3.4.0),
+    R (>= 3.3.0),
     raster (>= 2.5-8),
     sp (>= 1.2-4)
 Suggests:
