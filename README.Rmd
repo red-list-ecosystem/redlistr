@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 # redlistr
 
 [![Build Status](https://travis-ci.org/red-list-ecosystem/redlistr.svg?branch=master)](https://travis-ci.org/red-list-ecosystem/redlistr)
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/redlistr)](https://cran.r-project.org/package=redlistr)
 
 ## Overview
 The `redlistr` package was developed to assist users conduct assessments for the

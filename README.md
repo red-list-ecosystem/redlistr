@@ -3,7 +3,7 @@
 redlistr
 ========
 
-[![Build Status](https://travis-ci.org/red-list-ecosystem/redlistr.svg?branch=master)](https://travis-ci.org/red-list-ecosystem/redlistr) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/redlistr)](https://cran.r-project.org/package=redlistr)
+[![Build Status](https://travis-ci.org/red-list-ecosystem/redlistr.svg?branch=master)](https://travis-ci.org/red-list-ecosystem/redlistr)
 
 Overview
 --------
