@@ -5,7 +5,7 @@ test_that("input cannot be in lonlat crs",{
   expect_error(getArea(r.crs), "Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system")
 })
 
-test_that("accepts different input types", {
+test_that("accepts different input rasters", {
   # Dummy rasters for testing
   r <- raster(nrows=10, ncols=10)
   crs(r) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
@@ -17,6 +17,19 @@ test_that("accepts different input types", {
   expect_equal(getArea(r.bin), 0.1296)
   expect_warning(getArea(r.multiple), "The input raster is not binary, counting ALL non NA cells\n")
   expect_equal(getArea(r.multiple, 1), 0.01296)
+})
+
+test_that("accepts SpatialPolygons", {
+  # Dummy rectangle
+  x1 = 0
+  x2 = 1000
+  y1 = 0
+  y2 = 1000
+  my_polygon = Polygon(cbind(c(x1,x1,x2,x2,x1),c(y1,y2,y2,y1,y1)))
+  my_polygons = Polygons(list(my_polygon), ID = "A")
+  dummy_polygon = SpatialPolygons(list(my_polygons))
+
+  expect_equal(getArea(dummy_polygon), 1)
 })
 
 context("Change functions")
