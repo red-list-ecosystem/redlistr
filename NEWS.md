@@ -1,3 +1,6 @@
+# redlistr 1.0.1
+* Submission of update to CRAN
+
 # redlistr 1.0.0.9004
 * Added test for SpatialPolygons for getArea
 * Updated vignette to have single date
