@@ -1,4 +1,5 @@
 # redlistr 1.0.1
+* Fixed getArea to output a single value and included test
 * Submission of update to CRAN
 
 # redlistr 1.0.0.9004

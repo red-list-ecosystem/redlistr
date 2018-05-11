@@ -19,6 +19,15 @@ test_that("accepts different input rasters", {
   expect_equal(getArea(r.multiple, 1), 0.01296)
 })
 
+test_that("output is a single value", {
+  # Dummy raster
+  r <- raster(nrows=10, ncols=10)
+  crs(r) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
+  values(r) <- rep(c(1, NA), 50)
+
+  expect_equal(length(getArea(r)), 1)
+})
+
 test_that("accepts SpatialPolygons", {
   # Dummy rectangle
   x1 = 0
