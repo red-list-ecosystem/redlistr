@@ -1,6 +1,6 @@
 Package: redlistr
 Title: Tools for the IUCN Red List of Ecosystems and Species
-Version: 1.0.0.9003
+Version: 1.0.0.9004
 Authors@R: c(
   person("Calvin", "Lee", role = c("cre", "aut"), email = "calvinkflee@gmail.com"),
   person("Nicholas", "Murray", role = "aut", email = "murr.nick@gmail.com"))
@@ -19,7 +19,7 @@ Imports:
     plyr,
     rgeos
 Depends:
-    R (>= 3.3.3),
+    R (>= 3.4.0),
     raster (>= 2.5-8),
     sp (>= 1.2-4)
 Suggests:
