@@ -162,8 +162,8 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 
 #' Future Area Estimate
 #'
-#' \code{futureAreaEstimate} calculates the expected area of a distribution at a
-#' future date using known rates of decline.
+#' \code{futureAreaEstimate} is now deprecated, please use
+#' \code{extrapolateEstimate} instead
 #'
 #' @param A.t1 Area at time t1
 #' @param year.t1 Year of time t1
@@ -195,6 +195,47 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 #' @export
 
 futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){
+  .Deprecated("extrapolateEstimate", "redlistr")
+  extrapolateEstimate(A.t1 = A.t1, year.t1 = year.t1, nYears = nYears,
+                      ARD = ARD, PRD = PRD, ARC = ARC)
+}
+
+#' Extrapolate Estimate
+#'
+#' \code{extrapolateEstimate} uses rates of decline from getDeclineStats
+#' to extrapolate estimates to a given time
+#'
+#' @param A.t1 Area at time t1
+#' @param year.t1 Year of time t1
+#' @param nYears Number of years since t1 for prediction. Use negative
+#' values for backcasting
+#' @param ARD Absolute rate of decline
+#' @param PRD Proportional rate of decline
+#' @param ARC Annual rate of change
+#' @return A dataframe with the forecast year, and a combination of:
+#' \itemize{
+#'  \item Values as extrapolated with absolute rate of decline (ARD)
+#'  \item Values as extrapolated with proportional rate of decline (PRD)
+#'  \item Values as extrapolated with absolute rate of change (ARC)
+#'  }
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
+#' @family change_functions
+#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
+#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
+#'   \url{https://iucnrle.org/}
+#' @examples
+#' a.r1 <- 23.55
+#' a.r2 <- 15.79
+#' decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
+#'                        methods = 'PRD')
+#' a.2040.PRD <- extrapolateEstimate(a.r1, a.r2, year.t1 = 1990, nYears = 50,
+#'                                  PRD = decline.stats$PRD)
+#' @export
+
+extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){
   y.t3 <- year.t1+nYears
   out <- data.frame(forecast.year = y.t3)
   if(!is.na(ARD)){
