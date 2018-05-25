@@ -1,3 +1,6 @@
+# redlistr 1.0.1.9000
+* Added extrapolateEstimate which will replace futureAreaEstimate.
+
 # redlistr 1.0.1
 * Fixed getArea to output a single value and included test
 * Submission of update to CRAN
