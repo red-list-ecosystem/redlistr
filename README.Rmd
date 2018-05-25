@@ -16,6 +16,9 @@ knitr::opts_chunk$set(
 
 [![Build Status](https://travis-ci.org/red-list-ecosystem/redlistr.svg?branch=master)](https://travis-ci.org/red-list-ecosystem/redlistr)
 
+> important note: [rredlist](https://github.com/ropensci/rredlist) is a
+different package that works with the IUCN Red List of Threatened Species' API.
+
 ## Overview
 The `redlistr` package was developed to assist users conduct assessments for the
 IUCN Red List of Ecosystems in `R`. It is also useful for users interested in

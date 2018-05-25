@@ -5,6 +5,8 @@ redlistr
 
 [![Build Status](https://travis-ci.org/red-list-ecosystem/redlistr.svg?branch=master)](https://travis-ci.org/red-list-ecosystem/redlistr)
 
+> important note: [rredlist](https://github.com/ropensci/rredlist) is a different package that works with the IUCN Red List of Threatened Species' API.
+
 Overview
 --------
 
