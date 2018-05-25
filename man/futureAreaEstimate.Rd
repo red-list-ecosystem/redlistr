@@ -31,14 +31,6 @@ A dataframe with the forecast year, and a combination of:
 \code{futureAreaEstimate} is now deprecated, please use
 \code{extrapolateEstimate} instead
 }
-\examples{
-a.r1 <- 23.55
-a.r2 <- 15.79
-decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
-                       methods = 'PRD')
-a.2040.PRD <- futureAreaEstimate(a.r1, a.r2, year.t1 = 1990, nYears = 50,
-                                 PRD = decline.stats$PRD)
-}
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red

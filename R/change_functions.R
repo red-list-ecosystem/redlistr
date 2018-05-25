@@ -185,13 +185,6 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   \url{https://iucnrle.org/}
-#' @examples
-#' a.r1 <- 23.55
-#' a.r2 <- 15.79
-#' decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
-#'                        methods = 'PRD')
-#' a.2040.PRD <- futureAreaEstimate(a.r1, a.r2, year.t1 = 1990, nYears = 50,
-#'                                  PRD = decline.stats$PRD)
 #' @export
 
 futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){
