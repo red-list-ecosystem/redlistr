@@ -113,7 +113,8 @@ getAreaLoss <- function(x, y){
 #' @param methods Method(s) used to calculate rate of decline. Either 'PRD',
 #'   'ARD', and/or 'ARC'. See vignette to see a more detailed explanation for
 #'   each of them.
-#' @return A dataframe with total area difference, and a selection of:
+#' @return A dataframe with absolute differences between the two inputs, and a
+#'   selection of:
 #' \itemize{
 #'  \item Proportional Rate of Decline (PRD)
 #'  \item Absolute Rate of Decline (ARD)
@@ -138,7 +139,7 @@ getAreaLoss <- function(x, y){
 
 getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
                              methods){
-  out <- data.frame(area.loss = (A.t1-A.t2))
+  out <- data.frame(absolute.loss = (A.t1-A.t2))
   if(missing(methods)){
     stop("Please select method(s) to be used for calculating the rate of decline.")
   }
