@@ -1,3 +1,8 @@
+# redlistr 1.0.1.9001
+* Added sequentialExtrapolate to return sequence of estimates calculated by the
+selected algorithms.
+* Updated extrapolateEstimate output wording.
+
 # redlistr 1.0.1.9000
 * Added extrapolateEstimate which will replace futureAreaEstimate.
 
