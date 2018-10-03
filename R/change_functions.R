@@ -224,9 +224,9 @@ futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = 
 #' a.r1 <- 23.55
 #' a.r2 <- 15.79
 #' decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
-#'                        methods = 'PRD')
+#'                                  methods = 'PRD')
 #' a.2040.PRD <- extrapolateEstimate(a.r1, a.r2, year.t1 = 1990, nYears = 50,
-#'                                  PRD = decline.stats$PRD)
+#'                                   PRD = decline.stats$PRD)
 #' @export
 
 extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){
@@ -251,4 +251,67 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
     stop("Please input at least one of 'ARD', 'PRD', or 'ARC'.")
   }
   return(out)
+}
+
+
+#' Sequential extrapolation Estimate
+#'
+#' \code{sequentialExtrapolate} uses rates of decline from getDeclineStats and
+#' generates a sequence of estimates at regular time-steps. Useful for
+#' generating a sequence for plotting graphs.
+#'
+#' @inheritParams createGrid
+#'
+#' @return A dataframe with the forecast year, and a combination of:
+#' \itemize{
+#'  \item Sequence of values as extrapolated with absolute rate of decline (ARD)
+#'  \item Sequence of values as extrapolated with proportional rate of decline (PRD)
+#'  \item Sequence of values as extrapolated with absolute rate of change (ARC)
+#'  }
+#' @author Calvin Lee \email{calvinkflee@@gmail.com}
+#' @family change_functions
+#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
+#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
+#'   \url{https://iucnrle.org/}
+#' @examples
+#' a.r1 <- 23.55
+#' a.r2 <- 15.79
+#' decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
+#'                                  methods = 'PRD')
+#' a.2040.PRD.seq <- sequentialExtrapolate(a.r1, a.r2, year.t1 = 1990, nYears = 50,
+#'                                         PRD = decline.stats$PRD)
+#' @export
+
+sequentialExtrapolate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){
+  if(all(c(is.na(PRD), is.na(ARD), is.na(ARC)))){
+    stop("Please input at least one of 'ARD', 'PRD', or 'ARC'.")
+  }
+  ARD_seq <- vector()
+  PRD_seq <- vector()
+  ARC_seq <- vector()
+  for(i in 0:nYears){
+    estimate <- extrapolateEstimate(area2016,
+                                    year.t1 = 2016,
+                                    nYears = i,
+                                    ARD = ARD,
+                                    PRD = PRD,
+                                    ARC = ARC)
+
+    ARD_seq <- c(ARD_seq, estimate$A.ARD.t3)
+    PRD_seq <- c(PRD_seq, estimate$A.PRD.t3)
+    ARC_seq <- c(ARC_seq, estimate$A.ARC.t3)
+  }
+
+  years <- seq(year.t1, sum(year.t1, nYears))
+
+  # Dealing with empty vectors
+  if(length(ARD_seq) == 0) ARD_seq <- NA
+  if(length(PRD_seq) == 0) PRD_seq <- NA
+  if(length(ARC_seq) == 0) ARC_seq <- NA
+
+  out_df <- data.frame(years = years, ARD = ARD_seq,
+                       PRD = PRD_seq, ARC = ARC_seq)
+  return(out_df)
 }

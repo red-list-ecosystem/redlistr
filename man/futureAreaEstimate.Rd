@@ -39,7 +39,8 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   \url{https://iucnrle.org/}
 }
 \seealso{
-Other change_functions: \code{\link{extrapolateEstimate}}
+Other change_functions: \code{\link{extrapolateEstimate}},
+  \code{\link{sequentialExtrapolate}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

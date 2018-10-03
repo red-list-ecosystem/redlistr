@@ -36,9 +36,9 @@ to extrapolate estimates to a given time
 a.r1 <- 23.55
 a.r2 <- 15.79
 decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
-                       methods = 'PRD')
+                                 methods = 'PRD')
 a.2040.PRD <- extrapolateEstimate(a.r1, a.r2, year.t1 = 1990, nYears = 50,
-                                 PRD = decline.stats$PRD)
+                                  PRD = decline.stats$PRD)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
@@ -48,7 +48,8 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   \url{https://iucnrle.org/}
 }
 \seealso{
-Other change_functions: \code{\link{futureAreaEstimate}}
+Other change_functions: \code{\link{futureAreaEstimate}},
+  \code{\link{sequentialExtrapolate}}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
