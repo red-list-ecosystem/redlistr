@@ -292,8 +292,8 @@ sequentialExtrapolate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC
   PRD_seq <- vector()
   ARC_seq <- vector()
   for(i in 0:nYears){
-    estimate <- extrapolateEstimate(area2016,
-                                    year.t1 = 2016,
+    estimate <- extrapolateEstimate(A.t1,
+                                    year.t1,
                                     nYears = i,
                                     ARD = ARD,
                                     PRD = PRD,
