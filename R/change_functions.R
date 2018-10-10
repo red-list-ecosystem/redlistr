@@ -260,7 +260,7 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
 #' generates a sequence of estimates at regular time-steps. Useful for
 #' generating a sequence for plotting graphs.
 #'
-#' @inheritParams createGrid
+#' @inheritParams extrapolateEstimate
 #'
 #' @return A dataframe with the forecast year, and a combination of:
 #' \itemize{

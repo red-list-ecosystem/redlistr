@@ -6,6 +6,20 @@
 \usage{
 sequentialExtrapolate(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA)
 }
+\arguments{
+\item{A.t1}{Area at time t1}
+
+\item{year.t1}{Year of time t1}
+
+\item{nYears}{Number of years since t1 for prediction. Use negative
+values for backcasting}
+
+\item{ARD}{Absolute rate of decline}
+
+\item{PRD}{Proportional rate of decline}
+
+\item{ARC}{Annual rate of change}
+}
 \value{
 A dataframe with the forecast year, and a combination of:
 \itemize{
