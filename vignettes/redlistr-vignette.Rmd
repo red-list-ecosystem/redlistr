@@ -20,6 +20,7 @@ We begin by loading the packages we need for the assessment. Please ensure
 that these are already installed.
 ```{r Loading packages, message=FALSE}
 library(rgeos)
+library(rgdal)
 library(redlistr)
 ```
 
