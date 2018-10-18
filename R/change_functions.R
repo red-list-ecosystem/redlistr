@@ -243,7 +243,7 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
     out <- cbind(out, A.PRD.t3 = A.PRD.t3)
   }
   if(!is.na(ARC)){
-    A.ARC.t3 <- A.t1 * (1 + ARC/100)^nYears
+    A.ARC.t3 <- A.t1 * exp(ARC/100*nYears)
     if(A.ARC.t3 < 0) A.ARC.t3 = 0
     out <- cbind(out, A.ARC.t3 = A.ARC.t3)
   }
@@ -252,7 +252,6 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
   }
   return(out)
 }
-
 
 #' Sequential extrapolation Estimate
 #'
