@@ -1,6 +1,6 @@
 Package: redlistr
 Title: Tools for the IUCN Red List of Ecosystems and Species
-Version: 1.0.1.9001
+Version: 1.0.1.9002
 Authors@R: c(
   person("Calvin", "Lee", role = c("cre", "aut"), email = "calvinkflee@gmail.com", comment = c(ORCID = "0000-0001-8277-8614")),
   person("Nicholas", "Murray", role = "aut", email = "murr.nick@gmail.com", comment = c(ORCID = "0000-0002-4008-3053")))
