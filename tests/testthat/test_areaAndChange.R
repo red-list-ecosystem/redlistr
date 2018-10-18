@@ -56,3 +56,20 @@ test_that("decline stats work", {
   expect_equal(dummy.decline.df$ARC, -13.86294, tolerance=1e-5)
   expect_error(getDeclineStats(A.t1, A.t2, year.t1, year.t2))
 })
+
+test_that("extrapolated estimates are correct", {
+  # Dummy areas and years
+  A.t1 <- 100
+  A.t2 <- 50
+  year.t1 <- 2010
+  year.t2 <- 2015
+  dummy.decline.df <- getDeclineStats(A.t1, A.t2, year.t1, year.t2,
+                                      methods = c('ARD', 'PRD', 'ARC'))
+  dummy_extrapolate_df <- extrapolateEstimate(A.t1, year.t1, 5,
+                                              ARD = dummy.decline.df$ARD,
+                                              PRD = dummy.decline.df$PRD,
+                                              ARC = dummy.decline.df$ARC)
+  expect_equal(dummy_extrapolate_df$A.ARD.t3, A.t2)
+  expect_equal(dummy_extrapolate_df$A.PRD.t3, A.t2)
+  expect_equal(dummy_extrapolate_df$A.ARC.t3, A.t2)
+})

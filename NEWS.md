@@ -1,3 +1,7 @@
+# redlistr 1.0.1.9002
+* Fixed ARC calculation in extrapolateEstimate.
+* Added tests to ensure extrapolateEstimate calculations are correct.
+
 # redlistr 1.0.1.9001
 * Added sequentialExtrapolate to return sequence of estimates calculated by the
 selected algorithms.
