@@ -102,7 +102,7 @@ getAreaLoss <- function(x, y){
 #' Change statistics.
 #'
 #' \code{getDeclineStats} calculates the Proportional Rate of Decline (PRD),
-#' Absolute Rate of Decline (ARD) and Absolute Rate of Change (ARC), given two
+#' Absolute Rate of Decline (ARD) and Annual Rate of Change (ARC), given two
 #' areas at two points in time. Also provides the total area difference. Inputs
 #' are usually the results from \code{getArea}.
 #'
@@ -118,7 +118,7 @@ getAreaLoss <- function(x, y){
 #' \itemize{
 #'  \item Proportional Rate of Decline (PRD)
 #'  \item Absolute Rate of Decline (ARD)
-#'  \item Absolute Rate of Change (ARC)
+#'  \item Annual Rate of Change (ARC)
 #'  }
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -145,7 +145,7 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
   }
   if(any(methods == 'ARD')){
     ARD <- -((A.t2-A.t1)/(year.t2-year.t1))
-    # Absolute rate of change (also known as Annual Change(R)) in Puyrvaud
+    # Absolute rate of decline (also known as Annual Change(q)) in Puyrvaud
     out <- cbind(out, ARD = ARD)
   }
   if(any(methods == 'PRD')){
@@ -176,7 +176,7 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 #' \itemize{
 #'  \item Future area as estimated with absolute rate of decline (ARD)
 #'  \item Future area as estimated with proportional rate of decline (PRD)
-#'  \item Future area as estimated with absolute rate of change (ARC)
+#'  \item Future area as estimated with annual rate of change (ARC)
 #'  }
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -210,7 +210,7 @@ futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = 
 #' \itemize{
 #'  \item Values as extrapolated with absolute rate of decline (ARD)
 #'  \item Values as extrapolated with proportional rate of decline (PRD)
-#'  \item Values as extrapolated with absolute rate of change (ARC)
+#'  \item Values as extrapolated with annual rate of change (ARC)
 #'  }
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -253,7 +253,7 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
   return(out)
 }
 
-#' Sequential extrapolation Estimate
+#' Sequential extrapolation estimate
 #'
 #' \code{sequentialExtrapolate} uses rates of decline from getDeclineStats and
 #' generates a sequence of estimates at regular time-steps. Useful for
@@ -265,7 +265,7 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
 #' \itemize{
 #'  \item Sequence of values as extrapolated with absolute rate of decline (ARD)
 #'  \item Sequence of values as extrapolated with proportional rate of decline (PRD)
-#'  \item Sequence of values as extrapolated with absolute rate of change (ARC)
+#'  \item Sequence of values as extrapolated with annual rate of change (ARC)
 #'  }
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
 #' @family change_functions

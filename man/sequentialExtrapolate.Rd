@@ -2,7 +2,7 @@
 % Please edit documentation in R/change_functions.R
 \name{sequentialExtrapolate}
 \alias{sequentialExtrapolate}
-\title{Sequential extrapolation Estimate}
+\title{Sequential extrapolation estimate}
 \usage{
 sequentialExtrapolate(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA)
 }
@@ -25,7 +25,7 @@ A dataframe with the forecast year, and a combination of:
 \itemize{
  \item Sequence of values as extrapolated with absolute rate of decline (ARD)
  \item Sequence of values as extrapolated with proportional rate of decline (PRD)
- \item Sequence of values as extrapolated with absolute rate of change (ARC)
+ \item Sequence of values as extrapolated with annual rate of change (ARC)
  }
 }
 \description{

@@ -25,7 +25,7 @@ A dataframe with the forecast year, and a combination of:
 \itemize{
  \item Values as extrapolated with absolute rate of decline (ARD)
  \item Values as extrapolated with proportional rate of decline (PRD)
- \item Values as extrapolated with absolute rate of change (ARC)
+ \item Values as extrapolated with annual rate of change (ARC)
  }
 }
 \description{

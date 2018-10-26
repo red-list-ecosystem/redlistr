@@ -24,7 +24,7 @@ A dataframe with the forecast year, and a combination of:
 \itemize{
  \item Future area as estimated with absolute rate of decline (ARD)
  \item Future area as estimated with proportional rate of decline (PRD)
- \item Future area as estimated with absolute rate of change (ARC)
+ \item Future area as estimated with annual rate of change (ARC)
  }
 }
 \description{
