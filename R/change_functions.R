@@ -26,28 +26,28 @@ getArea <- function(x, value.to.count){
     if(length(raster::unique(x)) != 1 & missing(value.to.count)){
       warning("The input raster is not binary, counting ALL non NA cells\n")
       cell.res <- res(x)
-      cell.width <- cell.res[1]
+      cell.area <- cell.res[1] * cell.res[2]
       x.df <- plyr::count(values(x))
       n.cell <- sum(x.df[which(!is.na(x.df[, 1])), ]$freq)
-      aream2 <- (cell.width * cell.width) * n.cell
+      aream2 <- cell.area * n.cell
       areakm2 <- aream2/1000000
       return (areakm2)
     }
     else if(length(raster::unique(x)) != 1){
       cell.res <- res(x)
-      cell.width <- cell.res[1]
+      cell.area <- cell.res[1] * cell.res[2]
       x.df <- plyr::count(values(x))
       n.cell <- x.df[which(x.df[, 1] == value.to.count), ]$freq
-      aream2 <- (cell.width * cell.width) * n.cell
+      aream2 <- cell.area * n.cell
       areakm2 <- aream2/1000000
       return (areakm2)
     }
     else{
       cell.res <- res(x)
-      cell.width <- cell.res[1]
+      cell.area <- cell.res[1] * cell.res[2]
       x.df <- plyr::count(values(x))
       n.cell <- x.df[which(!is.na(x.df[,1])), ]$freq
-      aream2 <- (cell.width * cell.width) * n.cell
+      aream2 <- cell.area * n.cell
       areakm2 <- aream2/1000000
       return (areakm2)
     }
