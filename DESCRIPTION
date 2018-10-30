@@ -2,8 +2,12 @@ Package: redlistr
 Title: Tools for the IUCN Red List of Ecosystems and Species
 Version: 1.0.1.9002
 Authors@R: c(
-  person("Calvin", "Lee", role = c("cre", "aut"), email = "calvinkflee@gmail.com", comment = c(ORCID = "0000-0001-8277-8614")),
-  person("Nicholas", "Murray", role = "aut", email = "murr.nick@gmail.com", comment = c(ORCID = "0000-0002-4008-3053")))
+  person("Calvin", "Lee", role = c("cre", "aut"),
+    email = "calvinkflee@gmail.com",
+    comment = c(ORCID = "0000-0001-8277-8614")),
+  person("Nicholas", "Murray", role = "aut",
+    email = "murr.nick@gmail.com",
+    comment = c(ORCID = "0000-0002-4008-3053")))
 Description: A toolbox created by members of the International Union for
     Conservation of Nature (IUCN) Red List of Ecosystems Committee for
     Scientific Standards. Primarily, it is a set of tools suitable
