@@ -2,6 +2,7 @@
 * Fixed ARC calculation in extrapolateEstimate.
 * Added tests to ensure extrapolateEstimate calculations are correct.
 * Renamed ARC to Annual Rate of Change
+* Fixed getArea when raster cells are not squares
 
 # redlistr 1.0.1.9001
 * Added sequentialExtrapolate to return sequence of estimates calculated by the
