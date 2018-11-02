@@ -1,6 +1,12 @@
 ---
-title: "Iteration examples"
-output: pdf_document
+title: "Iteration Examples"
+author: "Calvin K.F. Lee, Nicholas J. Murray"
+date: "2018-10-25"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Iteration Examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 A major motivation we have when developing `redlistr` was to allow users to
