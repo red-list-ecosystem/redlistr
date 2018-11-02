@@ -14,9 +14,9 @@ test_that("accepts different input rasters", {
   r.multiple <- r
   values(r.multiple) <- rep(c(1:10), 10)
 
-  expect_equal(getArea(r.bin), 0.1296)
+  expect_equal(getArea(r.bin), 0.0648)
   expect_warning(getArea(r.multiple), "The input raster is not binary, counting ALL non NA cells\n")
-  expect_equal(getArea(r.multiple, 1), 0.01296)
+  expect_equal(getArea(r.multiple, 1), 0.00648)
 })
 
 test_that("output is a single value", {
