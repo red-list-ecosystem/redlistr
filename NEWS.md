@@ -1,3 +1,6 @@
+# redlistr 1.0.2
+* Submission of update to CRAN with improvements from reviewers.
+
 # redlistr 1.0.1.9002
 * Fixed ARC calculation in extrapolateEstimate.
 * Added tests to ensure extrapolateEstimate calculations are correct.
