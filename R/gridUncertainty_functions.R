@@ -44,8 +44,8 @@ gridUncertaintyBase <- function(input.data, grid.size,
   y.shift <- seq(0, grid.size, intervals)
   y.shift <- y.shift[1:length(y.shift)-1]
   # Create the movement grid with jiggle
-  shift.grid <- expand.grid(x.shift = (x.shift + sample(0:(grid.size*0.05), 1)),
-                            y.shift = (y.shift + sample(0:(grid.size*0.05), 1)))
+  shift.grid <- expand.grid(x.shift = (x.shift + sample(0:(intervals*0.05), 1)),
+                            y.shift = (y.shift + sample(0:(intervals*0.05), 1)))
 
   if(restriction){ # Only modift shift.grid when restriction = T
     # apply to get index of the restricted shift.grid we want
