@@ -374,8 +374,8 @@ gridUncertaintySimulation <- function(input.data, grid.size, simulations,
     results <- gridUncertaintyBase(input.data = input.data,
                                grid.size = grid.size, splits = i,
                                min.percent.rule = min.percent.rule, percent = percent)
-    out.df[i, 2] <- results$stats$min.AOO
-    out.df[i, 3] <- results$stats$max.AOO
+    out.df[i, 2] <- results$summary.df$min.AOO
+    out.df[i, 3] <- results$summary.df$max.AOO
   }
   return(out.df)
 }

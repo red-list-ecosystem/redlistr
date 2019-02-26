@@ -1,3 +1,6 @@
+# redlistr 1.0.2.9001
+* Fixed gridUncertaintySimulation.
+
 # redlistr 1.0.2.9000
 * Changed the way the random jittering in gridUncertainty works to be more
 useful as the splits get smaller.
