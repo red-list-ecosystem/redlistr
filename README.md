@@ -5,6 +5,8 @@ redlistr
 
 [![Build Status](https://travis-ci.org/red-list-ecosystem/redlistr.svg?branch=master)](https://travis-ci.org/red-list-ecosystem/redlistr)
 
+`redlistr` is an R package that contains a set of tools suitable for calculating the metrics required for making assessments of species and ecosystems against the IUCN Red List of Threatened Species and the IUCN Red List of Ecosystems categories and criteria.The paper describing `redlistr` has been published on Ecography and is available [here](https://onlinelibrary.wiley.com/doi/full/10.1111/ecog.04143).
+
 > important note: [rredlist](https://github.com/ropensci/rredlist) is a different package that works with the IUCN Red List of Threatened Species' API.
 
 Overview
@@ -20,7 +22,7 @@ We also assume that you are reasonably familiar with the `R` programming languag
 
 For a more detailed tutorial explaining how to use this package, please refer to the 'Calculating spatial metrics for IUCN red list assessments' vignette available with the package.
 
-Lastly, this is a work in progress and we aim to continually add new functions to newer versions of package. Suggestions are welcomed, as would offers for collaborative development.
+Lastly, this is a work in progress and we aim to continually add new functions to newer versions of package. Suggestions are welcomed, as are offers for collaborative development.
 
 Installation
 ------------
