@@ -67,7 +67,7 @@ gridUncertaintyBase <- function(input.data, grid.size,
     # Pull out the values for each shift
     current.xshift <- gridList["x.shift"]
     current.yshift <- gridList["y.shift"]
-    grid.shift <- shift(grid, x = current.xshift, y = current.yshift)
+    grid.shift <- shift(grid, current.xshift, current.yshift)
     return(grid.shift)
   })
   AOO.list <- lapply(grid.shifted.list, getAOOSilent, # List of AOO for each scenario
@@ -133,7 +133,7 @@ gridUncertaintyRandomManual <- function(input.data, grid.size, n.sim = 10,
     x.shift <- sample(-grid.size:grid.size, 1)
     y.shift <- sample(-grid.size:grid.size, 1)
     dist.move <- sqrt((x.shift^2)+(y.shift^2)) # Total distance moved using Pythagoras
-    shifted.grid <- shift(grid, x = x.shift, y = y.shift)
+    shifted.grid <- shift(grid, x.shift, y.shift)
     AOO <- getAOOSilent(input.data = input.data,
                         grid = shifted.grid, min.percent.rule = min.percent.rule,
                         percent = percent) # get the AOO for each sampled grid
@@ -212,7 +212,7 @@ gridUncertaintyRandom <- function(input.data, grid.size, n.AOO.improvement,
     x.shift <- sample(-grid.size:grid.size, 1)
     y.shift <- sample(-grid.size:grid.size, 1)
     dist.move <- sqrt((x.shift^2)+(y.shift^2)) # Total distance moved using Pythagoras
-    shifted.grid <- shift(grid, x = x.shift, y = y.shift)
+    shifted.grid <- shift(grid, x.shift, y.shift)
     AOO <- getAOOSilent(input.data = input.data,
                         grid = shifted.grid, min.percent.rule = min.percent.rule,
                         percent = percent) # get the AOO for each sampled grid
@@ -230,7 +230,7 @@ gridUncertaintyRandom <- function(input.data, grid.size, n.AOO.improvement,
     x.shift <- sample(-grid.size:grid.size, 1)
     y.shift <- sample(-grid.size:grid.size, 1)
     dist.move <- sqrt((x.shift^2)+(y.shift^2)) # Total distance moved using Pythagoras
-    shifted.grid <- shift(grid, x = x.shift, y = y.shift)
+    shifted.grid <- shift(grid, x.shift, y.shift)
     AOO <- getAOOSilent(input.data = input.data,
                         grid = shifted.grid, min.percent.rule = min.percent.rule,
                         percent = percent) # get the AOO for each sampled grid
