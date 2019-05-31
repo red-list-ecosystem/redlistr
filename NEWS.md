@@ -1,3 +1,7 @@
+# redlistr 1.0.2.9002
+* Updated gridUncertainty functions to ensure compatibility with the parameter
+requirements for raster::shift().
+
 # redlistr 1.0.2.9001
 * Fixed gridUncertaintySimulation.
 
