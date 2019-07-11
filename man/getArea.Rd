@@ -34,3 +34,4 @@ Other Change functions: \code{\link{getAreaLoss}},
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
   \email{calvinkflee@gmail.com}
 }
+\concept{Change functions}

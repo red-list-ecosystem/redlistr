@@ -31,3 +31,4 @@ Other EOO functions: \code{\link{makeEOO}}
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
   \email{calvinkflee@gmail.com}
 }
+\concept{EOO functions}

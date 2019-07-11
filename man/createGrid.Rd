@@ -37,3 +37,4 @@ Other AOO functions: \code{\link{getAOOSilent}},
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
   \email{calvinkflee@gmail.com}
 }
+\concept{AOO functions}

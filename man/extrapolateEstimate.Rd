@@ -4,7 +4,8 @@
 \alias{extrapolateEstimate}
 \title{Extrapolate Estimate}
 \usage{
-extrapolateEstimate(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA)
+extrapolateEstimate(A.t1, year.t1, nYears, ARD = NA, PRD = NA,
+  ARC = NA)
 }
 \arguments{
 \item{A.t1}{Area at time t1}
@@ -55,3 +56,4 @@ Other change_functions: \code{\link{futureAreaEstimate}},
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
   \email{calvinkflee@gmail.com}
 }
+\concept{change_functions}

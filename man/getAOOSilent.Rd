@@ -35,3 +35,4 @@ Other AOO functions: \code{\link{createGrid}},
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
   \email{calvinkflee@gmail.com}
 }
+\concept{AOO functions}

@@ -39,3 +39,4 @@ Other EOO functions: \code{\link{getAreaEOO}}
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
   \email{calvinkflee@gmail.com}
 }
+\concept{EOO functions}

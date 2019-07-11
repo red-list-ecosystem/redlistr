@@ -54,3 +54,4 @@ Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
   \email{calvinkflee@gmail.com}
 }
+\concept{gridUncertainty functions}

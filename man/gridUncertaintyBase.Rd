@@ -4,8 +4,9 @@
 \alias{gridUncertaintyBase}
 \title{Base function to compute AOO with grid uncertainty systematically}
 \usage{
-gridUncertaintyBase(input.data, grid.size, splits, min.percent.rule = FALSE,
-  percent = 1, restriction = FALSE, min.grids.shift)
+gridUncertaintyBase(input.data, grid.size, splits,
+  min.percent.rule = FALSE, percent = 1, restriction = FALSE,
+  min.grids.shift)
 }
 \arguments{
 \item{input.data}{Object of an ecosystem or species distribution. Accepts either
@@ -63,3 +64,4 @@ Other gridUncertainty functions: \code{\link{gridUncertaintyRandomManual}},
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
   \email{calvinkflee@gmail.com}
 }
+\concept{gridUncertainty functions}

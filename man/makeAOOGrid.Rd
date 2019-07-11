@@ -4,7 +4,8 @@
 \alias{makeAOOGrid}
 \title{Create Area of Occupancy (AOO) grid for an ecosystem or species distribution}
 \usage{
-makeAOOGrid(input.data, grid.size, min.percent.rule = FALSE, percent = 1)
+makeAOOGrid(input.data, grid.size, min.percent.rule = FALSE,
+  percent = 1)
 }
 \arguments{
 \item{input.data}{Object of an ecosystem or species distribution. Accepts either
@@ -51,3 +52,4 @@ Other AOO functions: \code{\link{createGrid}},
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
   \email{calvinkflee@gmail.com}
 }
+\concept{AOO functions}
