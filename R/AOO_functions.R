@@ -4,14 +4,15 @@
 #' compute AOO.
 #'
 #' @param input.data Object of an ecosystem or species distribution. Accepts either
-#'   raster or spatial points formats. Please use a CRS with units measured in
+#'   raster or spatial points/polygons formats. Please use a CRS with units measured in
 #'   metres.
 #' @param grid.size A number specifying the width of the desired grid square (in
 #'   same units as your coordinate reference system)
 #' @return A regular grid raster with extent \code{input.data} and grid size
 #'   \code{grid.size}. Each grid square has a unique identification number.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
+#'   \email{calvinkflee@@gmail.com}, José R. Ferrer-paris
+#'   \email{jr.ferrer.paris@@gmail.com}
 #' @family AOO functions
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
@@ -21,15 +22,16 @@
 #' @import raster
 
 createGrid <- function(input.data, grid.size){
-  if(class(input.data) == "SpatialPoints" |
-     class(input.data) == "SpatialPointsDataFrame"){
-    grid <- raster(extent(input.data@bbox))
-    crs(grid) <- crs(input.data)
-  } else grid <- raster(input.data)
-  res(grid) <- grid.size
-  grid.expanded <- extend(grid, c(2,2)) # grow the grid by 2 each way
-  grid.expanded[] <- 1:(ncell(grid.expanded))
-  return (grid.expanded)
+   output.crs <- try(crs(input.data))
+   if (any(class(output.crs) %in% "try-error"))
+      stop("Sorry, input.data is not recognized as spatial data.")
+   if (!grepl("+units=m",output.crs))
+      warning("Please use a CRS with units measured in metres.")
+   output.extent <- extent(input.data)
+   grid <- raster(output.extent,crs=output.crs,res=grid.size)
+   grid.expanded <- extend(grid, c(2,2)) # grow the grid by 2 each way
+   values(grid.expanded) <- 1:(ncell(grid.expanded))
+   return (grid.expanded)
 }
 
 #' Create Area of Occupancy (AOO) grid for an ecosystem or species distribution
@@ -63,8 +65,30 @@ createGrid <- function(input.data, grid.size){
 #' @import raster
 
 makeAOOGrid <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1) {
-  # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
   grid <- createGrid(input.data, grid.size)
+
+  ## if spatial polygons:
+  grid.shp <- rasterToPolygons(grid, dissolve=FALSE)
+  overlap <- over(input.data,grid.shp)
+  AOO.grid <- subset(grid.shp,layer %in% overlap$layer)
+  # intersect from raster package
+  data.intersect <- intersect(alpine.bogs, AOO.grid)
+  # Extract areas from polygon objects then attach as attribute
+  data.intersect$area <- area(data.intersect)
+  AOO.grid@data <- merge(AOO.grid@data,aggregate(area~layer, data=data.intersect, FUN=sum),by="layer",all.x=T)
+  AOO.grid$p.area <- AOO.grid@data$area*100/area(AOO.grid)
+  if (min.percent.rule == TRUE){
+     outGrid <- AOO.grid[AOO.grid$p.area > percent, ]
+   } else {
+      outGrid <- AOO.grid
+   }
+return(outGrid)
+}
+
+
+
+# Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
+
   if(class(input.data) == "RasterLayer"){
     input.points <- rasterToPoints(input.data)
     xy <- as.matrix(input.points)[,c(1,2)] # select xy column only
@@ -73,7 +97,7 @@ makeAOOGrid <- function(input.data, grid.size, min.percent.rule = FALSE, percent
   }
   x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
   names(x) <- 'count'
-  grid.shp <- rasterToPolygons(x, dissolve=FALSE)
+
   if (min.percent.rule == FALSE){
     outGrid <- grid.shp
   }
