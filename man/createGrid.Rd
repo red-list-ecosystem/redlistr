@@ -30,8 +30,10 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   \url{https://iucnrle.org/}
 }
 \seealso{
-Other AOO functions: \code{\link{getAOOSilent}},
-  \code{\link{getAOO}}, \code{\link{makeAOOGrid}}
+Other AOO functions: 
+\code{\link{getAOOSilent}()},
+\code{\link{getAOO}()},
+\code{\link{makeAOOGrid}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

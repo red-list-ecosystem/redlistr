@@ -4,8 +4,14 @@
 \alias{gridUncertaintyRandom}
 \title{Function to compute AOO with grid uncertainty randomly with stop rule}
 \usage{
-gridUncertaintyRandom(input.data, grid.size, n.AOO.improvement,
-  min.percent.rule = FALSE, percent = 1, max.n.rounds = 1000)
+gridUncertaintyRandom(
+  input.data,
+  grid.size,
+  n.AOO.improvement,
+  min.percent.rule = FALSE,
+  percent = 1,
+  max.n.rounds = 1000
+)
 }
 \arguments{
 \item{input.data}{Object of an ecosystem or species distribution. Accepts either
@@ -55,11 +61,12 @@ x <- gridUncertaintyRandom(r1, grid.size = 10000, n.AOO.improvement = 50,
 \seealso{
 \code{\link{createGrid}} \code{\link{getAOOSilent}}
 
-Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
-  \code{\link{gridUncertaintyRandomManual}},
-  \code{\link{gridUncertaintyRestricted}},
-  \code{\link{gridUncertaintySimulation}},
-  \code{\link{gridUncertainty}}
+Other gridUncertainty functions: 
+\code{\link{gridUncertaintyBase}()},
+\code{\link{gridUncertaintyRandomManual}()},
+\code{\link{gridUncertaintyRestricted}()},
+\code{\link{gridUncertaintySimulation}()},
+\code{\link{gridUncertainty}()}
 }
 \author{
 Calvin Lee \email{calvinkflee@gmail.com}. Nicholas Murray

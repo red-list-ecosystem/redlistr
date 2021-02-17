@@ -27,8 +27,9 @@ extent(r1) <- extent(0, 6100, 0, 8700)
 a.r1 <- getArea(r1) # area of all non-NA cells in r1
 }
 \seealso{
-Other Change functions: \code{\link{getAreaLoss}},
-  \code{\link{getDeclineStats}}
+Other Change functions: 
+\code{\link{getAreaLoss}()},
+\code{\link{getDeclineStats}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

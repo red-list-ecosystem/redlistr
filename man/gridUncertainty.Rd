@@ -4,8 +4,13 @@
 \alias{gridUncertainty}
 \title{Function to compute AOO with grid uncertainty systematically with stopping rule}
 \usage{
-gridUncertainty(input.data, grid.size, n.AOO.improvement,
-  min.percent.rule = FALSE, percent = 1)
+gridUncertainty(
+  input.data,
+  grid.size,
+  n.AOO.improvement,
+  min.percent.rule = FALSE,
+  percent = 1
+)
 }
 \arguments{
 \item{input.data}{Object of an ecosystem or species distribution. Accepts either
@@ -47,11 +52,12 @@ x <- gridUncertainty(r1, grid.size = 10000, n.AOO.improvement = 5,
                            min.percent.rule = FALSE, percent = 1)
 }
 \seealso{
-Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
-  \code{\link{gridUncertaintyRandomManual}},
-  \code{\link{gridUncertaintyRandom}},
-  \code{\link{gridUncertaintyRestricted}},
-  \code{\link{gridUncertaintySimulation}}
+Other gridUncertainty functions: 
+\code{\link{gridUncertaintyBase}()},
+\code{\link{gridUncertaintyRandomManual}()},
+\code{\link{gridUncertaintyRandom}()},
+\code{\link{gridUncertaintyRestricted}()},
+\code{\link{gridUncertaintySimulation}()}
 }
 \author{
 Calvin Lee \email{calvinkflee@gmail.com}

@@ -5,8 +5,13 @@
 \title{Function to compute AOO with grid uncertainty systematically with stopping
 rule and restrictions}
 \usage{
-gridUncertaintyRestricted(input.data, grid.size, n.AOO.improvement,
-  min.percent.rule = FALSE, percent = 1)
+gridUncertaintyRestricted(
+  input.data,
+  grid.size,
+  n.AOO.improvement,
+  min.percent.rule = FALSE,
+  percent = 1
+)
 }
 \arguments{
 \item{input.data}{Object of an ecosystem or species distribution. Accepts either
@@ -43,11 +48,12 @@ include those which are already found nearby to ones already with the minimum
 AOO.
 }
 \seealso{
-Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
-  \code{\link{gridUncertaintyRandomManual}},
-  \code{\link{gridUncertaintyRandom}},
-  \code{\link{gridUncertaintySimulation}},
-  \code{\link{gridUncertainty}}
+Other gridUncertainty functions: 
+\code{\link{gridUncertaintyBase}()},
+\code{\link{gridUncertaintyRandomManual}()},
+\code{\link{gridUncertaintyRandom}()},
+\code{\link{gridUncertaintySimulation}()},
+\code{\link{gridUncertainty}()}
 }
 \author{
 Calvin Lee \email{calvinkflee@gmail.com}

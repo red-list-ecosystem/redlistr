@@ -30,8 +30,9 @@ extent(r2) <- extent(0, 6100, 0, 8700)
 a.dif <- getAreaLoss(r1, r2) # distribution rasters
 }
 \seealso{
-Other Change functions: \code{\link{getArea}},
-  \code{\link{getDeclineStats}}
+Other Change functions: 
+\code{\link{getArea}()},
+\code{\link{getDeclineStats}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

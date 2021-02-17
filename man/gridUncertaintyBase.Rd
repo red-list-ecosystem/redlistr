@@ -4,9 +4,15 @@
 \alias{gridUncertaintyBase}
 \title{Base function to compute AOO with grid uncertainty systematically}
 \usage{
-gridUncertaintyBase(input.data, grid.size, splits,
-  min.percent.rule = FALSE, percent = 1, restriction = FALSE,
-  min.grids.shift)
+gridUncertaintyBase(
+  input.data,
+  grid.size,
+  splits,
+  min.percent.rule = FALSE,
+  percent = 1,
+  restriction = FALSE,
+  min.grids.shift
+)
 }
 \arguments{
 \item{input.data}{Object of an ecosystem or species distribution. Accepts either
@@ -54,11 +60,12 @@ the minimum AOO. It is the base function which is used by
 \seealso{
 \code{\link{createGrid}} \code{\link{getAOOSilent}}
 
-Other gridUncertainty functions: \code{\link{gridUncertaintyRandomManual}},
-  \code{\link{gridUncertaintyRandom}},
-  \code{\link{gridUncertaintyRestricted}},
-  \code{\link{gridUncertaintySimulation}},
-  \code{\link{gridUncertainty}}
+Other gridUncertainty functions: 
+\code{\link{gridUncertaintyRandomManual}()},
+\code{\link{gridUncertaintyRandom}()},
+\code{\link{gridUncertaintyRestricted}()},
+\code{\link{gridUncertaintySimulation}()},
+\code{\link{gridUncertainty}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
