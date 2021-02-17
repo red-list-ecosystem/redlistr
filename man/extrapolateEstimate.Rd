@@ -4,8 +4,7 @@
 \alias{extrapolateEstimate}
 \title{Extrapolate Estimate}
 \usage{
-extrapolateEstimate(A.t1, year.t1, nYears, ARD = NA, PRD = NA,
-  ARC = NA)
+extrapolateEstimate(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA)
 }
 \arguments{
 \item{A.t1}{Area at time t1}
@@ -49,8 +48,9 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   \url{https://iucnrle.org/}
 }
 \seealso{
-Other change_functions: \code{\link{futureAreaEstimate}},
-  \code{\link{sequentialExtrapolate}}
+Other change_functions: 
+\code{\link{futureAreaEstimate}()},
+\code{\link{sequentialExtrapolate}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

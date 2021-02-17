@@ -7,9 +7,9 @@
 makeEOO(input.data)
 }
 \arguments{
-\item{input.data}{Object of an ecosystem or species distribution. Accepts either
-raster or spatial points formats. Please use a CRS with units measured in
-metres.}
+\item{input.data}{Object of an ecosystem or species distribution. Accepts
+either raster, spatial points or spatial polygons. Please use a CRS with
+units measured in metres.}
 }
 \value{
 An object of class SpatialPolygons representing the EOO of
@@ -33,7 +33,8 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   \url{https://iucnrle.org/}
 }
 \seealso{
-Other EOO functions: \code{\link{getAreaEOO}}
+Other EOO functions: 
+\code{\link{getAreaEOO}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

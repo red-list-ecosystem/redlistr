@@ -50,8 +50,9 @@ Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
   annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 }
 \seealso{
-Other Change functions: \code{\link{getAreaLoss}},
-  \code{\link{getArea}}
+Other Change functions: 
+\code{\link{getAreaLoss}()},
+\code{\link{getArea}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

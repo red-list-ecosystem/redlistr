@@ -4,8 +4,13 @@
 \alias{gridUncertaintySimulation}
 \title{Function to investigate behaviour of AOO under various split scenarios}
 \usage{
-gridUncertaintySimulation(input.data, grid.size, simulations,
-  min.percent.rule = FALSE, percent = 1)
+gridUncertaintySimulation(
+  input.data,
+  grid.size,
+  simulations,
+  min.percent.rule = FALSE,
+  percent = 1
+)
 }
 \arguments{
 \item{input.data}{Object of an ecosystem or species distribution. Accepts either
@@ -34,11 +39,12 @@ area of occupancy (AOO) grid cells occupied by a species or ecosystem in
 incremental splits using \code{gridUncertaintyBase}.
 }
 \seealso{
-Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
-  \code{\link{gridUncertaintyRandomManual}},
-  \code{\link{gridUncertaintyRandom}},
-  \code{\link{gridUncertaintyRestricted}},
-  \code{\link{gridUncertainty}}
+Other gridUncertainty functions: 
+\code{\link{gridUncertaintyBase}()},
+\code{\link{gridUncertaintyRandomManual}()},
+\code{\link{gridUncertaintyRandom}()},
+\code{\link{gridUncertaintyRestricted}()},
+\code{\link{gridUncertainty}()}
 }
 \author{
 Calvin Lee \email{calvinkflee@gmail.com}

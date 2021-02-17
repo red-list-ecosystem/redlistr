@@ -4,8 +4,13 @@
 \alias{gridUncertaintyRandomManual}
 \title{Manual function to compute AOO with grid uncertainty randomly}
 \usage{
-gridUncertaintyRandomManual(input.data, grid.size, n.sim = 10,
-  min.percent.rule = FALSE, percent = 1)
+gridUncertaintyRandomManual(
+  input.data,
+  grid.size,
+  n.sim = 10,
+  min.percent.rule = FALSE,
+  percent = 1
+)
 }
 \arguments{
 \item{input.data}{Object of an ecosystem or species distribution. Accepts either
@@ -44,11 +49,12 @@ input for the number of simulations to perform.
 \seealso{
 \code{\link{createGrid}} \code{\link{getAOOSilent}}
 
-Other gridUncertainty functions: \code{\link{gridUncertaintyBase}},
-  \code{\link{gridUncertaintyRandom}},
-  \code{\link{gridUncertaintyRestricted}},
-  \code{\link{gridUncertaintySimulation}},
-  \code{\link{gridUncertainty}}
+Other gridUncertainty functions: 
+\code{\link{gridUncertaintyBase}()},
+\code{\link{gridUncertaintyRandom}()},
+\code{\link{gridUncertaintyRestricted}()},
+\code{\link{gridUncertaintySimulation}()},
+\code{\link{gridUncertainty}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

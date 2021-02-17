@@ -25,7 +25,8 @@ EOO.polygon <- makeEOO(r1)
 EOO.area <- getAreaEOO(EOO.polygon)
 }
 \seealso{
-Other EOO functions: \code{\link{makeEOO}}
+Other EOO functions: 
+\code{\link{makeEOO}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee

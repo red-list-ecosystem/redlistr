@@ -28,8 +28,10 @@ Value. The AOO calculated with the input distribution and grid.
 input of the grid parameter. Used for \code{gridUncertainty}.
 }
 \seealso{
-Other AOO functions: \code{\link{createGrid}},
-  \code{\link{getAOO}}, \code{\link{makeAOOGrid}}
+Other AOO functions: 
+\code{\link{createGrid}()},
+\code{\link{getAOO}()},
+\code{\link{makeAOOGrid}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
