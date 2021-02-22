@@ -34,9 +34,9 @@ makeEOO <- function(input.data){
   else {if(class(input.data) == "RasterLayer"){
     # Makes an EOO spatial polygon using the centre point of each pixel as the boundary
     EOO.points <- rasterToPoints(input.data)
-  }
-
+  } else {
     EOO.points <- input.data@coords # accessing coordinates of shapefile
+  }
     if (nrow(EOO.points) <= 1) { # handling single pixels since chull fails for 1 pixel
       EOO.polygon <- rasterToPolygons(input.data)
     } else {
