@@ -20,7 +20,7 @@
 #' @import raster
 
 createGrid <- function(input.data, grid.size){
-  grid <- extent(input.data)
+  grid <- raster(extent(input.data))
   res(grid) <- grid.size
   grid.expanded <- extend(grid, c(2,2)) # grow the grid by 2 each way
   grid.expanded[] <- 1:(ncell(grid.expanded))
