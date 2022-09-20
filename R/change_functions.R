@@ -85,14 +85,14 @@ getArea.SpatialPolygons <- function(x, value.to,count){
 #' @export
 
 getAreaLoss <- function(x, y){
-  if((class(x) == 'RasterLayer') | (class(x) == 'SpatialPolygons')){
+  if(inherits(x, 'RasterLayer') | inherits(x, 'SpatialPolygons')){
     a.x <- getArea(x)
   } else if (is.numeric((x))){
     a.x <- x
   } else {
     stop('x is not a RasterLayer, SpatialPolygons, or Numeric')
   }
-  if((class(y) == 'RasterLayer') | (class(y) == 'SpatialPolygons')){
+  if(inherits(y, 'RasterLayer') | inherits(y, 'SpatialPolygons')){
     a.y <- getArea(y)
   } else if (is.numeric((y))){
     a.y <- y
@@ -102,6 +102,7 @@ getAreaLoss <- function(x, y){
   a.dif.km2 <- (a.x - a.y)
   return(a.dif.km2)
 }
+
 
 #' Change statistics.
 #'
