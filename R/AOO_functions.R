@@ -3,9 +3,9 @@
 #' \code{createGrid} produces empty grid which can be used as the basis to help
 #' compute AOO.
 #'
-#' @param input.data Object of an ecosystem or species distribution. Accepts either
-#'   raster or spatial points formats. Please use a CRS with units measured in
-#'   metres.
+#' @param input.data Object of an ecosystem or species distribution. Accepts
+#'   either raster, spatial points, or spatial polygons formats. Please use a
+#'   CRS with units measured in metres.
 #' @param grid.size A number specifying the width of the desired grid square (in
 #'   same units as your coordinate reference system)
 #' @return A regular grid raster with extent \code{input.data} and grid size
@@ -34,11 +34,11 @@ createGrid <- function(input.data, grid.size){
 
 #' Create Area of Occupancy (AOO) grid for an ecosystem or species distribution
 #'
-#' \code{makeAOOGrid} creates grids for species presence based on the presented
-#' raster object. It includes capability for specifying whether a minimum
-#' percent of the grid cell needs to be occupied before it is counted in the
-#' AOO. This functionality is important for assessing the IUCN Red List of
-#' Ecosystems Criteria B.
+#' \code{makeAOOGrid} is a generic function that creates grids representing the
+#' area of occupancy for distributions based on the input spatial data. It
+#' includes capability for specifying whether a minimum percent of the grid cell
+#' needs to be occupied before it is counted in the AOO. This functionality is
+#' important for assessing the IUCN Red List of Ecosystems Criteria B.
 #'
 #' @inheritParams createGrid
 #' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
@@ -63,29 +63,52 @@ createGrid <- function(input.data, grid.size){
 #' @import raster
 
 makeAOOGrid <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1) {
-  # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-  grid <- createGrid(input.data, grid.size)
-  if(class(input.data) == "RasterLayer"){
+  UseMethod("makeAOOGrid", input.data)
+}
+
+#' @export
+makeAOOGrid.Raster <-
+  function(input.data, grid.size, min.percent.rule = FALSE, percent = 1) {
+    grid <- createGrid(input.data, grid.size)
     input.points <- rasterToPoints(input.data)
     xy <- as.matrix(input.points)[,c(1,2)] # select xy column only
-  } else {
+    x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
+    names(x) <- 'count'
+    grid.shp <- rasterToPolygons(x, dissolve=FALSE)
+    if (min.percent.rule == FALSE){
+      outGrid <- grid.shp
+    }
+    if (min.percent.rule == TRUE){
+      cell.res <- res(input.data)
+      area <- cell.res[1] * cell.res[2]
+      one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
+      threshold <- one.pc.grid * percent / area
+      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshol
+    }
+    return (outGrid)
+  }
+
+#' @export
+makeAOOGrid.SpatialPoints <-
+  function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
+    grid <- createGrid(input.data, grid.size)
     xy <- input.data@coords
+    x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
+    names(x) <- 'count'
+    grid.shp <- rasterToPolygons(x, dissolve=FALSE)
+    if (min.percent.rule == FALSE){
+      outGrid <- grid.shp
+    }
+    if (min.percent.rule == TRUE){
+      cell.res <- res(input.data)
+      area <- cell.res[1] * cell.res[2]
+      one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
+      threshold <- one.pc.grid * percent / area
+      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshol
+    }
+    return (outGrid)
   }
-  x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
-  names(x) <- 'count'
-  grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-  if (min.percent.rule == FALSE){
-    outGrid <- grid.shp
-  }
-  if (min.percent.rule == TRUE){
-    cell.res <- res(input.data)
-    area <- cell.res[1] * cell.res[2]
-    one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
-    threshold <- one.pc.grid * percent / area
-    outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshol
-  }
-  return (outGrid)
-}
+
 
 #' Compute Area of Occupancy (AOO)
 #'
