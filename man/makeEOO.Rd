@@ -7,17 +7,16 @@
 makeEOO(input.data)
 }
 \arguments{
-\item{input.data}{Object of an ecosystem or species distribution. Accepts
-either raster, spatial points or spatial polygons. Please use a CRS with
-units measured in metres.}
+\item{input.data}{Spatial object of an ecosystem or species distribution.
+Please use a CRS with units measured in metres.}
 }
 \value{
 An object of class SpatialPolygons representing the EOO of
   \code{input.data}. Also inherits its CRS.
 }
 \description{
-\code{makeEOO} creates a  minimum convex polygon enclosing all occurrences of
-the provided data
+\code{makeEOO} is a generic function that creates a  minimum convex polygon
+enclosing all occurrences of the provided spatial data
 }
 \examples{
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
