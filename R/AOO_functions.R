@@ -3,9 +3,8 @@
 #' \code{createGrid} produces empty grid which can be used as the basis to help
 #' compute AOO.
 #'
-#' @param input.data Object of an ecosystem or species distribution. Accepts
-#'   either raster, spatial points, or spatial polygons formats. Please use a
-#'   CRS with units measured in metres.
+#' @param input.data Spatial object of an ecosystem or species distribution.
+#'   Please use a CRS with units measured in metres.
 #' @param grid.size A number specifying the width of the desired grid square (in
 #'   same units as your coordinate reference system)
 #' @return A regular grid raster with extent \code{input.data} and grid size
@@ -21,16 +20,13 @@
 #' @import raster
 
 createGrid <- function(input.data, grid.size){
-  if(class(input.data) == "SpatialPoints" |
-     class(input.data) == "SpatialPointsDataFrame"){
-    grid <- raster(extent(input.data@bbox))
-    crs(grid) <- crs(input.data)
-  } else grid <- raster(input.data)
+  grid <- extent(input.data)
   res(grid) <- grid.size
   grid.expanded <- extend(grid, c(2,2)) # grow the grid by 2 each way
   grid.expanded[] <- 1:(ncell(grid.expanded))
   return (grid.expanded)
 }
+
 
 #' Create Area of Occupancy (AOO) grid for an ecosystem or species distribution
 #'
