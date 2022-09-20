@@ -27,7 +27,7 @@
 makeEOO <- function(input.data) UseMethod("makeEOO", input.data)
 
 #' @export
-makeEOO.Raster <- function(input.data){
+makeEOO.RasterLayer <- function(input.data){
   # Makes an EOO spatial polygon using the centre point of each pixel as the
   # boundary
   EOO.points <- rasterToPoints(input.data)

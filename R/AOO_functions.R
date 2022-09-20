@@ -64,7 +64,7 @@ makeAOOGrid <- function(input.data, grid.size, min.percent.rule = FALSE, percent
 }
 
 #' @export
-makeAOOGrid.Raster <-
+makeAOOGrid.RasterLayer <-
   function(input.data, grid.size, min.percent.rule = FALSE, percent = 1) {
     input.points <- rasterToPoints(input.data)
     xy <- as.matrix(input.points)[,c(1,2)] # select xy column only
@@ -173,7 +173,7 @@ getAOOSilent <- function(input.data, grid, min.percent.rule = FALSE, percent = 1
 }
 
 #' @export
-getAOOSilent.Raster <-
+getAOOSilent.RasterLayer <-
   function(input.data, grid, min.percent.rule = FALSE, percent = 1) {
     # Different from getAOO
     grid <- grid
