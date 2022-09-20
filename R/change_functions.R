@@ -25,6 +25,7 @@ getArea <- function(x, value.to.count){
   UseMethod("getArea", x)
 }
 
+#' @export
 getArea.RasterLayer <- function(x, value.to.count){
   if(length(raster::unique(x)) != 1 & missing(value.to.count)){
     warning("The input raster is not binary, counting ALL non NA cells\n")
@@ -56,6 +57,7 @@ getArea.RasterLayer <- function(x, value.to.count){
   }
 }
 
+#' @export
 getArea.SpatialPolygons <- function(x, value.to.count){
   areakm2 <- rgeos::gArea(x) / 1000000
   return(areakm2)
