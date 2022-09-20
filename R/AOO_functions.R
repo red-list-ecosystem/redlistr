@@ -59,13 +59,13 @@ createGrid <- function(input.data, grid.size){
 #' @import raster
 
 makeAOOGrid <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1) {
+  grid <- createGrid(input.data, grid.size)
   UseMethod("makeAOOGrid", input.data)
 }
 
 #' @export
 makeAOOGrid.Raster <-
   function(input.data, grid.size, min.percent.rule = FALSE, percent = 1) {
-    grid <- createGrid(input.data, grid.size)
     input.points <- rasterToPoints(input.data)
     xy <- as.matrix(input.points)[,c(1,2)] # select xy column only
     x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
@@ -87,7 +87,6 @@ makeAOOGrid.Raster <-
 #' @export
 makeAOOGrid.SpatialPoints <-
   function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
-    grid <- createGrid(input.data, grid.size)
     xy <- input.data@coords
     x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
     names(x) <- 'count'
@@ -108,7 +107,6 @@ makeAOOGrid.SpatialPoints <-
 #' @export
 makeAOOGrid.SpatialPolygons <-
   function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
-    grid <- createGrid(input.data, grid.size)
     x <- rasterize(input.data, grid, getCover = T)
     names(x) <- 'cover'
     grid.shp <- rasterToPolygons(x, dissolve = F)
