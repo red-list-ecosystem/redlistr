@@ -1,10 +1,9 @@
 #' Creates Extent of occurrence (EOO) Polygon
 #'
-#' \code{makeEOO} creates a  minimum convex polygon enclosing all occurrences of
-#' the provided data
-#' @param input.data Object of an ecosystem or species distribution. Accepts
-#'   either raster, spatial points or spatial polygons. Please use a CRS with
-#'   units measured in metres.
+#' \code{makeEOO} is a generic function that creates a  minimum convex polygon
+#' enclosing all occurrences of the provided spatial data
+#' @param input.data Spatial object of an ecosystem or species distribution.
+#'   Please use a CRS with units measured in metres.
 #' @return An object of class SpatialPolygons representing the EOO of
 #'   \code{input.data}. Also inherits its CRS.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
@@ -25,29 +24,34 @@
 #' @import raster
 #' @import rgeos
 
-makeEOO <- function(input.data){
-  if (class(input.data) ==  "SpatialPolygonsDataFrame")
-  {
-    # Uses rgeos::gConvexHull
-    EOO.polygon <- rgeos::gConvexHull(input.data)
-  }
-  else {if(class(input.data) == "RasterLayer"){
-    # Makes an EOO spatial polygon using the centre point of each pixel as the boundary
-    EOO.points <- rasterToPoints(input.data)
+makeEOO <- function(input.data) UseMethod("makeEOO", input.data)
+
+#' @export
+makeEOO.Raster <- function(input.data){
+  # Makes an EOO spatial polygon using the centre point of each pixel as the
+  # boundary
+  EOO.points <- rasterToPoints(input.data)
+
+  if (nrow(EOO.points) <= 1) { # handling single pixels since chull fails for 1 pixel
+    EOO.polygon <- rasterToPolygons(input.data)
   } else {
-    EOO.points <- input.data@coords # accessing coordinates of shapefile
-  }
-    if (nrow(EOO.points) <= 1) { # handling single pixels since chull fails for 1 pixel
-      EOO.polygon <- rasterToPolygons(input.data)
-    } else {
-      EOO.chull <- grDevices::chull(EOO.points)
-      EOO.envelope <- EOO.points[EOO.chull,]
-      EOO.polygon <- SpatialPolygons(list(Polygons(list(Polygon(EOO.envelope[, 1:2])),
-                                                   ID=1)))
-    }
+    EOO.chull <- grDevices::chull(EOO.points)
+    EOO.envelope <- EOO.points[EOO.chull,]
+    EOO.polygon <- SpatialPolygons(list(Polygons(list(Polygon(EOO.envelope[, 1:2])),
+                                                 ID=1)))
   }
   proj4string(EOO.polygon) <- crs(input.data)
   return(EOO.polygon)
+}
+
+#' @export
+makeEOO.SpatialPoints <- function(input.data){
+  EOO.polygon <- rgeos::gConvexHull(input.data)
+}
+
+#' @export
+makeEOO.SpatialPolygons <- function(input.data){
+  EOO.polygon <- rgeos::gConvexHull(input.data)
 }
 
 #' Calculates area of the created EOO polygon.
