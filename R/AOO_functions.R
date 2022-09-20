@@ -222,7 +222,7 @@ getAOOSilent.SpatialPoints <-
       area <- cell.res[1] * cell.res[2]
       one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
       threshold <- one.pc.grid * percent / area
-      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshol
+      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshold
     }
 
     # end getAOO
