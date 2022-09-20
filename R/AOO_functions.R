@@ -110,13 +110,13 @@ makeAOOGrid.SpatialPolygons <-
   function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
     grid <- createGrid(input.data, grid.size)
     x <- rasterize(input.data, grid, getCover = T)
-    names(x) <- 'count'
+    names(x) <- 'cover'
     grid.shp <- rasterToPolygons(x, dissolve = F)
     if (min.percent.rule == FALSE){
-      outGrid <- grid.shp[grid.shp$count > 0, ]
+      outGrid <- grid.shp[grid.shp$cover > 0, ]
     }
     if (min.percent.rule == TRUE){
-      outGrid <- grid.shp[grid.shp$count > (percent / 100), ]
+      outGrid <- grid.shp[grid.shp$cover > (percent / 100), ]
     }
     return(outGrid)
   }
