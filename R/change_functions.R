@@ -56,7 +56,7 @@ getArea.RasterLayer <- function(x, value.to.count){
   }
 }
 
-getArea.SpatialPolygons <- function(x, value.to,count){
+getArea.SpatialPolygons <- function(x, value.to.count){
   areakm2 <- rgeos::gArea(x) / 1000000
   return(areakm2)
 }
