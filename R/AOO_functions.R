@@ -105,6 +105,25 @@ makeAOOGrid.SpatialPoints <-
     return (outGrid)
   }
 
+#' @export
+makeAOOGrid.SpatialPolygons <-
+  function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
+    grid <- createGrid(input.data, grid.size)
+    x <- rasterize(input.data, grid, getCover = T)
+    names(x) <- 'count'
+    grid.shp <- rasterToPolygons(x, dissolve = F)
+    if (min.percent.rule == FALSE){
+      outGrid <- grid.shp[grid.shp$count > 0, ]
+    }
+    if (min.percent.rule == TRUE){
+      cell.res <- res(input.data)
+      area <- cell.res[1] * cell.res[2]
+      one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
+      threshold <- one.pc.grid * percent / area
+      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshol
+    }
+    return(outGrid)
+  }
 
 #' Compute Area of Occupancy (AOO)
 #'
