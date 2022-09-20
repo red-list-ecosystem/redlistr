@@ -87,20 +87,16 @@ makeAOOGrid.RasterLayer <-
 #' @export
 makeAOOGrid.SpatialPoints <-
   function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
+    if (min.percent.rule = T) {
+      stop("min.percent.rule cannot be used when input is SpatialPoints as
+           points do not have an inherent area. Consider converting into another
+           format to use this function")
+    }
     xy <- input.data@coords
     x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
     names(x) <- 'count'
     grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-    if (min.percent.rule == FALSE){
-      outGrid <- grid.shp
-    }
-    if (min.percent.rule == TRUE){
-      cell.res <- res(input.data)
-      area <- cell.res[1] * cell.res[2]
-      one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
-      threshold <- one.pc.grid * percent / area
-      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshol
-    }
+    outGrid <- grid.shp
     return (outGrid)
   }
 
@@ -205,6 +201,13 @@ getAOOSilent.RasterLayer <-
 #' @export
 getAOOSilent.SpatialPoints <-
   function(input.data, grid, min.percent.rule = FALSE, percent = 1){
+
+    if (min.percent.rule = T) {
+      stop("min.percent.rule cannot be used when input is SpatialPoints as
+           points do not have an inherent area. Consider converting into another
+           format to use this function")
+    }
+
     # Different from getAOO
     grid <- grid
     grid.size <- res(grid)
@@ -214,16 +217,7 @@ getAOOSilent.SpatialPoints <-
     x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
     names(x) <- 'count'
     grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-    if (min.percent.rule == FALSE){
-      outGrid <- grid.shp
-    }
-    if (min.percent.rule == TRUE){
-      cell.res <- res(input.data)
-      area <- cell.res[1] * cell.res[2]
-      one.pc.grid <- grid.size[1] * grid.size[2] / 100 # 1pc of grid cell
-      threshold <- one.pc.grid * percent / area
-      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshold
-    }
+    outGrid <- grid.shp
 
     # end getAOO
     AOO.number <- length(outGrid)
