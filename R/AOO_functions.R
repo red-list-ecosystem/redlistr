@@ -87,7 +87,7 @@ makeAOOGrid.RasterLayer <-
 #' @export
 makeAOOGrid.SpatialPoints <-
   function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
-    if (min.percent.rule = T) {
+    if (min.percent.rule == T) {
       stop("min.percent.rule cannot be used when input is SpatialPoints as
            points do not have an inherent area. Consider converting into another
            format to use this function")
@@ -202,7 +202,7 @@ getAOOSilent.RasterLayer <-
 getAOOSilent.SpatialPoints <-
   function(input.data, grid, min.percent.rule = FALSE, percent = 1){
 
-    if (min.percent.rule = T) {
+    if (min.percent.rule == T) {
       stop("min.percent.rule cannot be used when input is SpatialPoints as
            points do not have an inherent area. Consider converting into another
            format to use this function")
