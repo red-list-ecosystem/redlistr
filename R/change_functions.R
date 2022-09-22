@@ -22,39 +22,45 @@ getArea <- function(x, value.to.count){
   if(isLonLat(x)){
     stop('Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
   }
-  if(class(x) == 'RasterLayer'){
-    if(length(raster::unique(x)) != 1 & missing(value.to.count)){
-      warning("The input raster is not binary, counting ALL non NA cells\n")
-      cell.res <- res(x)
-      cell.area <- cell.res[1] * cell.res[2]
-      x.df <- plyr::count(values(x))
-      n.cell <- sum(x.df[which(!is.na(x.df[, 1])), ]$freq)
-      aream2 <- cell.area * n.cell
-      areakm2 <- aream2/1000000
-      return (areakm2)
-    }
-    else if(length(raster::unique(x)) != 1){
-      cell.res <- res(x)
-      cell.area <- cell.res[1] * cell.res[2]
-      x.df <- plyr::count(values(x))
-      n.cell <- x.df[which(x.df[, 1] == value.to.count), ]$freq
-      aream2 <- cell.area * n.cell
-      areakm2 <- aream2/1000000
-      return (areakm2)
-    }
-    else{
-      cell.res <- res(x)
-      cell.area <- cell.res[1] * cell.res[2]
-      x.df <- plyr::count(values(x))
-      n.cell <- x.df[which(!is.na(x.df[,1])), ]$freq
-      aream2 <- cell.area * n.cell
-      areakm2 <- aream2/1000000
-      return (areakm2)
-    }
-  } else if(class(x) == 'SpatialPolygons'){
-    areakm2 <- rgeos::gArea(x) / 1000000
-    return(areakm2)
-  } else stop('Input must be either RasterLayer or SpatialPolygons')
+  UseMethod("getArea", x)
+}
+
+#' @export
+getArea.RasterLayer <- function(x, value.to.count){
+  if(length(raster::unique(x)) != 1 & missing(value.to.count)){
+    warning("The input raster is not binary, counting ALL non NA cells\n")
+    cell.res <- res(x)
+    cell.area <- cell.res[1] * cell.res[2]
+    x.df <- plyr::count(values(x))
+    n.cell <- sum(x.df[which(!is.na(x.df[, 1])), ]$freq)
+    aream2 <- cell.area * n.cell
+    areakm2 <- aream2/1000000
+    return (areakm2)
+  }
+  else if(length(raster::unique(x)) != 1){
+    cell.res <- res(x)
+    cell.area <- cell.res[1] * cell.res[2]
+    x.df <- plyr::count(values(x))
+    n.cell <- x.df[which(x.df[, 1] == value.to.count), ]$freq
+    aream2 <- cell.area * n.cell
+    areakm2 <- aream2/1000000
+    return (areakm2)
+  }
+  else{
+    cell.res <- res(x)
+    cell.area <- cell.res[1] * cell.res[2]
+    x.df <- plyr::count(values(x))
+    n.cell <- x.df[which(!is.na(x.df[,1])), ]$freq
+    aream2 <- cell.area * n.cell
+    areakm2 <- aream2/1000000
+    return (areakm2)
+  }
+}
+
+#' @export
+getArea.SpatialPolygons <- function(x, value.to.count){
+  areakm2 <- rgeos::gArea(x) / 1000000
+  return(areakm2)
 }
 
 #' Area change between two inputs in km2
@@ -81,14 +87,14 @@ getArea <- function(x, value.to.count){
 #' @export
 
 getAreaLoss <- function(x, y){
-  if((class(x) == 'RasterLayer') | (class(x) == 'SpatialPolygons')){
+  if(inherits(x, 'RasterLayer') | inherits(x, 'SpatialPolygons')){
     a.x <- getArea(x)
   } else if (is.numeric((x))){
     a.x <- x
   } else {
     stop('x is not a RasterLayer, SpatialPolygons, or Numeric')
   }
-  if((class(y) == 'RasterLayer') | (class(y) == 'SpatialPolygons')){
+  if(inherits(y, 'RasterLayer') | inherits(y, 'SpatialPolygons')){
     a.y <- getArea(y)
   } else if (is.numeric((y))){
     a.y <- y
@@ -98,6 +104,7 @@ getAreaLoss <- function(x, y){
   a.dif.km2 <- (a.x - a.y)
   return(a.dif.km2)
 }
+
 
 #' Change statistics.
 #'

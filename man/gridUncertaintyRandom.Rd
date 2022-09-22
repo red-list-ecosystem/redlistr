@@ -14,9 +14,8 @@ gridUncertaintyRandom(
 )
 }
 \arguments{
-\item{input.data}{Object of an ecosystem or species distribution. Accepts either
-raster or spatial points formats. Please use a CRS with units measured in
-metres.}
+\item{input.data}{Spatial object of an ecosystem or species distribution.
+Please use a CRS with units measured in metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
 same units as your coordinate reference system)}
@@ -55,7 +54,7 @@ stops when the AOO no longer improves after a specified number of rounds.
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
 extent(r1) <- extent(0, 6100, 0, 8700)
-x <- gridUncertaintyRandom(r1, grid.size = 10000, n.AOO.improvement = 50,
+x <- gridUncertaintyRandom(r1, grid.size = 1000, n.AOO.improvement = 50,
                            min.percent.rule = TRUE, percent = 1)
 }
 \seealso{
