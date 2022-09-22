@@ -1,5 +1,3 @@
-context("Get Area")
-
 test_that("input cannot be in lonlat crs",{
   r.crs <- raster(nrows=10, ncols=10)
   expect_error(getArea(r.crs), "Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system")
