@@ -1,6 +1,6 @@
 Package: redlistr
 Title: Tools for the IUCN Red List of Ecosystems and Species
-Version: 1.0.4
+Version: 1.0.3.9000
 Authors@R: c(
   person("Calvin", "Lee", role = c("cre", "aut"),
     email = "calvinkflee@gmail.com",

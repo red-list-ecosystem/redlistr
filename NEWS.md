@@ -1,3 +1,9 @@
+# redlistr 1.0.3.9000
+* Updated functions to be generic for easier future implementation of different
+spatial formats as inputs.
+* Added new functionality to makeAOOGrid to allow Spatial Polygons as input.
+* Added additional tests for AOO functions.
+
 # redlistr 1.0.3
 * Submission of update to CRAN to ensure compatibility with raster.
 
