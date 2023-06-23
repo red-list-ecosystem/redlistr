@@ -56,6 +56,7 @@ makeEOO.SpatialPolygons <- function(input.data){
   return(EOO.polygon)
 }
 
+#' @export
 makeEOO.SpatVector <- function(input.data){
   EOO.polygon <- convHull(input.data)
   return(EOO.polygon)
