@@ -23,7 +23,6 @@
 #' @import sp
 #' @import raster
 #' @import terra
-#' @import rgeos
 
 makeEOO <- function(input.data) UseMethod("makeEOO", input.data)
 
