@@ -4,7 +4,7 @@
 #' enclosing all occurrences of the provided spatial data
 #' @param input.data Spatial object of an ecosystem or species distribution.
 #'   Please use a CRS with units measured in metres.
-#' @return An object of class SpatialPolygons representing the EOO of
+#' @return An object of class SpatVect representing the EOO of
 #'   \code{input.data}. Also inherits its CRS.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -21,6 +21,7 @@
 #' EOO.polygon <- makeEOO(r1)
 #' @export
 #' @import sp
+#' @import raster
 #' @import terra
 #' @import rgeos
 
@@ -41,13 +42,12 @@ makeEOO.RasterLayer <- function(input.data){
                                                  ID=1)))
   }
   proj4string(EOO.polygon) <- crs(input.data)
-  return(EOO.polygon)
+  # Convert to a SpatVect
+  return(vect(EOO.polygon))
 }
 
 #' @export
 makeEOO.SpatRaster <- function(input.data){
-  # Makes an EOO spatial polygon using the centre point of each pixel as the
-  # boundary
   EOO.points <- as.points(input.data)
   EOO.polygon <- convHull[EOO.points]
   return(EOO.polygon)
@@ -56,11 +56,15 @@ makeEOO.SpatRaster <- function(input.data){
 #' @export
 makeEOO.SpatialPoints <- function(input.data){
   EOO.polygon <- rgeos::gConvexHull(input.data)
+  # Convert to a SpatVect
+  return(vect(EOO.polygon))
 }
 
 #' @export
 makeEOO.SpatialPolygons <- function(input.data){
   EOO.polygon <- rgeos::gConvexHull(input.data)
+  # Convert to a SpatVect
+  return(vect(EOO.polygon))
 }
 
 makeEOO.SpatVector <- function(input.data){
