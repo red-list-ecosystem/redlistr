@@ -49,9 +49,8 @@ makeEOO.SpatRaster <- function(input.data){
   # Makes an EOO spatial polygon using the centre point of each pixel as the
   # boundary
   EOO.points <- as.points(input.data)
-  EOO.coord <- geom(EOO.points)[, c("x", "y")]
-  EOO.chull <- grDevices::chull(EOO.coords)
-  EOO.polygon <- EOO.points[EOO.chull]
+  EOO.polygon <- convHull[EOO.points]
+  return(EOO.polygon)
 }
 
 #' @export
@@ -62,6 +61,11 @@ makeEOO.SpatialPoints <- function(input.data){
 #' @export
 makeEOO.SpatialPolygons <- function(input.data){
   EOO.polygon <- rgeos::gConvexHull(input.data)
+}
+
+makeEOO.SpatVector <- function(input.data){
+  EOO.polygon <- convHull(input.data)
+  return(EOO.polygon)
 }
 
 #' Calculates area of the created EOO polygon.
