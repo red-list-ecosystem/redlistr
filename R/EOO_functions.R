@@ -29,21 +29,11 @@ makeEOO <- function(input.data) UseMethod("makeEOO", input.data)
 
 #' @export
 makeEOO.RasterLayer <- function(input.data){
-  # Makes an EOO spatial polygon using the centre point of each pixel as the
-  # boundary
-  EOO.points <- rasterToPoints(input.data)
+  input_rast <- rast(input.data)
 
-  if (nrow(EOO.points) <= 1) { # handling single pixels since chull fails for 1 pixel
-    EOO.polygon <- rasterToPolygons(input.data)
-  } else {
-    EOO.chull <- grDevices::chull(EOO.points)
-    EOO.envelope <- EOO.points[EOO.chull,]
-    EOO.polygon <- SpatialPolygons(list(Polygons(list(Polygon(EOO.envelope[, 1:2])),
-                                                 ID=1)))
-  }
-  proj4string(EOO.polygon) <- crs(input.data)
-  # Convert to a SpatVect
-  return(vect(EOO.polygon))
+  EOO.points <- as.point(input_rast)
+  EOO.polygon <- convHull[EOO.points]
+  return(EOO.polygon)
 }
 
 #' @export
@@ -55,16 +45,16 @@ makeEOO.SpatRaster <- function(input.data){
 
 #' @export
 makeEOO.SpatialPoints <- function(input.data){
-  EOO.polygon <- rgeos::gConvexHull(input.data)
-  # Convert to a SpatVect
-  return(vect(EOO.polygon))
+  input_vect <- vect(input.data)
+  EOO.polygon <- convHull(input_vect)
+  return(EOO.polygon)
 }
 
 #' @export
 makeEOO.SpatialPolygons <- function(input.data){
-  EOO.polygon <- rgeos::gConvexHull(input.data)
-  # Convert to a SpatVect
-  return(vect(EOO.polygon))
+  input_vect <- vect(input.data)
+  EOO.polygon <- convHull(input_vect)
+  return(EOO.polygon)
 }
 
 makeEOO.SpatVector <- function(input.data){
