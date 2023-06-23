@@ -19,8 +19,7 @@ of ecosystem distributions.
 We begin by loading the packages we need for the assessment. Please ensure
 that these are already installed.
 ```{r Loading packages, message=FALSE}
-library(rgeos)
-library(rgdal)
+library(sf)
 library(redlistr)
 ```
 
@@ -49,11 +48,11 @@ on the `raster` package can be found
 [here](https://CRAN.R-project.org/package=raster/raster.pdf).
 
 ### Importing data as shapefile or .KML file
-To import data as a shapefile (.shp), we can use the `rgdal::readOGR` function.
+To import data as a shapefile (.shp), we can use the `sf::st_read` function.
 ```{r Importing shapefile, eval=FALSE}
-library(rgdal)
-my.shapefile <- readOGR('./path/to/folder/', 'shapefile.shp')
-my.KML.file <- readOGR('./path/to/folder/kmlfile.kml')
+library(sf)
+my.shapefile <- st_read('./path/to/folder/', 'shapefile.shp')
+my.KML.file <- st_read('./path/to/folder/kmlfile.kml')
 ```
 
 Once these files are imported, they can then be converted into raster format via
@@ -71,12 +70,12 @@ plot(mangrove.2017, add = T, col = "darkorange", legend = FALSE)
 We can see that there has been some change in mangrove cover, although the losses
 appear to be relatively minor.
 
-At this stage it is important to check that the data are georectified (in the right
-location on Earth). This can be acheived by simply plotting the map and checking
-the coordinates. Otherwise,  check the distribution maps against satellite
-images, perhaps by using packages such as `ggmap`, `plotgooglemaps`, `googleVis`
-etc. It is also important to check that the data are suitable for the task at
-hand.
+At this stage it is important to check that the data are georectified (in the
+right location on Earth). This can be acheived by simply plotting the map and
+checking the coordinates. Otherwise,  check the distribution maps against
+satellite images, perhaps by using packages such as `ggmap`, `plotgooglemaps`,
+`googleVis` etc. It is also important to check that the data are suitable for
+the task at hand.
 
 ## 3. Basic information for the data
 We now use some of features of `redlistr` to get some basic information on

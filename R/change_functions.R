@@ -21,6 +21,7 @@
 #' @export
 #' @import raster
 #' @import terra
+#' @import sf
 
 getArea <- function(x, value.to.count, byValue){
   if(isLonLat(x)){
@@ -93,10 +94,8 @@ getArea.sf <- function(x){
 #' Any combinations of these inputs are valid. If using number as input, ensure
 #' it is measured in km2
 #'
-#' @param x RasterLayer or SpatialPolygons object of distribution or Numeric
-#'   representing area in km2
-#' @param y RasterLayer or SpatialPolygons object of distribution or Numeric
-#'   representing area in km2
+#' @param x Spatial obect or numeric representing area in km2
+#' @param y Spatial object or numeric representing area in km2
 #' @return Returns the difference in area of the two inputs in km2
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
