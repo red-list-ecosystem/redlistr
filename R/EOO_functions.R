@@ -31,14 +31,14 @@ makeEOO.RasterLayer <- function(input.data){
   input_rast <- rast(input.data)
 
   EOO.points <- as.points(input_rast)
-  EOO.polygon <- convHull[EOO.points]
+  EOO.polygon <- convHull(EOO.points)
   return(EOO.polygon)
 }
 
 #' @export
 makeEOO.SpatRaster <- function(input.data){
   EOO.points <- as.points(input.data)
-  EOO.polygon <- convHull[EOO.points]
+  EOO.polygon <- convHull(EOO.points)
   return(EOO.polygon)
 }
 
