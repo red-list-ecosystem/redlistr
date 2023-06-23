@@ -1,7 +1,9 @@
 #' Creates Extent of occurrence (EOO) Polygon
 #'
 #' \code{makeEOO} is a generic function that creates a  minimum convex polygon
-#' enclosing all occurrences of the provided spatial data
+#' enclosing all occurrences of the provided spatial data. If the input provided
+#' is a raster layer, the points are taken from a buffer that has the radius of
+#' half of the shorter edge of the pixel around the centroid.
 #' @param input.data Spatial object of an ecosystem or species distribution.
 #'   Please use a CRS with units measured in metres.
 #' @return An object of class SpatVect representing the EOO of
@@ -29,16 +31,17 @@ makeEOO <- function(input.data) UseMethod("makeEOO", input.data)
 #' @export
 makeEOO.RasterLayer <- function(input.data){
   input_rast <- rast(input.data)
-
   EOO.points <- as.points(input_rast)
-  EOO.polygon <- convHull(EOO.points)
+  EOO.buffer <- buffer(EOO.points, min(res(input_rast)) / 2)
+  EOO.polygon <- convHull(EOO.buffer)
   return(EOO.polygon)
 }
 
 #' @export
 makeEOO.SpatRaster <- function(input.data){
   EOO.points <- as.points(input.data)
-  EOO.polygon <- convHull(EOO.points)
+  EOO.buffer <- buffer(EOO.points, min(res(input_rast)) / 2)
+  EOO.polygon <- convHull(EOO.buffer)
   return(EOO.polygon)
 }
 
