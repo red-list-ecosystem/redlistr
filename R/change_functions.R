@@ -1,11 +1,14 @@
 #' Calculates the Area of a Raster.
 #'
 #' \code{getArea} reports the area of a RasterLayer object using the pixel
-#' counting method, or the area of a SpatialPolygons object using rgeos::gArea
+#'  counting method, or terra::expanse for SpatRaster and SpatVector objects,
+#'  or the area of a SpatialPolygons object using rgeos::gArea
 #' @param x Either a RasterLayer or SpatialPolygons object. For a RasterLayer,
 #'   no data value should be NA
 #' @param value.to.count Optional. Value of the cells in a RasterLayer to be
 #'   counted
+#' @param byValue Logical. If TRUE, the area for each unique cell value is
+#'    returned. (Only works with SpatRaster input)
 #' @return The total area of the cells of interest in km2
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -17,8 +20,9 @@
 #' a.r1 <- getArea(r1) # area of all non-NA cells in r1
 #' @export
 #' @import raster
+#' @import terra
 
-getArea <- function(x, value.to.count){
+getArea <- function(x, value.to.count, byValue){
   if(isLonLat(x)){
     stop('Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
   }
@@ -58,9 +62,28 @@ getArea.RasterLayer <- function(x, value.to.count){
 }
 
 #' @export
-getArea.SpatialPolygons <- function(x, value.to.count){
-  areakm2 <- rgeos::gArea(x) / 1000000
-  return(areakm2)
+getArea.SpatVect <- function(x){
+  area <- expanse(x, "km")
+  return(area)
+}
+
+#' @export
+getArea.SpatRaster <- function(x, byValue){
+  area <- expanse(x, "km", byValue)
+  return(area)
+}
+
+#' @export
+getArea.SpatialPolygons <- function(x){
+  sf_polygon <- st_as_sf(x)
+  area <- st_area(sf_polygon)
+  return(area)
+}
+
+#' @export
+getArea.sf <- function(x){
+  area <- st_area(x)
+  return(area)
 }
 
 #' Area change between two inputs in km2
