@@ -4,7 +4,7 @@
 #' enclosing all occurrences of the provided spatial data
 #' @param input.data Spatial object of an ecosystem or species distribution.
 #'   Please use a CRS with units measured in metres.
-#' @return An object of class SpatialPolygons representing the EOO of
+#' @return An object of class SpatVect representing the EOO of
 #'   \code{input.data}. Also inherits its CRS.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -16,12 +16,13 @@
 #'   \url{https://iucnrle.org/}
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
 #' extent(r1) <- extent(0, 6100, 0, 8700)
 #' EOO.polygon <- makeEOO(r1)
 #' @export
 #' @import sp
 #' @import raster
+#' @import terra
 #' @import rgeos
 
 makeEOO <- function(input.data) UseMethod("makeEOO", input.data)
@@ -41,41 +42,56 @@ makeEOO.RasterLayer <- function(input.data){
                                                  ID=1)))
   }
   proj4string(EOO.polygon) <- crs(input.data)
+  # Convert to a SpatVect
+  return(vect(EOO.polygon))
+}
+
+#' @export
+makeEOO.SpatRaster <- function(input.data){
+  EOO.points <- as.points(input.data)
+  EOO.polygon <- convHull[EOO.points]
   return(EOO.polygon)
 }
 
 #' @export
 makeEOO.SpatialPoints <- function(input.data){
   EOO.polygon <- rgeos::gConvexHull(input.data)
+  # Convert to a SpatVect
+  return(vect(EOO.polygon))
 }
 
 #' @export
 makeEOO.SpatialPolygons <- function(input.data){
   EOO.polygon <- rgeos::gConvexHull(input.data)
+  # Convert to a SpatVect
+  return(vect(EOO.polygon))
+}
+
+makeEOO.SpatVector <- function(input.data){
+  EOO.polygon <- convHull(input.data)
+  return(EOO.polygon)
 }
 
 #' Calculates area of the created EOO polygon.
 #'
 #' \code{getAreaEOO} calculates the area of the EOO polygon generated from
 #' \code{makeEOO} the provided data
-#' @param EOO.polygon An object of class SpatialPolygons, usually the output
+#' @param EOO.polygon An object of class SpatVect, usually the output
 #'   from \code{makeEOO}.
+#' @param unit Character. Output unit of area. One of "m", "km", or "ha"
 #' @return The area of the \code{EOO.polygon} in km2
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
 #' extent(r1) <- extent(0, 6100, 0, 8700)
 #' EOO.polygon <- makeEOO(r1)
 #' EOO.area <- getAreaEOO(EOO.polygon)
 #' @export
 
-getAreaEOO <- function(EOO.polygon){
-  # Returns the area of the makeEOO output (spatialpolygons object)
-  EOO.aream2 <- sapply(methods::slot(EOO.polygon, "polygons"), methods::slot, "area")
-  # get the area from the slots in the polygon dataset
-  EOO.areakm2 <- EOO.aream2/1000000
-  return(EOO.areakm2)
+getAreaEOO <- function(EOO.polygon, unit = "km"){
+  EOO.area <- expanse(EOO.polygon, unit)
+  return(EOO.area)
 }
