@@ -2,7 +2,7 @@
 #'
 #' \code{getArea} reports the area of a RasterLayer object using the pixel
 #'  counting method, or terra::expanse for SpatRaster and SpatVector objects,
-#'  or the area of a SpatialPolygons object using rgeos::gArea
+#'  or the area of a SpatialPolygons or sf object using sf::st_area
 #' @param x Either a RasterLayer or SpatialPolygons object. For a RasterLayer,
 #'   no data value should be NA
 #' @param value.to.count Optional. Value of the cells in a RasterLayer to be
@@ -82,15 +82,16 @@ getArea.SpatialPolygons <- function(x){
 
 #' @export
 getArea.sf <- function(x){
-  area <- st_area(x)
-  return(area)
+  area <- st_area(x) / 1000000
+  return(as.numeric(area))
 }
 
 #' Area change between two inputs in km2
 #'
 #' \code{getAreaLoss} reports the difference in area between two inputs. These
-#' can be RasterLayers, SpatialPolygons, or numbers. Any combinations of these
-#' inputs are valid. If using number as input, ensure it is measured in km2
+#' can be RasterLayers, SpatialPolygons, SpatRaster, SpatVect, sf or numbers.
+#' Any combinations of these inputs are valid. If using number as input, ensure
+#' it is measured in km2
 #'
 #' @param x RasterLayer or SpatialPolygons object of distribution or Numeric
 #'   representing area in km2
@@ -110,19 +111,23 @@ getArea.sf <- function(x){
 #' @export
 
 getAreaLoss <- function(x, y){
-  if(inherits(x, 'RasterLayer') | inherits(x, 'SpatialPolygons')){
+  if(inherits(x, 'RasterLayer') | inherits(x, 'SpatialPolygons') |
+     inherits(x, 'SpatRaster') | inherits(x, 'SpatVect') | inherits(x, 'sf')){
     a.x <- getArea(x)
   } else if (is.numeric((x))){
     a.x <- x
   } else {
-    stop('x is not a RasterLayer, SpatialPolygons, or Numeric')
+    stop('x is not a RasterLayer, SpatialPolygons, SpatRaster, SpatVect, sf,
+         or Numeric')
   }
-  if(inherits(y, 'RasterLayer') | inherits(y, 'SpatialPolygons')){
+  if(inherits(y, 'RasterLayer') | inherits(y, 'SpatialPolygons') |
+     inherits(y, 'SpatRaster') | inherits(y, 'SpatVect') | inherits(y, 'sf')){
     a.y <- getArea(y)
   } else if (is.numeric((y))){
     a.y <- y
   } else {
-    stop('y is not a RasterLayer, SpatialPolygons, or Numeric')
+    stop('y is not a RasterLayer, SpatialPolygons, SpatRaster, SpatVect, sf,
+         or Numeric')
   }
   a.dif.km2 <- (a.x - a.y)
   return(a.dif.km2)
