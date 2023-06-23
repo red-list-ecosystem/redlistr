@@ -30,7 +30,7 @@ makeEOO <- function(input.data) UseMethod("makeEOO", input.data)
 makeEOO.RasterLayer <- function(input.data){
   input_rast <- rast(input.data)
 
-  EOO.points <- as.point(input_rast)
+  EOO.points <- as.points(input_rast)
   EOO.polygon <- convHull[EOO.points]
   return(EOO.polygon)
 }
