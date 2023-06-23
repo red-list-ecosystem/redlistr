@@ -16,12 +16,12 @@
 #'   \url{https://iucnrle.org/}
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
 #' extent(r1) <- extent(0, 6100, 0, 8700)
 #' EOO.polygon <- makeEOO(r1)
 #' @export
 #' @import sp
-#' @import raster
+#' @import terra
 #' @import rgeos
 
 makeEOO <- function(input.data) UseMethod("makeEOO", input.data)
@@ -42,6 +42,16 @@ makeEOO.RasterLayer <- function(input.data){
   }
   proj4string(EOO.polygon) <- crs(input.data)
   return(EOO.polygon)
+}
+
+#' @export
+makeEOO.SpatRaster <- function(input.data){
+  # Makes an EOO spatial polygon using the centre point of each pixel as the
+  # boundary
+  EOO.points <- as.points(input.data)
+  EOO.coord <- geom(EOO.points)[, c("x", "y")]
+  EOO.chull <- grDevices::chull(EOO.coords)
+  EOO.polygon <- EOO.points[EOO.chull]
 }
 
 #' @export
