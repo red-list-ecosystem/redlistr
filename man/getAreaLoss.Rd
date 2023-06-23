@@ -7,19 +7,18 @@
 getAreaLoss(x, y)
 }
 \arguments{
-\item{x}{RasterLayer or SpatialPolygons object of distribution or Numeric
-representing area in km2}
+\item{x}{Spatial obect or numeric representing area in km2}
 
-\item{y}{RasterLayer or SpatialPolygons object of distribution or Numeric
-representing area in km2}
+\item{y}{Spatial object or numeric representing area in km2}
 }
 \value{
 Returns the difference in area of the two inputs in km2
 }
 \description{
 \code{getAreaLoss} reports the difference in area between two inputs. These
-can be RasterLayers, SpatialPolygons, or numbers. Any combinations of these
-inputs are valid. If using number as input, ensure it is measured in km2
+can be RasterLayers, SpatialPolygons, SpatRaster, SpatVect, sf or numbers.
+Any combinations of these inputs are valid. If using number as input, ensure
+it is measured in km2
 }
 \examples{
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'

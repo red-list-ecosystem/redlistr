@@ -11,7 +11,7 @@ makeEOO(input.data)
 Please use a CRS with units measured in metres.}
 }
 \value{
-An object of class SpatialPolygons representing the EOO of
+An object of class SpatVect representing the EOO of
   \code{input.data}. Also inherits its CRS.
 }
 \description{
@@ -20,7 +20,7 @@ enclosing all occurrences of the provided spatial data
 }
 \examples{
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
 extent(r1) <- extent(0, 6100, 0, 8700)
 EOO.polygon <- makeEOO(r1)
 }
