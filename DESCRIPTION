@@ -1,6 +1,6 @@
 Package: redlistr
 Title: Tools for the IUCN Red List of Ecosystems and Species
-Version: 1.0.3.9000
+Version: 1.0.4
 Authors@R: c(
     person("Calvin", "Lee", , "calvinkflee@gmail.com", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0001-8277-8614")),
@@ -25,8 +25,7 @@ Depends:
 Imports:
     grDevices,
     methods,
-    plyr,
-    rgeos
+    plyr
 Suggests:
     devtools,
     knitr,
