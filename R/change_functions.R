@@ -23,7 +23,7 @@
 #' @import terra
 #' @import sf
 
-getArea <- function(x, value.to.count, byValue){
+getArea <- function(x, ...){
   if(isLonLat(x)){
     stop('Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
   }
@@ -31,7 +31,7 @@ getArea <- function(x, value.to.count, byValue){
 }
 
 #' @export
-getArea.RasterLayer <- function(x, value.to.count){
+getArea.RasterLayer <- function(x, value.to.count, ...){
   if(length(raster::unique(x)) != 1 & missing(value.to.count)){
     warning("The input raster is not binary, counting ALL non NA cells\n")
     cell.res <- res(x)
@@ -63,26 +63,26 @@ getArea.RasterLayer <- function(x, value.to.count){
 }
 
 #' @export
-getArea.SpatVect <- function(x){
+getArea.SpatVect <- function(x, ...){
   area <- expanse(x, "km")
   return(area)
 }
 
 #' @export
-getArea.SpatRaster <- function(x, byValue){
+getArea.SpatRaster <- function(x, byValue, ...){
   area <- expanse(x, "km", byValue)
   return(area)
 }
 
 #' @export
-getArea.SpatialPolygons <- function(x){
+getArea.SpatialPolygons <- function(x, ...){
   sf_polygon <- st_as_sf(x)
   area <- st_area(sf_polygon)
   return(area)
 }
 
 #' @export
-getArea.sf <- function(x){
+getArea.sf <- function(x, ...){
   area <- st_area(x) / 1000000
   return(as.numeric(area))
 }

@@ -36,7 +36,7 @@ test_that("accepts SpatialPolygons", {
   my_polygons = Polygons(list(my_polygon), ID = "A")
   dummy_polygon = SpatialPolygons(list(my_polygons))
 
-  expect_equal(getArea(dummy_polygon), 1)
+  expect_equal(getArea(dummy_polygon), 1000*1000)
 })
 
 context("Change functions")

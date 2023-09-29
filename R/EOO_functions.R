@@ -40,7 +40,7 @@ makeEOO.RasterLayer <- function(input.data){
 #' @export
 makeEOO.SpatRaster <- function(input.data){
   EOO.points <- as.points(input.data)
-  EOO.buffer <- buffer(EOO.points, min(res(input_rast)) / 2)
+  EOO.buffer <- buffer(EOO.points, min(res(input.data)) / 2)
   EOO.polygon <- convHull(EOO.buffer)
   return(EOO.polygon)
 }
@@ -83,6 +83,7 @@ makeEOO.SpatVector <- function(input.data){
 #' EOO.polygon <- makeEOO(r1)
 #' EOO.area <- getAreaEOO(EOO.polygon)
 #' @export
+#' @import terra
 
 getAreaEOO <- function(EOO.polygon, unit = "km"){
   EOO.area <- expanse(EOO.polygon, unit)
