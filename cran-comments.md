@@ -1,5 +1,5 @@
 ## Test environments
-* local Windows 7 install, R 3.4.4, R 3.6.1
+* local Windows 10 install, R 4.2.1
 * ubuntu 14.04 (on travis-ci), R 3.6.0, R-devel.
 * win-builder (devel.)
 * Rhub
