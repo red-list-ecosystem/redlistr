@@ -30,7 +30,6 @@ Imports:
 Suggests:
     devtools,
     knitr,
-    rgdal,
     rmarkdown,
     testthat
 VignetteBuilder: 
