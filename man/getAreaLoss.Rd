@@ -30,6 +30,11 @@ a.dif <- getAreaLoss(r1, r2) # distribution rasters
 }
 \seealso{
 Other Change functions: 
+\code{\link{getArea.RasterLayer}()},
+\code{\link{getArea.SpatRaster}()},
+\code{\link{getArea.SpatVect}()},
+\code{\link{getArea.SpatialPolygons}()},
+\code{\link{getArea.sf}()},
 \code{\link{getArea}()},
 \code{\link{getDeclineStats}()}
 }

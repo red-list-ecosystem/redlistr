@@ -23,8 +23,6 @@ Depends:
     raster (>= 2.5-8),
     sp (>= 1.2-4)
 Imports:
-    grDevices,
-    methods,
     plyr,
     sf,
     terra

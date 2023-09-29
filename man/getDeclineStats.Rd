@@ -51,6 +51,11 @@ annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 }
 \seealso{
 Other Change functions: 
+\code{\link{getArea.RasterLayer}()},
+\code{\link{getArea.SpatRaster}()},
+\code{\link{getArea.SpatVect}()},
+\code{\link{getArea.SpatialPolygons}()},
+\code{\link{getArea.sf}()},
 \code{\link{getAreaLoss}()},
 \code{\link{getArea}()}
 }

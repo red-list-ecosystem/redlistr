@@ -5,10 +5,7 @@
 #'  or the area of a SpatialPolygons or sf object using sf::st_area
 #' @param x Either a RasterLayer or SpatialPolygons object. For a RasterLayer,
 #'   no data value should be NA
-#' @param value.to.count Optional. Value of the cells in a RasterLayer to be
-#'   counted
-#' @param byValue Logical. If TRUE, the area for each unique cell value is
-#'    returned. (Only works with SpatRaster input)
+#' @param ... Addition arguments based on input format
 #' @return The total area of the cells of interest in km2
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -30,6 +27,18 @@ getArea <- function(x, ...){
   UseMethod("getArea", x)
 }
 
+#' Calculates the Area of a Raster from RasterLayer.
+#'
+#' `getArea` reports the area of a RasterLayer object using the pixel
+#'  counting method.
+#' @param x Either a RasterLayer object. No data value should be NA
+#' @param value.to.count Optional. Value of the cells in a RasterLayer to be
+#'   counted
+#' @param ... Addition arguments based on input format
+#' @return The total area of the cells of interest in km2
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
+#' @family Change functions
 #' @export
 getArea.RasterLayer <- function(x, value.to.count, ...){
   if(length(raster::unique(x)) != 1 & missing(value.to.count)){
@@ -62,18 +71,47 @@ getArea.RasterLayer <- function(x, value.to.count, ...){
   }
 }
 
+#' Calculates the Area of a Raster from SpatVect.
+#'
+#' `getArea` reports the area of a SpatVect. object using terra::expanse
+#' @param x A SpatVect object
+#' @param ... Addition arguments based on input format
+#' @return The total area of the cells of interest in km2
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
+#' @family Change functions
 #' @export
 getArea.SpatVect <- function(x, ...){
   area <- expanse(x, "km")
   return(area)
 }
 
+#' Calculates the Area of a Raster from SpatRaster.
+#'
+#' `getArea` reports the area of a SpatRaster object using terra::expanse
+#' @param x SpatRaster
+#' @param byValue Logical. If TRUE, the area for each unique cell value is
+#'    returned.
+#' @param ... Addition arguments based on input format
+#' @return The total area of the cells of interest in km2
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
+#' @family Change functions
 #' @export
 getArea.SpatRaster <- function(x, byValue, ...){
   area <- expanse(x, "km", byValue)
   return(area)
 }
 
+#' Calculates the Area of a Raster from SpatialPolygons.
+#'
+#' `getArea` reports the area of a SpatialPolygons object using sf::st_area
+#' @param x A SpatialPolygons object.
+#' @param ... Addition arguments based on input format
+#' @return The total area of the cells of interest in km2
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
+#' @family Change functions
 #' @export
 getArea.SpatialPolygons <- function(x, ...){
   sf_polygon <- st_as_sf(x)
@@ -81,6 +119,15 @@ getArea.SpatialPolygons <- function(x, ...){
   return(area)
 }
 
+#' Calculates the Area of a Raster from sf object
+#'
+#' `getArea` reports the area of a sf object using sf::st_area
+#' @param x A sf object
+#' @param ... Addition arguments based on input format
+#' @return The total area of the cells of interest in km2
+#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
+#'   \email{calvinkflee@@gmail.com}
+#' @family Change functions
 #' @export
 getArea.sf <- function(x, ...){
   area <- st_area(x) / 1000000

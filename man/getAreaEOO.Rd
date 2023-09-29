@@ -20,9 +20,10 @@ The area of the \code{EOO.polygon} in km2
 \code{makeEOO} the provided data
 }
 \examples{
+library(terra)
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-extent(r1) <- extent(0, 6100, 0, 8700)
+ext(r1) <- c(0, 6100, 0, 8700)
 EOO.polygon <- makeEOO(r1)
 EOO.area <- getAreaEOO(EOO.polygon)
 }

@@ -21,9 +21,10 @@ is a raster layer, the points are taken from a buffer that has the radius of
 half of the shorter edge of the pixel around the centroid.
 }
 \examples{
+library(terra)
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-extent(r1) <- extent(0, 6100, 0, 8700)
+ext(r1) <- c(0, 6100, 0, 8700)
 EOO.polygon <- makeEOO(r1)
 }
 \references{
