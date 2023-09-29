@@ -25,7 +25,9 @@ Depends:
 Imports:
     grDevices,
     methods,
-    plyr
+    plyr,
+    sf,
+    terra
 Suggests:
     devtools,
     knitr,
