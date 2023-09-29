@@ -22,10 +22,10 @@ futureAreaEstimate(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA)
 \value{
 A dataframe with the forecast year, and a combination of:
 \itemize{
- \item Future area as estimated with absolute rate of decline (ARD)
- \item Future area as estimated with proportional rate of decline (PRD)
- \item Future area as estimated with annual rate of change (ARC)
- }
+\item Future area as estimated with absolute rate of decline (ARD)
+\item Future area as estimated with proportional rate of decline (PRD)
+\item Future area as estimated with annual rate of change (ARC)
+}
 }
 \description{
 \code{futureAreaEstimate} is now deprecated, please use
@@ -33,10 +33,10 @@ A dataframe with the forecast year, and a combination of:
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-  Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-  List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-  Switzerland: IUCN. ix + 94pp. Available at the following web site:
-  \url{https://iucnrle.org/}
+Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+Switzerland: IUCN. ix + 94pp. Available at the following web site:
+\url{https://iucnrle.org/}
 }
 \seealso{
 Other change_functions: 
@@ -45,6 +45,6 @@ Other change_functions:
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-  \email{calvinkflee@gmail.com}
+\email{calvinkflee@gmail.com}
 }
 \concept{change_functions}

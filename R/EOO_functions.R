@@ -1,13 +1,13 @@
 #' Creates Extent of occurrence (EOO) Polygon
 #'
-#' \code{makeEOO} is a generic function that creates a  minimum convex polygon
+#' `makeEOO` is a generic function that creates a  minimum convex polygon
 #' enclosing all occurrences of the provided spatial data. If the input provided
 #' is a raster layer, the points are taken from a buffer that has the radius of
 #' half of the shorter edge of the pixel around the centroid.
 #' @param input.data Spatial object of an ecosystem or species distribution.
 #'   Please use a CRS with units measured in metres.
 #' @return An object of class SpatVect representing the EOO of
-#'   \code{input.data}. Also inherits its CRS.
+#'   `input.data`. Also inherits its CRS.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions
@@ -15,7 +15,7 @@
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{https://iucnrle.org/}
+#'   <https://iucnrle.org/>
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 #' r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
@@ -67,12 +67,12 @@ makeEOO.SpatVector <- function(input.data){
 
 #' Calculates area of the created EOO polygon.
 #'
-#' \code{getAreaEOO} calculates the area of the EOO polygon generated from
-#' \code{makeEOO} the provided data
+#' `getAreaEOO` calculates the area of the EOO polygon generated from
+#' `makeEOO` the provided data
 #' @param EOO.polygon An object of class SpatVect, usually the output
-#'   from \code{makeEOO}.
+#'   from `makeEOO`.
 #' @param unit Character. Output unit of area. One of "m", "km", or "ha"
-#' @return The area of the \code{EOO.polygon} in km2
+#' @return The area of the `EOO.polygon` in km2
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions

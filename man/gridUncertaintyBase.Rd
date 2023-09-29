@@ -38,11 +38,11 @@ y.shift) specifying the coordinates to restrict the AOO grid placement.}
 \value{
 List containing the following:
 \itemize{
- \item Vector of length split*split of calculated AOO for each shifted grid
- \item Data frame of summary statistics for the results
- create the AOO grid(s) which return the smallest AOO
- \item Data frame of the shift(s) required to create the AOO grid(s) with the
- smallest AOO
+\item Vector of length split*split of calculated AOO for each shifted grid
+\item Data frame of summary statistics for the results
+create the AOO grid(s) which return the smallest AOO
+\item Data frame of the shift(s) required to create the AOO grid(s) with the
+smallest AOO
 }
 }
 \description{
@@ -57,7 +57,7 @@ the minimum AOO. It is the base function which is used by
 \code{gridUncertaintyRestricted}
 }
 \seealso{
-\code{\link{createGrid}} \code{\link{getAOOSilent}}
+\code{\link[=createGrid]{createGrid()}} \code{\link[=getAOOSilent]{getAOOSilent()}}
 
 Other gridUncertainty functions: 
 \code{\link{gridUncertaintyRandomManual}()},
@@ -68,6 +68,6 @@ Other gridUncertainty functions:
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-  \email{calvinkflee@gmail.com}
+\email{calvinkflee@gmail.com}
 }
 \concept{gridUncertainty functions}

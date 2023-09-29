@@ -30,11 +30,11 @@ the \code{min.percent.rule}.}
 \value{
 List containing the following:
 \itemize{
- \item Data frame of summary statistics for the results
- \item Data frame showing the distance shifted in x and y directions used to
- create the AOO grid(s) and their associated AOOs
- \item List of RasterLayer(s) containing the AOO grid(s) which return the
- smallest AOO
+\item Data frame of summary statistics for the results
+\item Data frame showing the distance shifted in x and y directions used to
+create the AOO grid(s) and their associated AOOs
+\item List of RasterLayer(s) containing the AOO grid(s) which return the
+smallest AOO
 }
 }
 \description{
@@ -46,7 +46,7 @@ RasterLayer(s) containing the grids with the minimum AOO. Requires manual
 input for the number of simulations to perform.
 }
 \seealso{
-\code{\link{createGrid}} \code{\link{getAOOSilent}}
+\code{\link[=createGrid]{createGrid()}} \code{\link[=getAOOSilent]{getAOOSilent()}}
 
 Other gridUncertainty functions: 
 \code{\link{gridUncertaintyBase}()},
@@ -57,6 +57,6 @@ Other gridUncertainty functions:
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-  \email{calvinkflee@gmail.com}
+\email{calvinkflee@gmail.com}
 }
 \concept{gridUncertainty functions}

@@ -31,10 +31,10 @@ the \code{min.percent.rule}.}
 \value{
 A list containing the following:
 \itemize{
- \item Data frame of results showing the minimum AOO calculated for each
- shift scenario
- \item Single SpatialPolygonsDataFrame containing the AOO grid which would
- produce the minimum AOO calculated
+\item Data frame of results showing the minimum AOO calculated for each
+shift scenario
+\item Single SpatialPolygonsDataFrame containing the AOO grid which would
+produce the minimum AOO calculated
 }
 }
 \description{

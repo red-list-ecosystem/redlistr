@@ -21,12 +21,12 @@ each of them.}
 }
 \value{
 A dataframe with absolute differences between the two inputs, and a
-  selection of:
+selection of:
 \itemize{
- \item Proportional Rate of Decline (PRD)
- \item Absolute Rate of Decline (ARD)
- \item Annual Rate of Change (ARC)
- }
+\item Proportional Rate of Decline (PRD)
+\item Absolute Rate of Decline (ARD)
+\item Annual Rate of Change (ARC)
+}
 }
 \description{
 \code{getDeclineStats} calculates the Proportional Rate of Decline (PRD),
@@ -42,12 +42,12 @@ decline.stats <- getDeclineStats(a.r1, a.r2, year.t1 = 1990, year.t2 = 2012,
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-  Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-  List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-  Switzerland: IUCN. ix + 94pp. Available at the following web site:
-  \url{https://iucnrle.org/}
-  Puyravaud, J.-P. 2003. Standardizing the calculation of the
-  annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
+Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+Switzerland: IUCN. ix + 94pp. Available at the following web site:
+\url{https://iucnrle.org/}
+Puyravaud, J.-P. 2003. Standardizing the calculation of the
+annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 }
 \seealso{
 Other Change functions: 
@@ -56,6 +56,6 @@ Other Change functions:
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-  \email{calvinkflee@gmail.com}
+\email{calvinkflee@gmail.com}
 }
 \concept{Change functions}

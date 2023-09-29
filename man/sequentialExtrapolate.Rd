@@ -23,10 +23,10 @@ values for backcasting}
 \value{
 A dataframe with the forecast year, and a combination of:
 \itemize{
- \item Sequence of values as extrapolated with absolute rate of decline (ARD)
- \item Sequence of values as extrapolated with proportional rate of decline (PRD)
- \item Sequence of values as extrapolated with annual rate of change (ARC)
- }
+\item Sequence of values as extrapolated with absolute rate of decline (ARD)
+\item Sequence of values as extrapolated with proportional rate of decline (PRD)
+\item Sequence of values as extrapolated with annual rate of change (ARC)
+}
 }
 \description{
 \code{sequentialExtrapolate} uses rates of decline from getDeclineStats and
@@ -43,10 +43,10 @@ a.2040.PRD.seq <- sequentialExtrapolate(a.r1, a.r2, year.t1 = 1990, nYears = 50,
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-  Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-  List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-  Switzerland: IUCN. ix + 94pp. Available at the following web site:
-  \url{https://iucnrle.org/}
+Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+Switzerland: IUCN. ix + 94pp. Available at the following web site:
+\url{https://iucnrle.org/}
 }
 \seealso{
 Other change_functions: 

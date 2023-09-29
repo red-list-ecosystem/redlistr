@@ -12,11 +12,13 @@ Please use a CRS with units measured in metres.}
 }
 \value{
 An object of class SpatVect representing the EOO of
-  \code{input.data}. Also inherits its CRS.
+\code{input.data}. Also inherits its CRS.
 }
 \description{
 \code{makeEOO} is a generic function that creates a  minimum convex polygon
-enclosing all occurrences of the provided spatial data
+enclosing all occurrences of the provided spatial data. If the input provided
+is a raster layer, the points are taken from a buffer that has the radius of
+half of the shorter edge of the pixel around the centroid.
 }
 \examples{
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
@@ -26,10 +28,10 @@ EOO.polygon <- makeEOO(r1)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-  Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-  List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-  Switzerland: IUCN. ix + 94pp. Available at the following web site:
-  \url{https://iucnrle.org/}
+Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+Switzerland: IUCN. ix + 94pp. Available at the following web site:
+\url{https://iucnrle.org/}
 }
 \seealso{
 Other EOO functions: 
@@ -37,6 +39,6 @@ Other EOO functions:
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-  \email{calvinkflee@gmail.com}
+\email{calvinkflee@gmail.com}
 }
 \concept{EOO functions}

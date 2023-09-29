@@ -21,8 +21,8 @@ The total area of the cells of interest in km2
 }
 \description{
 \code{getArea} reports the area of a RasterLayer object using the pixel
- counting method, or terra::expanse for SpatRaster and SpatVector objects,
- or the area of a SpatialPolygons or sf object using sf::st_area
+counting method, or terra::expanse for SpatRaster and SpatVector objects,
+or the area of a SpatialPolygons or sf object using sf::st_area
 }
 \examples{
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
@@ -37,6 +37,6 @@ Other Change functions:
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-  \email{calvinkflee@gmail.com}
+\email{calvinkflee@gmail.com}
 }
 \concept{Change functions}

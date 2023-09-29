@@ -1,21 +1,21 @@
 #' Base function to compute AOO with grid uncertainty systematically
 #'
-#' \code{gridUncertaintyBase} helps determine the minimum number of area of
+#' `gridUncertaintyBase` helps determine the minimum number of area of
 #' occupancy (AOO) grid cells occupied by a species or ecosystem. It varies the
 #' location of the AOO grid by shifting in systematically in both x- and y-
 #' axes, adding a small amount of random movement (five percent of the
-#' \code{grid.size}) at each point. It then returns summary statistics for the
+#' `grid.size`) at each point. It then returns summary statistics for the
 #' range of AOOs calculated, and the RasterLayer(s) containing the grids with
 #' the minimum AOO. It is the base function which is used by
-#' \code{gridUncertainty}, \code{gridUncertaintySimulation}, and
-#' \code{gridUncertaintyRestricted}
+#' `gridUncertainty`, `gridUncertaintySimulation`, and
+#' `gridUncertaintyRestricted`
 #' @inheritParams createGrid
 #' @param splits Specifies the number of ways to split the grid in ONE axis.
-#' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
+#' @param min.percent.rule Logical. If `TRUE`, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the \code{min.percent.rule}.
-#' @param restriction Logical. If \code{TRUE}, allows user to specify areas to
+#'   the `min.percent.rule`.
+#' @param restriction Logical. If `TRUE`, allows user to specify areas to
 #'   focus where grid search is done. Used in gridUncertaintyRestricted.
 #' @param min.grids.shift Dataframe object with two columns (x.shift and
 #'   y.shift) specifying the coordinates to restrict the AOO grid placement.
@@ -30,7 +30,7 @@
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
-#' @seealso \code{\link{createGrid}} \code{\link{getAOOSilent}}
+#' @seealso [createGrid()] [getAOOSilent()]
 #' @import raster
 
 gridUncertaintyBase <- function(input.data, grid.size,
@@ -93,7 +93,7 @@ gridUncertaintyBase <- function(input.data, grid.size,
 
 #' Manual function to compute AOO with grid uncertainty randomly
 #'
-#' \code{gridUncertaintyRandomManual} helps determine the minimum number of area of
+#' `gridUncertaintyRandomManual` helps determine the minimum number of area of
 #' occupancy (AOO) grid cells occupied by a species or ecosystem. It varies the
 #' location of the AOO grid by shifting in randomly in both x- and y-
 #' axes, returning summary statistics for the range of AOOs calculated, and the
@@ -101,10 +101,10 @@ gridUncertaintyBase <- function(input.data, grid.size,
 #' input for the number of simulations to perform.
 #' @inheritParams createGrid
 #' @param n.sim Specifies the number of random grids to be created and tested.
-#' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
+#' @param min.percent.rule Logical. If `TRUE`, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the \code{min.percent.rule}.
+#'   the `min.percent.rule`.
 #' @return List containing the following:
 #' \itemize{
 #'  \item Data frame of summary statistics for the results
@@ -116,7 +116,7 @@ gridUncertaintyBase <- function(input.data, grid.size,
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family gridUncertainty functions
-#' @seealso \code{\link{createGrid}} \code{\link{getAOOSilent}}
+#' @seealso [createGrid()] [getAOOSilent()]
 #' @import raster
 
 gridUncertaintyRandomManual <- function(input.data, grid.size, n.sim = 10,
@@ -161,7 +161,7 @@ gridUncertaintyRandomManual <- function(input.data, grid.size, n.sim = 10,
 
 #' Function to compute AOO with grid uncertainty randomly with stop rule
 #'
-#' \code{gridUncertaintyRandom} helps determine the minimum number of area of
+#' `gridUncertaintyRandom` helps determine the minimum number of area of
 #' occupancy (AOO) grid cells occupied by a species or ecosystem. It varies the
 #' location of the AOO grid by shifting in randomly in both x- and y-
 #' axes, returning summary statistics for the range of AOOs calculated, and the
@@ -170,10 +170,10 @@ gridUncertaintyRandomManual <- function(input.data, grid.size, n.sim = 10,
 #' @inheritParams createGrid
 #' @param n.AOO.improvement Specifies the minimum number of rounds the
 #'   calculated AOO is not improved before stopping the function.
-#' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
+#' @param min.percent.rule Logical. If `TRUE`, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the \code{min.percent.rule}.
+#'   the `min.percent.rule`.
 #' @param max.n.rounds Specifies the maximum number of rounds to calculate AOOs.
 #'   Generally unused except to limit computation time.
 #' @return List containing the following:
@@ -187,7 +187,7 @@ gridUncertaintyRandomManual <- function(input.data, grid.size, n.sim = 10,
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}. Nicholas Murray
 #'   \email{murr.nick@@gmail.com}
 #' @family gridUncertainty functions
-#' @seealso \code{\link{createGrid}} \code{\link{getAOOSilent}}
+#' @seealso [createGrid()] [getAOOSilent()]
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 #' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
@@ -267,17 +267,17 @@ gridUncertaintyRandom <- function(input.data, grid.size, n.AOO.improvement,
 
 #' Function to compute AOO with grid uncertainty systematically with stopping rule
 #'
-#' \code{gridUncertainty} determines the number of area of occupancy (AOO) grid
+#' `gridUncertainty` determines the number of area of occupancy (AOO) grid
 #' cells occupied by a species or ecosystem systematically. It will only stop
 #' when the AOO calculated does not improve (decrease) after a set number of
 #' split scenarios.
 #' @inheritParams createGrid
 #' @param n.AOO.improvement Specifies the minimum number of rounds the
 #'   calculated AOO is not improved before stopping the function.
-#' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
+#' @param min.percent.rule Logical. If `TRUE`, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the \code{min.percent.rule}.
+#'   the `min.percent.rule`.
 #' @return A list containing the following:
 #' \itemize{
 #'  \item Data frame of results showing the minimum AOO calculated for each
@@ -349,16 +349,16 @@ gridUncertainty <- function(input.data, grid.size, n.AOO.improvement,
 
 #' Function to investigate behaviour of AOO under various split scenarios
 #'
-#' \code{gridUncertaintySimulation} returns the maximum and minimum number of
+#' `gridUncertaintySimulation` returns the maximum and minimum number of
 #' area of occupancy (AOO) grid cells occupied by a species or ecosystem in
-#' incremental splits using \code{gridUncertaintyBase}.
+#' incremental splits using `gridUncertaintyBase`.
 #' @inheritParams createGrid
 #' @param simulations Specifies the maximum number of splits to be performed on
 #'   the generated grid
-#' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
+#' @param min.percent.rule Logical. If `TRUE`, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the \code{min.percent.rule}.
+#'   the `min.percent.rule`.
 #' @return Data frame of results showing the minimum and maximum AOO calculated
 #'   for each grid shift scenario.
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
@@ -383,7 +383,7 @@ gridUncertaintySimulation <- function(input.data, grid.size, simulations,
 #' Function to compute AOO with grid uncertainty systematically with stopping
 #' rule and restrictions
 #'
-#' \code{gridUncertaintyRestricted} determines the number of area of occupancy (AOO) grid
+#' `gridUncertaintyRestricted` determines the number of area of occupancy (AOO) grid
 #' cells occupied by a species or ecosystem systematically. It will only stop
 #' when the AOO calculated does not improve (decrease) after a set number of
 #' split scenarios. The number of grids within each split is restricted to only

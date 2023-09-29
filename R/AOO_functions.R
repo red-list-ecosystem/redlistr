@@ -1,14 +1,14 @@
 #' Create empty Area of Occupancy (AOO) Grid.
 #'
-#' \code{createGrid} produces empty grid which can be used as the basis to help
+#' `createGrid` produces empty grid which can be used as the basis to help
 #' compute AOO.
 #'
 #' @param input.data Spatial object of an ecosystem or species distribution.
 #'   Please use a CRS with units measured in metres.
 #' @param grid.size A number specifying the width of the desired grid square (in
 #'   same units as your coordinate reference system)
-#' @return A regular grid raster with extent \code{input.data} and grid size
-#'   \code{grid.size}. Each grid square has a unique identification number.
+#' @return A regular grid raster with extent `input.data` and grid size
+#'   `grid.size`. Each grid square has a unique identification number.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family AOO functions
@@ -16,7 +16,7 @@
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{https://iucnrle.org/}
+#'   <https://iucnrle.org/>
 #' @import raster
 
 createGrid <- function(input.data, grid.size){
@@ -30,17 +30,17 @@ createGrid <- function(input.data, grid.size){
 
 #' Create Area of Occupancy (AOO) grid for an ecosystem or species distribution
 #'
-#' \code{makeAOOGrid} is a generic function that creates grids representing the
+#' `makeAOOGrid` is a generic function that creates grids representing the
 #' area of occupancy for distributions based on the input spatial data. It
 #' includes capability for specifying whether a minimum percent of the grid cell
 #' needs to be occupied before it is counted in the AOO. This functionality is
 #' important for assessing the IUCN Red List of Ecosystems Criteria B.
 #'
 #' @inheritParams createGrid
-#' @param min.percent.rule Logical. If \code{TRUE}, a minimum area threshold
+#' @param min.percent.rule Logical. If `TRUE`, a minimum area threshold
 #'   must be passed before a grid is counted as an AOO grid.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the \code{min.percent.rule}
+#'   the `min.percent.rule`
 #' @return A shapefile of grid cells occupied by an ecosystem or species
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -49,7 +49,7 @@ createGrid <- function(input.data, grid.size){
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{https://iucnrle.org/}
+#'   <https://iucnrle.org/>
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 #' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
@@ -119,7 +119,7 @@ makeAOOGrid.SpatialPolygons <-
 
 #' Compute Area of Occupancy (AOO)
 #'
-#' \code{getAOO} determines the number of area of occupancy (AOO) grid cells
+#' `getAOO` determines the number of area of occupancy (AOO) grid cells
 #' occupied by a species or ecosystem. It includes capability for specifying
 #' whether at least one percent of the grid cell needs to be occupied before it
 #' is counted in the AOO. This functionality is important for assessing the IUCN
@@ -134,7 +134,7 @@ makeAOOGrid.SpatialPolygons <-
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{https://iucnrle.org/}
+#'   <https://iucnrle.org/>
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 #' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
@@ -150,16 +150,16 @@ getAOO <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1)
 
 #' Alternate function for getting AOO (with custom grid)
 #'
-#' \code{getAOOSilent} is identical to \code{getAOO}, but allows the custom
-#' input of the grid parameter. Used for \code{gridUncertainty}.
+#' `getAOOSilent` is identical to `getAOO`, but allows the custom
+#' input of the grid parameter. Used for `gridUncertainty`.
 #' @param input.data Spatial object of an ecosystem or species distribution.
 #'   Please use a CRS with units measured in metres.
 #' @param grid Custom grid to be used to calculate AOO. Usually the output of
-#'   \code{gridUncertainty}
-#' @param min.percent.rule Logical. If \code{TRUE} one percent of the grid cell
+#'   `gridUncertainty`
+#' @param min.percent.rule Logical. If `TRUE` one percent of the grid cell
 #'   must be occupied before it is counted in the AOO.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the \code{min.percent.rule}
+#'   the `min.percent.rule`
 #' @return Value. The AOO calculated with the input distribution and grid.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}

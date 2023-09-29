@@ -15,7 +15,7 @@ same units as your coordinate reference system)}
 }
 \value{
 A regular grid raster with extent \code{input.data} and grid size
-  \code{grid.size}. Each grid square has a unique identification number.
+\code{grid.size}. Each grid square has a unique identification number.
 }
 \description{
 \code{createGrid} produces empty grid which can be used as the basis to help
@@ -23,10 +23,10 @@ compute AOO.
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-  Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-  List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-  Switzerland: IUCN. ix + 94pp. Available at the following web site:
-  \url{https://iucnrle.org/}
+Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+Switzerland: IUCN. ix + 94pp. Available at the following web site:
+\url{https://iucnrle.org/}
 }
 \seealso{
 Other AOO functions: 
@@ -36,6 +36,6 @@ Other AOO functions:
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-  \email{calvinkflee@gmail.com}
+\email{calvinkflee@gmail.com}
 }
 \concept{AOO functions}

@@ -1,6 +1,6 @@
 #' Calculates the Area of a Raster.
 #'
-#' \code{getArea} reports the area of a RasterLayer object using the pixel
+#' `getArea` reports the area of a RasterLayer object using the pixel
 #'  counting method, or terra::expanse for SpatRaster and SpatVector objects,
 #'  or the area of a SpatialPolygons or sf object using sf::st_area
 #' @param x Either a RasterLayer or SpatialPolygons object. For a RasterLayer,
@@ -89,7 +89,7 @@ getArea.sf <- function(x){
 
 #' Area change between two inputs in km2
 #'
-#' \code{getAreaLoss} reports the difference in area between two inputs. These
+#' `getAreaLoss` reports the difference in area between two inputs. These
 #' can be RasterLayers, SpatialPolygons, SpatRaster, SpatVect, sf or numbers.
 #' Any combinations of these inputs are valid. If using number as input, ensure
 #' it is measured in km2
@@ -135,10 +135,10 @@ getAreaLoss <- function(x, y){
 
 #' Change statistics.
 #'
-#' \code{getDeclineStats} calculates the Proportional Rate of Decline (PRD),
+#' `getDeclineStats` calculates the Proportional Rate of Decline (PRD),
 #' Absolute Rate of Decline (ARD) and Annual Rate of Change (ARC), given two
 #' areas at two points in time. Also provides the total area difference. Inputs
-#' are usually the results from \code{getArea}.
+#' are usually the results from `getArea`.
 #'
 #' @param A.t1 Area at time t1
 #' @param year.t1 Year of time t1
@@ -161,7 +161,7 @@ getAreaLoss <- function(x, y){
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{https://iucnrle.org/}
+#'   <https://iucnrle.org/>
 #'   Puyravaud, J.-P. 2003. Standardizing the calculation of the
 #'   annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 #' @examples
@@ -197,8 +197,8 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 
 #' Future Area Estimate
 #'
-#' \code{futureAreaEstimate} is now deprecated, please use
-#' \code{extrapolateEstimate} instead
+#' `futureAreaEstimate` is now deprecated, please use
+#' `extrapolateEstimate` instead
 #'
 #' @param A.t1 Area at time t1
 #' @param year.t1 Year of time t1
@@ -219,7 +219,7 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{https://iucnrle.org/}
+#'   <https://iucnrle.org/>
 #' @export
 
 futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){
@@ -230,7 +230,7 @@ futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = 
 
 #' Extrapolate Estimate
 #'
-#' \code{extrapolateEstimate} uses rates of decline from getDeclineStats
+#' `extrapolateEstimate` uses rates of decline from getDeclineStats
 #' to extrapolate estimates to a given time
 #'
 #' @param A.t1 Area at time t1
@@ -253,7 +253,7 @@ futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = 
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{https://iucnrle.org/}
+#'   <https://iucnrle.org/>
 #' @examples
 #' a.r1 <- 23.55
 #' a.r2 <- 15.79
@@ -289,7 +289,7 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
 
 #' Sequential extrapolation estimate
 #'
-#' \code{sequentialExtrapolate} uses rates of decline from getDeclineStats and
+#' `sequentialExtrapolate` uses rates of decline from getDeclineStats and
 #' generates a sequence of estimates at regular time-steps. Useful for
 #' generating a sequence for plotting graphs.
 #'
@@ -307,7 +307,7 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   \url{https://iucnrle.org/}
+#'   <https://iucnrle.org/>
 #' @examples
 #' a.r1 <- 23.55
 #' a.r2 <- 15.79
