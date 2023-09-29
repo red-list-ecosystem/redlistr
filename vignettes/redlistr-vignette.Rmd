@@ -9,10 +9,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 ## 1. Introduction
-In this vignette, we provide an example of using the tools within `redlistr` to 
-assess the spatial criteria of the [IUCN Red List of 
-Ecosystems](http://iucnrle.org/). These criteria assess the change in the extent
-of an ecosystem over time (Criterion A) and properties of the geographic 
+In this vignette, we provide an example of using the tools within `redlistr` to
+assess the spatial criteria of the [IUCN Red List of
+Ecosystems](https://iucnrle.org/). These criteria assess the change in the
+extent of an ecosystem over time (Criterion A) and properties of the geographic
 distribution size (Criterion B). Both of these criteria require the use of maps
 of ecosystem distributions.
 

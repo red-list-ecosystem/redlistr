@@ -22,14 +22,14 @@ interested in conducting assessments for the Red List of Threatened
 Species. Assessments of ecosystems under the IUCN Red List of Ecosystems
 criteria require calculation of standardised metrics that were developed
 to objectively assess risk to ecosystem ([Keith et
-al. 2013](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111)).
+al. 2013](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111)).
 This package was designed to assist in the calculation of these metrics,
 including two methods of calculating the rate of distirbutional decline:
 Absolute Rate of Decline (ARD) and Proportional Rate of Decline (PRC).
 An additional metric: the Annual Rate of Change (ARC), which uses a
 compound interest law to determine the instantaenous rate of change
 ([Puyravaud
-2003](http://www.sciencedirect.com/science/article/pii/S0378112702003353))
+2003](https://www.sciencedirect.com/science/article/pii/S0378112702003353))
 is also included.
 
 Also included are the two standard measures of the size of an
@@ -48,15 +48,14 @@ definitive sources of all information required to ensure consistent
 application of IUCN criteria ([Bland et
 al. 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
 In addition, the papers by Keith et al.
-([2013](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111))
-and Rodriguez et al.
-([2015](https://www.iucn.org/sites/dev/files/content/documents/rodriguez-etal-2015-a-practical-guide-iucn-rle_erratum.pdf))
+([2013](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111))
+and Rodriguez et al. ([2015](https://doi.org/10.1098/rstb.2014.0003))
 are particularly useful for navigating the IUCN Red List of Ecosystems
 criteria. A range of important resources, including software tools and
 guiding material is available on the IUCN Red List of Ecosystems
 [website](https://www.iucnrle.org/). There is also plenty of handy
 material for assessing species available on the IUCN Red List of
-Threatened Species [website](http://www.iucnredlist.org).
+Threatened Species [website](https://www.iucnredlist.org).
 
 We also assume that you are reasonably familiar with the `R` programming
 language, and have some experience in conducting analyses of vector and
