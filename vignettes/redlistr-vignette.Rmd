@@ -28,7 +28,7 @@ We first import the spatial data we want to analyse. In this vignette, we
 will be using two example distributions included with the package. They are 
 mangrove distributions from the northern regions of Western Port Bay, Victoria,
 Australia. The first distribution is from Giri et al., 
-([2011](http://onlinelibrary.wiley.com/doi/10.1111/j.1466-8238.2010.00584.x/abstract)),
+([2011](https://onlinelibrary.wiley.com/doi/10.1111/j.1466-8238.2010.00584.x/abstract)),
 and represents mangrove distribution in 2000. The second distribution is a 
 classification map generated using the `XGBoost` package and data from Landsat 
 8, and represents mangrove distribution in 2017. Both of these geographic
@@ -165,7 +165,7 @@ These rates of decline allow the use of two or more data points to extrapolate
 to the full 50 year timeframe required in an assessment.
 
 The annual rate of change (ARC) uses a compound interest law to determine the 
-instantaneous rate of change ([Puyravaud 2003](http://www.sciencedirect.com/science/article/pii/S0378112702003353)). 
+instantaneous rate of change ([Puyravaud 2003](https://www.sciencedirect.com/science/article/pii/S0378112702003353)). 
 
 To estimate the rate of changing using these methods, we use the
 `getDeclineStats` function. 
@@ -220,12 +220,12 @@ predicted.percent.loss
 Criterion B utilizes measures of the geographic distribution of an ecosystem 
 type to identify ecosystems that are at risk from catastrophic disturbances. 
 This is done using two standardized metrics: the extent of occurrence (EOO) and 
-the area of occupancy (AOO) [(Gaston and Fuller, (2009)](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2664.2008.01596.x/full), 
-[Keith et al., (2013)](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111)). 
+the area of occupancy (AOO) [(Gaston and Fuller, (2009)](https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2664.2008.01596.x/full), 
+[Keith et al., (2013)](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111)). 
 It must be emphasised that EOO and AOO are not used to estimate the mapped area
 of an ecosystem like the methods we used in Criterion A; they are simply spatial
 metrics that allow us to standardise an estimate of risk due to spatially explicit 
-catastrophes [(Murray et al., (2017)](http://onlinelibrary.wiley.com/doi/10.1111/ddi.12533/abstract). Thus, it is 
+catastrophes [(Murray et al., (2017)](https://onlinelibrary.wiley.com/doi/10.1111/ddi.12533/abstract). Thus, it is 
 critical that these measures are used consistently across all assessments, and
 the use of non-standard measures invalidates comparison against the thresholds. 
 Please refer to the guidelines ([Bland et al., 2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf))
