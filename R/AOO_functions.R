@@ -17,30 +17,54 @@
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   <https://iucnrle.org/>
-#' @import raster
+#' @import terra
 
 createGrid <- function(input.data, grid.size){
-  grid <- raster(extent(input.data))
-  res(grid) <- grid.size
-  grid.expanded <- extend(grid, c(2,2)) # grow the grid by 2 each way
-  grid.expanded[] <- 1:(ncell(grid.expanded))
+  grid <- terra::rast(ext(input.data), res = grid.size)
+  grid.expanded <- terra::extend(grid, c(2,2)) # grow the grid by 2 each way
+  grid.expanded[] <- 1:(ncell(grid.expanded))  # number the cells
   return (grid.expanded)
 }
 
+
+#' Identify positions of the bottom 1% of ecosystem area in AOO grid
+#'
+#' `bottom_1pct` returns the vector positions of the smallest elements
+#' collectively comprising 1% or less of the vector sum. This function
+#' helps perform the bottom.1pct.rule when selecting the AOO grid.
+#'
+#' @param v A numeric vector.
+#' @author Aniko Toth \email{anikobtoth@@gmail.com}
+#' @family AOO functions
+#' @references IUCN (2024). Guidelines for the application of IUCN Red
+#' List of Ecosystems Categories and Criteria, Version 2.0. Keith, D.A.,
+#' Ferrer-Paris, J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray,
+#' N.J., Nicholson, E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng,
+#' A.B., Valderrábano, M. & Zager, I. (Eds.). Gland, Switzerland: IUCN.
+#' ix + 94pp. Available at the following web site:
+#'   <https://iucnrle.org/>
+
+bottom_1pct <- function(v) {
+  target <- 0.99*sum(v)
+  out <- sort(v)
+  while(sum(out) > target) {out <- out[-1]}
+  drop <- length(v) - (length(out) + 1)
+  return(head(order(v), drop))
+}
 
 #' Create Area of Occupancy (AOO) grid for an ecosystem or species distribution
 #'
 #' `makeAOOGrid` is a generic function that creates grids representing the
 #' area of occupancy for distributions based on the input spatial data. It
-#' includes capability for specifying whether a minimum percent of the grid cell
-#' needs to be occupied before it is counted in the AOO. This functionality is
+#' includes capability for specifying whether the least occupied cells collectively
+#' containing less than 1% of the ecosystem are counted in the AOO. This functionality is
 #' important for assessing the IUCN Red List of Ecosystems Criteria B.
 #'
 #' @inheritParams createGrid
-#' @param min.percent.rule Logical. If `TRUE`, a minimum area threshold
-#'   must be passed before a grid is counted as an AOO grid.
+#' @param bottom.1pct.rule Logical. If `TRUE`, grid cells containing the least
+#' ecosystem area are dropped up to 1% of the total distribution.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the `min.percent.rule`
+#'   the `bottom.1pct.rule`
 #' @return A shapefile of grid cells occupied by an ecosystem or species
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
@@ -52,43 +76,39 @@ createGrid <- function(input.data, grid.size){
 #'   <https://iucnrle.org/>
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+#' r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
 #' extent(r1) <- extent(0, 6100, 0, 8700)
-#' AOO_grid <- makeAOOGrid(r1, 1000, min.percent.rule = TRUE, percent = 1)
+#' AOO_grid <- makeAOOGrid(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
 #' @export
-#' @import raster
+#' @import terra
 
-makeAOOGrid <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1) {
+makeAOOGrid <- function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1) {
   UseMethod("makeAOOGrid", input.data)
 }
 
 #' @export
-makeAOOGrid.RasterLayer <-
-  function(input.data, grid.size, min.percent.rule = FALSE, percent = 1) {
-    grid <- createGrid(input.data, grid.size)
-    input.points <- rasterToPoints(input.data)
-    xy <- as.matrix(input.points)[,c(1,2)] # select xy column only
-    x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
-    names(x) <- 'count'
-    grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-    if (min.percent.rule == FALSE){
-      outGrid <- grid.shp
-    }
-    if (min.percent.rule == TRUE){
-      cell.res <- res(input.data)
-      area <- cell.res[1] * cell.res[2]
-      one.pc.grid <- grid.size * grid.size / 100 # 1pc of grid cell
-      threshold <- one.pc.grid * percent / area
-      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshol
-    }
-    return (outGrid)
+makeAOOGrid.SpatRaster <-
+  function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1) {
+    input.points <- as.points(input.data)
+    x <- split(input.points, names(input.points)) |>
+      purrr::map(rasterizeGeom, grid, fun = "count") |> # returns 10 * 10 rasters where cell value is the number of points in the cell
+      purrr::map(function(.x){
+        names(.x) <- "count"
+        .x
+      })
+    grid.shp <- lapply(x, as.polygons, dissolve=FALSE) |>
+      lapply(function(.x) .x[.x$count > 0,]) # remove grid cells with no instances of the ecosystem
+    if(bottom.1pct.rule)
+      grid.shp <- lapply(grid.shp, function(.x) .x[-bottom_1pct(.x$count)])
+    return(grid.shp)
   }
+
 
 #' @export
 makeAOOGrid.SpatialPoints <-
-  function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
-    if (min.percent.rule == T) {
-      stop("min.percent.rule cannot be used when input is SpatialPoints as
+  function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1){
+    if (bottom.1pct.rule == T) {
+      stop("bottom.1pct.rule cannot be used when input is SpatialPoints as
            points do not have an inherent area. Consider converting into another
            format to use this function")
     }
@@ -103,15 +123,15 @@ makeAOOGrid.SpatialPoints <-
 
 #' @export
 makeAOOGrid.SpatialPolygons <-
-  function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
+  function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1){
     grid <- createGrid(input.data, grid.size)
     x <- rasterize(input.data, grid, getCover = T)
     names(x) <- 'cover'
     grid.shp <- rasterToPolygons(x, dissolve = F)
-    if (min.percent.rule == FALSE){
+    if (bottom.1pct.rule == FALSE){
       outGrid <- grid.shp[grid.shp$cover > 0, ]
     }
-    if (min.percent.rule == TRUE){
+    if (bottom.1pct.rule == TRUE){
       outGrid <- grid.shp[grid.shp$cover > (percent / 100), ]
     }
     return(outGrid)
@@ -139,12 +159,12 @@ makeAOOGrid.SpatialPolygons <-
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 #' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
 #' extent(r1) <- extent(0, 6100, 0, 8700)
-#' AOO <- getAOO(r1, 1000, min.percent.rule = TRUE, percent = 1)
+#' AOO <- getAOO(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
 #' @export
 
-getAOO <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1){
+getAOO <- function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1){
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-  AOO.number <- length(makeAOOGrid(input.data, grid.size, min.percent.rule, percent))
+  AOO.number <- length(makeAOOGrid(input.data, grid.size, bottom.1pct.rule = TRUE, percent))
   return(AOO.number)
 }
 
@@ -156,23 +176,23 @@ getAOO <- function(input.data, grid.size, min.percent.rule = FALSE, percent = 1)
 #'   Please use a CRS with units measured in metres.
 #' @param grid Custom grid to be used to calculate AOO. Usually the output of
 #'   `gridUncertainty`
-#' @param min.percent.rule Logical. If `TRUE` one percent of the grid cell
-#'   must be occupied before it is counted in the AOO.
-#' @param percent Numeric. The minimum percent to be applied as a threshold for
-#'   the `min.percent.rule`
+#' @param bottom.1pct.rule Logical. If `TRUE`, grid cells containing the least
+#' ecosystem area are dropped up to 1% of the total distribution.
+#' @param percent Numeric. The percent to be applied as a threshold for
+#'   the `bottom.1pct.rule`
 #' @return Value. The AOO calculated with the input distribution and grid.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family AOO functions
 #' @import raster
 
-getAOOSilent <- function(input.data, grid, min.percent.rule = FALSE, percent = 1) {
+getAOOSilent <- function(input.data, grid, bottom.1pct.rule = TRUE, percent = 1) {
   UseMethod("getAOOSilent", input.data)
 }
 
 #' @export
 getAOOSilent.RasterLayer <-
-  function(input.data, grid, min.percent.rule = FALSE, percent = 1) {
+  function(input.data, grid, bottom.1pct.rule = TRUE, percent = 1) {
     # Different from getAOO
     grid <- grid
     grid.size <- res(grid)
@@ -183,10 +203,10 @@ getAOOSilent.RasterLayer <-
     x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
     names(x) <- 'count'
     grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-    if (min.percent.rule == FALSE){
+    if (bottom.1pct.rule == FALSE){
       outGrid <- grid.shp
     }
-    if (min.percent.rule == TRUE){
+    if (bottom.1pct.rule == TRUE){
       cell.res <- res(input.data)
       area <- cell.res[1] * cell.res[2]
       one.pc.grid <- grid.size[1] * grid.size[2] / 100 # 1pc of grid cell
@@ -202,10 +222,10 @@ getAOOSilent.RasterLayer <-
 
 #' @export
 getAOOSilent.SpatialPoints <-
-  function(input.data, grid, min.percent.rule = FALSE, percent = 1){
+  function(input.data, grid, bottom.1pct.rule = TRUE, percent = 1){
 
-    if (min.percent.rule == T) {
-      stop("min.percent.rule cannot be used when input is SpatialPoints as
+    if (bottom.1pct.rule == T) {
+      stop("bottom.1pct.rule cannot be used when input is SpatialPoints as
            points do not have an inherent area. Consider converting into another
            format to use this function")
     }
@@ -229,7 +249,7 @@ getAOOSilent.SpatialPoints <-
 
 #' @export
 getAOOSilent.SpatialPolygons <-
-  function(input.data, grid, min.percent.rule = FALSE, percent = 1){
+  function(input.data, grid, bottom.1pct.rule = TRUE, percent = 1){
     # Different from getAOO
     grid <- grid
     grid.size <- res(grid)
@@ -238,10 +258,10 @@ getAOOSilent.SpatialPolygons <-
     x <- rasterize(input.data, grid, getCover = T)
     names(x) <- 'count'
     grid.shp <- rasterToPolygons(x, dissolve = F)
-    if (min.percent.rule == FALSE){
+    if (bottom.1pct.rule == FALSE){
       outGrid <- grid.shp[grid.shp$count > 0, ]
     }
-    if (min.percent.rule == TRUE){
+    if (bottom.1pct.rule == TRUE){
       outGrid <- grid.shp[grid.shp$count > (percent / 100), ]
     }
 
