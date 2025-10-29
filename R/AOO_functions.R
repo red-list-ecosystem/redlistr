@@ -20,7 +20,7 @@
 #' @import terra
 
 createGrid <- function(input.data, grid.size){
-  grid <- terra::rast(ext(input.data), res = grid.size)
+  grid <- terra::rast(ext(input.data), res = grid.size, crs = crs(input.data))
   grid.expanded <- terra::extend(grid, c(2,2)) # grow the grid by 2 each way
   grid.expanded[] <- 1:(ncell(grid.expanded))  # number the cells
   return (grid.expanded)
@@ -29,9 +29,10 @@ createGrid <- function(input.data, grid.size){
 
 #' Identify positions of the bottom 1% of ecosystem area in AOO grid
 #'
-#' `bottom_1pct` returns the vector positions of the smallest elements
-#' collectively comprising 1% or less of the vector sum. This function
-#' helps perform the bottom.1pct.rule when selecting the AOO grid.
+#' `top_99pct` returns the vector positions of the largest elements
+#' collectively comprising 99% or more of the vector sum. This function
+#' helps perform the bottom.1pct.rule when selecting the AOO grid by
+#' identifying grid positions to keep.
 #'
 #' @param v A numeric vector.
 #' @author Aniko Toth \email{anikobtoth@@gmail.com}
@@ -44,12 +45,12 @@ createGrid <- function(input.data, grid.size){
 #' ix + 94pp. Available at the following web site:
 #'   <https://iucnrle.org/>
 
-bottom_1pct <- function(v) {
+top_99pct <- function(v) {
   target <- 0.99*sum(v)
   out <- sort(v)
   while(sum(out) > target) {out <- out[-1]}
   drop <- length(v) - (length(out) + 1)
-  return(head(order(v), drop))
+  return(tail(order(v), (length(v) - drop)))
 }
 
 #' Create Area of Occupancy (AOO) grid for an ecosystem or species distribution
@@ -81,60 +82,97 @@ bottom_1pct <- function(v) {
 #' AOO_grid <- makeAOOGrid(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
 #' @export
 #' @import terra
+#' @import sf
+#' @import dplyr
 
-makeAOOGrid <- function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1) {
+makeAOOGrid <- function(input.data, grid.size = 10000, bottom.1pct.rule = TRUE, percent = 1) {
   UseMethod("makeAOOGrid", input.data)
 }
 
 #' @export
 makeAOOGrid.SpatRaster <-
   function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1) {
-    input.points <- as.points(input.data)
+    grid <- createGrid(input.data, grid.size)
+    input.points <- terra::as.points(input.data)
     x <- split(input.points, names(input.points)) |>
-      purrr::map(rasterizeGeom, grid, fun = "count") |> # returns 10 * 10 rasters where cell value is the number of points in the cell
-      purrr::map(function(.x){
+      lapply(rasterizeGeom, grid, fun = "count") |> # returns 10 * 10 rasters where cell value is the number of points in the cell
+      lapply(function(.x){
         names(.x) <- "count"
         .x
       })
-    grid.shp <- lapply(x, as.polygons, dissolve=FALSE) |>
+    AOO_grid <- lapply(x, as.polygons, dissolve=FALSE) |>
       lapply(function(.x) .x[.x$count > 0,]) # remove grid cells with no instances of the ecosystem
     if(bottom.1pct.rule)
-      grid.shp <- lapply(grid.shp, function(.x) .x[-bottom_1pct(.x$count)])
-    return(grid.shp)
-  }
+      AOO_grid <- lapply(AOO_grid, function(.x) .x[top_99pct(.x$count)])
 
-
-#' @export
-makeAOOGrid.SpatialPoints <-
-  function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1){
-    if (bottom.1pct.rule == T) {
-      stop("bottom.1pct.rule cannot be used when input is SpatialPoints as
-           points do not have an inherent area. Consider converting into another
-           format to use this function")
-    }
-    grid <- createGrid(input.data, grid.size)
-    xy <- input.data@coords
-    x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
-    names(x) <- 'count'
-    grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-    outGrid <- grid.shp
-    return (outGrid)
+    return(lapply(AOO_grid, st_as_sf))
   }
 
 #' @export
-makeAOOGrid.SpatialPolygons <-
-  function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1){
+makeAOOGrid.sf <-
+  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1) {
+
+    names_from <- dplyr::coalesce(names_from, "ecosystem_name")
+
+    # identify name field
+    if (any(colnames(input.data) %in% names_from)) {                 # check for ecosystem names
+      ecosystem_names <- dplyr::pull(input.data, !!names_from)       # pull them if present
+    } else {
+      input.data <- input.data |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")  #put new name label if not present
+    }
+
+    # count number of ecosystem types
+    if (n_distinct(ecosystem_names) == 1) {
+      message("Only one ecosystem type entered, consider using `create_AOO_grid` to get more detailed summary.")
+    }
+
+    # create assessment grid
     grid <- createGrid(input.data, grid.size)
-    x <- rasterize(input.data, grid, getCover = T)
-    names(x) <- 'cover'
-    grid.shp <- rasterToPolygons(x, dissolve = F)
-    if (bottom.1pct.rule == FALSE){
-      outGrid <- grid.shp[grid.shp$cover > 0, ]
-    }
-    if (bottom.1pct.rule == TRUE){
-      outGrid <- grid.shp[grid.shp$cover > (percent / 100), ]
-    }
-    return(outGrid)
+
+    # check geometries
+    if (all(st_geometry_type(input.data) %in% c("POINT", "LINESTRING", "MULTIPOINT", "MULTILINESTRING", "POLYGON", "MULTIPOLYGON"))){
+
+      if(all(st_geometry_type(input.data)) %in% c("POINT", "MULTIPOINT")){                ## Case where all inputs are points
+
+          x <- input.data |> split(st_drop_geometry(input.data[names_from])) |>
+            lapply(st_coordinates) |>
+            lapply(rasterize, grid, fun='count') # returns raster where value is the number of points in cell
+          AOO_grid <- lapply(x, as.polygons, dissolve=FALSE)
+          if(bottom.1pct.rule == T) {
+           warning("bottom.1pct.rule will not be accurate when input has POINTS geometry because
+                 points do not have an inherent area. Consider converting into another
+                 format. Rule has been applied based on point counts in each grid square.")
+          AOO_grid <- lapply(AOO_grid, function(.x) .x[top_99pct(.x$count)])
+          }
+          return (AOO_grid |> lapply(st_as_sf))
+
+        } else if (all(st_geometry_type(input.data)) %in% c("LINESTRING", "MULTILINESTRING")) {  ## case where all inputs are lines
+          # TODO define function for LINESTRING inputs.
+
+        } else if (all(st_geometry_type(input.data)) %in% c("POLYGON", "MULTIPOLYGON")) { ## case where all input geometries are POLYGON or MULTIPOLYGON
+
+          if (st_is_longlat(input.data)) {
+            warning("AOO is being calculated in a geographic coordinate reference system. Use st_project() to change to a planar CRS first!")
+        }  # check CRS
+          grid_poly <- as.polygons(grid, dissolve = FALSE) |> sf::st_as_sf()
+
+          overlaps <- st_intersection(grid_poly, pols)
+          overlaps$area_m2 <- st_area(overlaps) |> as.numeric()
+
+          AOO <- overlaps |> base::split(st_drop_geometry(overlaps[names_from]))
+
+          if(bottom.1pct.rule)
+            AOO <- lapply(AOO, function(.x) .x[top_99pct(.x$area_m2),])  # remove bottom 1% of ecosystem area.
+
+          AOO_grid <- AOO |> lapply(function(.x) return(grid_poly |> dplyr::filter(lyr.1 %in% .x$lyr.1)))
+          return(AOO_grid)
+      } else {
+         stop("Multiple geometry types detected. Please enter input data with a consistent geometry")
+      } # case where the input data has a mix of accepted geometries.
+
+     } else {
+      stop("Your input data contains geometries that are not supported. Please enter a dataset that has POLYGON, LINESTRING, or POINT geometry.")
+     }  ## case where there are unusual geometries in the input data.
   }
 
 #' Compute Area of Occupancy (AOO)
@@ -164,7 +202,7 @@ makeAOOGrid.SpatialPolygons <-
 
 getAOO <- function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1){
   # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-  AOO.number <- length(makeAOOGrid(input.data, grid.size, bottom.1pct.rule = TRUE, percent))
+  AOO.number <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule = TRUE, percent) |> sapply(nrow)
   return(AOO.number)
 }
 
