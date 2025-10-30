@@ -10,7 +10,7 @@
 #' @return A regular grid raster with extent `input.data` and grid size
 #'   `grid.size`. Each grid square has a unique identification number.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
+#'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
@@ -19,7 +19,7 @@
 #'   <https://iucnrle.org/>
 #' @import terra
 
-createGrid <- function(input.data, grid.size){
+createGrid <- function(input.data, grid.size = 10000){
   grid <- terra::rast(ext(input.data), res = grid.size, crs = crs(input.data))
   grid.expanded <- terra::extend(grid, c(2,2)) # grow the grid by 2 each way
   grid.expanded[] <- 1:(ncell(grid.expanded))  # number the cells
@@ -29,13 +29,14 @@ createGrid <- function(input.data, grid.size){
 
 #' Identify positions of the bottom 1% of ecosystem area in AOO grid
 #'
-#' `top_99pct` returns the vector positions of the largest elements
-#' collectively comprising 99% or more of the vector sum. This function
+#' `top_pct` returns the vector positions of the largest elements
+#' collectively comprising a given percentage more of the vector sum. This function
 #' helps perform the bottom.1pct.rule when selecting the AOO grid by
 #' identifying grid positions to keep.
 #'
 #' @param v A numeric vector.
-#' @author Aniko Toth \email{anikobtoth@@gmail.com}
+#' @param pct percent of area to drop
+#' @author Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
 #' @references IUCN (2024). Guidelines for the application of IUCN Red
 #' List of Ecosystems Categories and Criteria, Version 2.0. Keith, D.A.,
@@ -45,8 +46,8 @@ createGrid <- function(input.data, grid.size){
 #' ix + 94pp. Available at the following web site:
 #'   <https://iucnrle.org/>
 
-top_99pct <- function(v) {
-  target <- 0.99*sum(v)
+top_pct <- function(v, pct = 99) {
+  target <- (pct/100)*sum(v)
   out <- sort(v)
   while(sum(out) > target) {out <- out[-1]}
   drop <- length(v) - (length(out) + 1)
@@ -68,7 +69,7 @@ top_99pct <- function(v) {
 #'   the `bottom.1pct.rule`
 #' @return A shapefile of grid cells occupied by an ecosystem or species
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
+#'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
@@ -85,7 +86,7 @@ top_99pct <- function(v) {
 #' @import sf
 #' @import dplyr
 
-makeAOOGrid <- function(input.data, grid.size = 10000, bottom.1pct.rule = TRUE, percent = 1) {
+makeAOOGrid <- function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1) {
   UseMethod("makeAOOGrid", input.data)
 }
 
@@ -100,12 +101,28 @@ makeAOOGrid.SpatRaster <-
         names(.x) <- "count"
         .x
       })
-    AOO_grid <- lapply(x, as.polygons, dissolve=FALSE) |>
-      lapply(function(.x) .x[.x$count > 0,]) # remove grid cells with no instances of the ecosystem
-    if(bottom.1pct.rule)
-      AOO_grid <- lapply(AOO_grid, function(.x) .x[top_99pct(.x$count)])
+    AOO_grid <- lapply(x, as.polygons, dissolve=FALSE) |> lapply(function(.x) .x[.x$count > 0,]) # remove grid cells with no instances of the ecosystem
 
-    return(lapply(AOO_grid, st_as_sf))
+    if(bottom.1pct.rule)
+      AOO_grid <- lapply(AOO_grid, function(.x) .x[top_pct(.x$count, pct = 100-percent)])
+
+
+    # Split raster into list of binary rasters
+     binary_rasters <- lapply(sort(unique(values(input.data))), function(v) {
+      binary <- input.data == v
+      names(binary) <- paste0("value_", v)
+      binary
+    })
+    AOO_grid <- lapply(AOO_grid, st_as_sf)
+
+    AOOgrid_list <- lapply(1:length(AOO_grid),
+                           function(x) new("AOOgrid",
+                                          grid = AOO_grid[[x]],
+                                          AOO = nrow(AOO_grid[[x]]),
+                                          params = list(gridsize = grid.size, jitter = FALSE, pct = percent),
+                                          pctrule = bottom.1pct.rule,
+                                          input = binary_rasters[[x]]))
+    return(AOOgrid_list)
   }
 
 #' @export
@@ -115,14 +132,13 @@ makeAOOGrid.sf <-
     names_from <- dplyr::coalesce(names_from, "ecosystem_name")
 
     # identify name field
-    if (any(colnames(input.data) %in% names_from)) {                 # check for ecosystem names
-      ecosystem_names <- dplyr::pull(input.data, !!names_from)       # pull them if present
-    } else {
+    if (!any(colnames(input.data) %in% names_from)) {                 # check for ecosystem names
       input.data <- input.data |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")  #put new name label if not present
     }
+    ecosystem_names <- dplyr::pull(input.data, !!names_from)  # pull ecosystem names
 
     # count number of ecosystem types
-    if (n_distinct(ecosystem_names) == 1) {
+    if (dplyr::n_distinct(ecosystem_names) == 1) {
       message("Only one ecosystem type entered, consider using `create_AOO_grid` to get more detailed summary.")
     }
 
@@ -132,7 +148,7 @@ makeAOOGrid.sf <-
     # check geometries
     if (all(st_geometry_type(input.data) %in% c("POINT", "LINESTRING", "MULTIPOINT", "MULTILINESTRING", "POLYGON", "MULTIPOLYGON"))){
 
-      if(all(st_geometry_type(input.data)) %in% c("POINT", "MULTIPOINT")){                ## Case where all inputs are points
+      if(all(st_geometry_type(input.data) %in% c("POINT", "MULTIPOINT"))){                ## Case where all inputs are points
 
           x <- input.data |> split(st_drop_geometry(input.data[names_from])) |>
             lapply(st_coordinates) |>
@@ -142,27 +158,45 @@ makeAOOGrid.sf <-
            warning("bottom.1pct.rule will not be accurate when input has POINTS geometry because
                  points do not have an inherent area. Consider converting into another
                  format. Rule has been applied based on point counts in each grid square.")
-          AOO_grid <- lapply(AOO_grid, function(.x) .x[top_99pct(.x$count)])
+          AOO_grid <- lapply(AOO_grid, function(.x) .x[top_pct(.x$count, pct = 100-percent)])
           }
           return (AOO_grid |> lapply(st_as_sf))
 
-        } else if (all(st_geometry_type(input.data)) %in% c("LINESTRING", "MULTILINESTRING")) {  ## case where all inputs are lines
-          # TODO define function for LINESTRING inputs.
+        } else if (all(st_geometry_type(input.data) %in% c("LINESTRING", "MULTILINESTRING"))) {  ## case where all inputs are lines
+          if (st_is_longlat(input.data)) { # check CRS
+            warning("AOO is being calculated in a geographic coordinate reference system. Use st_project() to change to a planar CRS first!")
+          }  # check CRS
+          grid_poly <- as.polygons(grid, dissolve = FALSE) |> sf::st_as_sf()
 
-        } else if (all(st_geometry_type(input.data)) %in% c("POLYGON", "MULTIPOLYGON")) { ## case where all input geometries are POLYGON or MULTIPOLYGON
+          overlaps <- st_intersection(grid_poly, input.data)
+          overlaps$length_m <- st_length(overlaps) |> as.numeric()
 
-          if (st_is_longlat(input.data)) {
+          AOO <- overlaps |> base::split(st_drop_geometry(overlaps[names_from]))
+
+          if(bottom.1pct.rule){
+            warning("bottom.1pct.rule is not accurate when input has LINESTRING geometry because
+                 lines do not have an inherent area. Consider converting into another
+                 format. Rule has been applied based on LINESTRING lengths in each grid square.")
+            AOO <- lapply(AOO, function(.x) .x[top_pct(.x$length_m, pct = 100-percent),])  # remove bottom 1% of ecosystem area.
+           }
+          AOO_grid <- AOO |> lapply(function(.x) return(grid_poly |> dplyr::filter(lyr.1 %in% .x$lyr.1)))
+          return(AOO_grid)
+
+
+        } else if (all(st_geometry_type(input.data) %in% c("POLYGON", "MULTIPOLYGON"))) { ## case where all input geometries are POLYGON or MULTIPOLYGON
+
+          if (st_is_longlat(input.data)) { # check CRS
             warning("AOO is being calculated in a geographic coordinate reference system. Use st_project() to change to a planar CRS first!")
         }  # check CRS
           grid_poly <- as.polygons(grid, dissolve = FALSE) |> sf::st_as_sf()
 
-          overlaps <- st_intersection(grid_poly, pols)
+          overlaps <- st_intersection(grid_poly, input.data)
           overlaps$area_m2 <- st_area(overlaps) |> as.numeric()
 
           AOO <- overlaps |> base::split(st_drop_geometry(overlaps[names_from]))
 
           if(bottom.1pct.rule)
-            AOO <- lapply(AOO, function(.x) .x[top_99pct(.x$area_m2),])  # remove bottom 1% of ecosystem area.
+            AOO <- lapply(AOO, function(.x) .x[top_pct(.x$area_m2, pct = 100-percent),])  # remove bottom 1% of ecosystem area.
 
           AOO_grid <- AOO |> lapply(function(.x) return(grid_poly |> dplyr::filter(lyr.1 %in% .x$lyr.1)))
           return(AOO_grid)
@@ -249,7 +283,7 @@ getAOOSilent.RasterLayer <-
       area <- cell.res[1] * cell.res[2]
       one.pc.grid <- grid.size[1] * grid.size[2] / 100 # 1pc of grid cell
       threshold <- one.pc.grid * percent / area
-      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshol
+      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshold
     }
 
     # end getAOO
