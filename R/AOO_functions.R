@@ -231,18 +231,22 @@ makeAOOGrid.sf <-
 
 makeAOOGrid.AOOgrid <-
   function(input.data){
-   n = 100
-   output <- lapply(1:n, makeAOOGrid, input.data = input.data@input, grid.size = input.data@params$gridsize) |>
+    ecosystemunit <- terra::deepcopy(input.data@input)
+    # flag NA values for computation purposes
+   if (inherits(ecosystemunit, "SpatRaster"))
+    terra::NAflag(ecosystemunit) <- 0
+
+   n = 10
+   output <- lapply(1:n, makeAOOGrid, input.data = ecosystemunit, grid.size = input.data@params$gridsize) |>
      lapply(`[[`, 1) #flatten list
    AOO_vals <- sapply(output, nrow)
-   print(AOO_vals)
-   best_grid <- output[[which.min(AOO_vals)]][[1]]
+   best_grid <- output[[which.min(AOO_vals)[1]]]
 
    output <-
      new("AOOgrid",
        grid = best_grid,
        AOO = nrow(best_grid),
-       params = list(gridsize = grid.size, jitter = FALSE, pct = percent, n = n),
+       params = list(gridsize = grid.size, jitter = TRUE, pct = percent, n = n),
        pctrule = bottom.1pct.rule,
        input = input.data@input,
        AOOvals = AOO_vals)
@@ -274,13 +278,19 @@ makeAOOGrid.AOOgrid <-
 #' extent(r1) <- extent(0, 6100, 0, 8700)
 #' AOO <- getAOO(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
 #' @export
+getAOO <-  function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+  UseMethod("getAOO", input.data)
+}
 
-getAOO <- function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1) {
-  AOO_grid <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule, percent)
 
+getAOO.SpatRaster <- function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+  message("Initialising grids")
+  AOO_grid <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule, percent, jitter)
+
+  message("Assembling initial grids")
   # Split raster into list of binary rasters
-  binary_rasters <- lapply(sort(unique(values(input.data))), function(v) {
-    binary <- input.data == v
+  binary_rasters <- lapply(sort(unique(terra::values(input.data))), function(v) {
+    binary <- as.numeric(input.data == v)
     names(binary) <- paste0("value_", v)
     binary
   })
@@ -289,19 +299,30 @@ getAOO <- function(input.data, grid.size = 10000, names_from, bottom.1pct.rule =
                          function(x) new("AOOgrid",
                                          grid = AOO_grid[[x]],
                                          AOO = nrow(AOO_grid[[x]]),
-                                         params = list(gridsize = grid.size, jitter = FALSE, pct = percent),
+                                         params = list(gridsize = grid.size, jitter = jitter, pct = percent),
                                          pctrule = bottom.1pct.rule,
-                                         input = binary_rasters[[x]],
-                                         AOOvals = NA))
+                                         input = binary_rasters[[x]]))
 
   # run grid jitter on units with AOO near a threshold
-
-  AOOgrid_list <- lapply(AOOgrid_list, function(x) if(nrow(x) <= 60) return(makeAOOGrid(x)) else return(x))
-
-  return(AOOgrid_list)
-
+  if(jitter){
+    message("Running jitter on units with 60 or fewer cells")
+    AOOgrid_list <- lapply(AOOgrid_list, function(x) if(x@AOO <= 60) {return(makeAOOGrid(x)) } else {return(x)})
+    AOOgrid_list <- setNames(AOOgrid_list, names(AOO_grid))
+    return(AOOgrid_list)
+  }
 }
 
+
+getAOO.sf <-  function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE){
+  message("Initialising grids")
+  AOO_grid <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule, percent, jitter)
+
+  message("Assembling initial grids")
+  ## TODO
+
+  message("Running jitter on units with 60 or fewer cells")
+  ## TODO
+}
 
 #' Alternate function for getting AOO (with custom grid)
 #'

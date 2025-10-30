@@ -24,6 +24,14 @@ setClass(
     pctrule =  "logical",
     input =    "geospatial",
     AOOvals =  "integer"
+  ),
+  prototype = list(
+    grid = NULL,
+    AOO = numeric(0),
+    params = list(),
+    pctrule = logical(0),
+    input = NULL,
+    AOOvals = integer(0)
   )
 )
 
@@ -77,7 +85,7 @@ setMethod(
       if (inherits(x@input, "sf")) {
         plot(sf::st_geometry(x@input), col = "darkgreen")
       } else if (inherits(x@input, "SpatRaster")) {
-        terra::plot(x@input, col = c("seashell3", "midnightblue"))
+        terra::plot(x@input, col = c("seashell3", "midnightblue"), range = c(0,1))
       }
     }
     # Overlay grid
