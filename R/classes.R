@@ -13,7 +13,7 @@ setClassUnion("geospatial", c("sf", "SpatRaster"))
 #' @slot params a named vector of input parameters (grid size, jitter, n_jitter)
 #' @slot pctrule logical indicating whether the 1% rule was applied
 #' @slot input the input ecosystem data used to generate the AOO grid
-#' @slot AOOdist the distribution of AOO values
+#' @slot AOOvals the list of AOO values
 #' @export
 setClass(
   "AOOgrid",
@@ -22,7 +22,8 @@ setClass(
     AOO =      "numeric",
     params =   "list",
     pctrule =  "logical",
-    input =    "geospatial"
+    input =    "geospatial",
+    AOOvals =  "integer"
   )
 )
 

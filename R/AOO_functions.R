@@ -86,14 +86,32 @@ top_pct <- function(v, pct = 99) {
 #' @import sf
 #' @import dplyr
 
-makeAOOGrid <- function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1) {
+makeAOOGrid <- function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
   UseMethod("makeAOOGrid", input.data)
 }
 
 #' @export
 makeAOOGrid.SpatRaster <-
-  function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1) {
+  function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
     grid <- createGrid(input.data, grid.size)
+
+    if(jitter){
+      dx <- stats::runif(1, -1, 1) * grid.size/2
+      dy <- stats::runif(1, -1, 1) * grid.size/2
+
+      # Shift the extent
+      ext_r <- ext(grid)
+      ext_r_shifted <- ext(
+        xmin(ext_r) + dx,
+        xmax(ext_r) + dx,
+        ymin(ext_r) + dy,
+        ymax(ext_r) + dy
+      )
+
+      # Apply the shifted extent
+      ext(grid) <- ext_r_shifted
+    }  # randomly moves the grid around by half the grid size
+
     input.points <- terra::as.points(input.data)
     x <- split(input.points, names(input.points)) |>
       lapply(rasterizeGeom, grid, fun = "count") |> # returns 10 * 10 rasters where cell value is the number of points in the cell
@@ -106,28 +124,14 @@ makeAOOGrid.SpatRaster <-
     if(bottom.1pct.rule)
       AOO_grid <- lapply(AOO_grid, function(.x) .x[top_pct(.x$count, pct = 100-percent)])
 
-
-    # Split raster into list of binary rasters
-     binary_rasters <- lapply(sort(unique(values(input.data))), function(v) {
-      binary <- input.data == v
-      names(binary) <- paste0("value_", v)
-      binary
-    })
     AOO_grid <- lapply(AOO_grid, st_as_sf)
 
-    AOOgrid_list <- lapply(1:length(AOO_grid),
-                           function(x) new("AOOgrid",
-                                          grid = AOO_grid[[x]],
-                                          AOO = nrow(AOO_grid[[x]]),
-                                          params = list(gridsize = grid.size, jitter = FALSE, pct = percent),
-                                          pctrule = bottom.1pct.rule,
-                                          input = binary_rasters[[x]]))
-    return(AOOgrid_list)
+   return(AOO_grid)
   }
 
 #' @export
 makeAOOGrid.sf <-
-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1) {
+  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
 
     names_from <- dplyr::coalesce(names_from, "ecosystem_name")
 
@@ -144,6 +148,22 @@ makeAOOGrid.sf <-
 
     # create assessment grid
     grid <- createGrid(input.data, grid.size)
+    if(jitter){
+      dx <- stats::runif(1, -1, 1) * grid.size/2
+      dy <- stats::runif(1, -1, 1) * grid.size/2
+
+      # Shift the extent
+      ext_r <- ext(grid)
+      ext_r_shifted <- ext(
+        xmin(ext_r) + dx,
+        xmax(ext_r) + dx,
+        ymin(ext_r) + dy,
+        ymax(ext_r) + dy
+      )
+
+      # Apply the shifted extent
+      ext(grid) <- ext_r_shifted
+    }  # randomly moves the grid around by half the grid size
 
     # check geometries
     if (all(st_geometry_type(input.data) %in% c("POINT", "LINESTRING", "MULTIPOINT", "MULTILINESTRING", "POLYGON", "MULTIPOLYGON"))){
@@ -209,6 +229,26 @@ makeAOOGrid.sf <-
      }  ## case where there are unusual geometries in the input data.
   }
 
+makeAOOGrid.AOOgrid <-
+  function(input.data){
+   n = 100
+   output <- lapply(1:n, makeAOOGrid, input.data = input.data@input, grid.size = input.data@params$gridsize) |>
+     lapply(`[[`, 1) #flatten list
+   AOO_vals <- sapply(output, nrow)
+   print(AOO_vals)
+   best_grid <- output[[which.min(AOO_vals)]][[1]]
+
+   output <-
+     new("AOOgrid",
+       grid = best_grid,
+       AOO = nrow(best_grid),
+       params = list(gridsize = grid.size, jitter = FALSE, pct = percent, n = n),
+       pctrule = bottom.1pct.rule,
+       input = input.data@input,
+       AOOvals = AOO_vals)
+   return(output)
+  }
+
 #' Compute Area of Occupancy (AOO)
 #'
 #' `getAOO` determines the number of area of occupancy (AOO) grid cells
@@ -218,9 +258,10 @@ makeAOOGrid.sf <-
 #' Red List of Ecosystems Criteria B.
 #'
 #' @inheritParams makeAOOGrid
-#' @return The number of grid cells occupied by the ecosystem or species
+#' @return an object of class AOOgrid or a list of AOOgrid objects. Ecosystems that recieved
+#' an AOO of 60 cells or fewer on a first pass are run with a jittered grid of n=100
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
+#'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
 #' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
 #'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
@@ -234,11 +275,33 @@ makeAOOGrid.sf <-
 #' AOO <- getAOO(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
 #' @export
 
-getAOO <- function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1){
-  # Computes the number of 10x10km grid cells that are >1% covered by an ecosystem
-  AOO.number <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule = TRUE, percent) |> sapply(nrow)
-  return(AOO.number)
+getAOO <- function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1) {
+  AOO_grid <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule, percent)
+
+  # Split raster into list of binary rasters
+  binary_rasters <- lapply(sort(unique(values(input.data))), function(v) {
+    binary <- input.data == v
+    names(binary) <- paste0("value_", v)
+    binary
+  })
+
+  AOOgrid_list <- lapply(1:length(AOO_grid),
+                         function(x) new("AOOgrid",
+                                         grid = AOO_grid[[x]],
+                                         AOO = nrow(AOO_grid[[x]]),
+                                         params = list(gridsize = grid.size, jitter = FALSE, pct = percent),
+                                         pctrule = bottom.1pct.rule,
+                                         input = binary_rasters[[x]],
+                                         AOOvals = NA))
+
+  # run grid jitter on units with AOO near a threshold
+
+  AOOgrid_list <- lapply(AOOgrid_list, function(x) if(nrow(x) <= 60) return(makeAOOGrid(x)) else return(x))
+
+  return(AOOgrid_list)
+
 }
+
 
 #' Alternate function for getting AOO (with custom grid)
 #'
