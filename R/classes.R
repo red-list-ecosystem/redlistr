@@ -83,13 +83,20 @@ setMethod(
     # Base plot
     if (!is.null(x@input)) {
       if (inherits(x@input, "sf")) {
-        plot(sf::st_geometry(x@input), col = "darkgreen")
+        plot(sf::st_geometry(x@grid), border = "grey30",
+             col = NA,
+             axes = TRUE,                     # adds axes
+             xlab = "Easting (m)",            # sensible axis label for projected CRS
+             ylab = "Northing (m)",            # sensible axis label for projected CRS
+             ...)
+        plot(sf::st_geometry(x@input), col = "darkgreen", add = TRUE)
       } else if (inherits(x@input, "SpatRaster")) {
         terra::plot(x@input, col = c("seashell3", "midnightblue"), range = c(0,1))
+        # Overlay grid
+        plot(sf::st_geometry(x@grid), col = NA, border = "grey30", ..., add = TRUE)
       }
     }
-    # Overlay grid
-    plot(sf::st_geometry(x@grid), col = NA, border = "grey30", ..., add = TRUE)
+
 
 
   }

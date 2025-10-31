@@ -86,7 +86,7 @@ top_pct <- function(v, pct = 99) {
 #' @import sf
 #' @import dplyr
 
-makeAOOGrid <- function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+makeAOOGrid <- function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
   UseMethod("makeAOOGrid", input.data)
 }
 
@@ -143,7 +143,7 @@ makeAOOGrid.sf <-
 
     # count number of ecosystem types
     if (dplyr::n_distinct(ecosystem_names) == 1) {
-      message("Only one ecosystem type entered, consider using `create_AOO_grid` to get more detailed summary.")
+      #message("Only one ecosystem type entered, consider using `create_AOO_grid` to get more detailed summary.")
     }
 
     # create assessment grid
@@ -231,13 +231,18 @@ makeAOOGrid.sf <-
 
 makeAOOGrid.AOOgrid <-
   function(input.data){
-    ecosystemunit <- terra::deepcopy(input.data@input)
+
     # flag NA values for computation purposes
-   if (inherits(ecosystemunit, "SpatRaster"))
-    terra::NAflag(ecosystemunit) <- 0
+   if (inherits(input.data@input, "SpatRaster")){
+      ecosystemunit <- terra::deepcopy(input.data@input)
+      terra::NAflag(ecosystemunit) <- 0
+   }else if(inherits(input.data@input, "sf")){
+     ecosystemunit <- input.data@input
+   }
+   grid.size <- input.data@params$gridsize
 
    n = 10
-   output <- lapply(1:n, makeAOOGrid, input.data = ecosystemunit, grid.size = input.data@params$gridsize) |>
+   output <- lapply(1:n, function(x) makeAOOGrid(ecosystemunit, grid.size)) |>
      lapply(`[[`, 1) #flatten list
    AOO_vals <- sapply(output, nrow)
    best_grid <- output[[which.min(AOO_vals)[1]]]
@@ -278,12 +283,12 @@ makeAOOGrid.AOOgrid <-
 #' extent(r1) <- extent(0, 6100, 0, 8700)
 #' AOO <- getAOO(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
 #' @export
-getAOO <-  function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+getAOO <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
   UseMethod("getAOO", input.data)
 }
 
-
-getAOO.SpatRaster <- function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+#' @export
+getAOO.SpatRaster <- function(input.data, grid.size = 10000, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
   message("Initialising grids")
   AOO_grid <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule, percent, jitter)
 
@@ -306,22 +311,43 @@ getAOO.SpatRaster <- function(input.data, grid.size = 10000, names_from, bottom.
   # run grid jitter on units with AOO near a threshold
   if(jitter){
     message("Running jitter on units with 60 or fewer cells")
-    AOOgrid_list <- lapply(AOOgrid_list, function(x) if(x@AOO <= 60) {return(makeAOOGrid(x)) } else {return(x)})
+    AOOgrid_list <- lapply(AOOgrid_list, function(x) if(x@AOO <= 60 & x@AOO > 2) {return(makeAOOGrid(x)) } else {return(x)})
     AOOgrid_list <- setNames(AOOgrid_list, names(AOO_grid))
     return(AOOgrid_list)
   }
 }
 
-
-getAOO.sf <-  function(input.data, grid.size = 10000, names_from, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE){
+#' @export
+getAOO.sf <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE){
   message("Initialising grids")
-  AOO_grid <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule, percent, jitter)
+  AOO_grid <- makeAOOGrid(input.data, grid.size, names_from, bottom.1pct.rule, percent, jitter)
 
   message("Assembling initial grids")
-  ## TODO
+  names_from <- dplyr::coalesce(names_from, "ecosystem_name")
+  if (!any(colnames(input.data) %in% names_from)) {                 # check for ecosystem names
+    input.data <- input.data |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")  #put new name label if not present
+  }
+  input_split <- input.data |> split(st_drop_geometry(input.data[names_from]))
 
-  message("Running jitter on units with 60 or fewer cells")
-  ## TODO
+  AOOgrid_list <- lapply(1:length(AOO_grid),
+                         function(x) new("AOOgrid",
+                                         grid = AOO_grid[[x]],
+                                         AOO = nrow(AOO_grid[[x]]),
+                                         params = list(gridsize = grid.size, jitter = jitter, pct = percent),
+                                         pctrule = bottom.1pct.rule,
+                                         input = input_split[[x]]))
+
+  # run grid jitter on units with AOO near a threshold
+  if(jitter){
+    message("Running jitter on units with 60 or fewer cells")
+    AOOgrid_list <- lapply(AOOgrid_list, function(x) if(x@AOO <= 60 & x@AOO > 2) {return(makeAOOGrid(x)) } else {return(x)})
+    AOOgrid_list <- setNames(AOOgrid_list, names(AOO_grid))
+  }
+
+  if(length(AOOgrid_list) == 1) { return(AOOgrid_list[[1]])
+  } else {
+      return(AOOgrid_list) }
+
 }
 
 #' Alternate function for getting AOO (with custom grid)
