@@ -1,14 +1,14 @@
 #' Calculates the Area of a Raster.
 #'
-#' `getArea` reports the area of a RasterLayer object using the pixel
-#'  counting method, or terra::expanse for SpatRaster and SpatVector objects,
-#'  or the area of a SpatialPolygons or sf object using sf::st_area
-#' @param x Either a RasterLayer or SpatialPolygons object. For a RasterLayer,
-#'   no data value should be NA
+#' `getArea` reports the area of ecosystem units sprovided as spatial data
+#' @param x A SpatRaster, SpatVector, or an sf object with POLYGONS geometry.
+#' @param names_from  a column names containing ecosystem labels, as a string or
+#' dplyr-style column name. Only required for SpatVector and sf types. Units are
+#' assumed to be delineated by raster value for SpatRasters.
 #' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
+#' @return The total area of the ecosystem units in x as a units vector (km^2).
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
+#'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family Change functions
 #' @examples
 #' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
@@ -16,130 +16,51 @@
 #' extent(r1) <- extent(0, 6100, 0, 8700)
 #' a.r1 <- getArea(r1) # area of all non-NA cells in r1
 #' @export
-#' @import raster
 #' @import terra
 #' @import sf
+#' @import dplyr
 
-getArea <- function(x, ...){
-  if(isLonLat(x)){
-    stop('Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
+getArea <- function(x, names_from = NA, ...){
+  if(st_is_longlat(x)){
+    stop('Input has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
   }
   UseMethod("getArea", x)
 }
 
-#' Calculates the Area of a Raster from RasterLayer.
-#'
-#' `getArea` reports the area of a RasterLayer object using the pixel
-#'  counting method.
-#' @param x Either a RasterLayer object. No data value should be NA
-#' @param value.to.count Optional. Value of the cells in a RasterLayer to be
-#'   counted
-#' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family Change functions
 #' @export
-getArea.RasterLayer <- function(x, value.to.count, ...){
-  if(length(raster::unique(x)) != 1 & missing(value.to.count)){
-    warning("The input raster is not binary, counting ALL non NA cells\n")
-    cell.res <- res(x)
-    cell.area <- cell.res[1] * cell.res[2]
-    x.df <- plyr::count(values(x))
-    n.cell <- sum(x.df[which(!is.na(x.df[, 1])), ]$freq)
-    aream2 <- cell.area * n.cell
-    areakm2 <- aream2/1000000
-    return (areakm2)
-  }
-  else if(length(raster::unique(x)) != 1){
-    cell.res <- res(x)
-    cell.area <- cell.res[1] * cell.res[2]
-    x.df <- plyr::count(values(x))
-    n.cell <- x.df[which(x.df[, 1] == value.to.count), ]$freq
-    aream2 <- cell.area * n.cell
-    areakm2 <- aream2/1000000
-    return (areakm2)
-  }
-  else{
-    cell.res <- res(x)
-    cell.area <- cell.res[1] * cell.res[2]
-    x.df <- plyr::count(values(x))
-    n.cell <- x.df[which(!is.na(x.df[,1])), ]$freq
-    aream2 <- cell.area * n.cell
-    areakm2 <- aream2/1000000
-    return (areakm2)
-  }
+getArea.SpatRaster <- function(x, ...){
+  area <- terra::expanse(x, "km", byValue=TRUE, usenames = TRUE)
+  return(area)
 }
-
-#' Calculates the Area of a Raster from SpatVect.
-#'
-#' `getArea` reports the area of a SpatVect. object using terra::expanse
-#' @param x A SpatVect object
-#' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family Change functions
 #' @export
-getArea.SpatVect <- function(x, ...){
-  area <- expanse(x, "km")
+getArea.SpatVector <- function(x, names_from = NA, ...){
+  x <- st_as_sf(x)
+  var <- ensym(names_from)
+  x |>
+    group_by(.data[[rlang::as_string(var)]]) |>
+    summarise(geometry = st_union(geometry))|>
+    st_area() |> set_units(km^2)
   return(area)
 }
 
-#' Calculates the Area of a Raster from SpatRaster.
-#'
-#' `getArea` reports the area of a SpatRaster object using terra::expanse
-#' @param x SpatRaster
-#' @param byValue Logical. If TRUE, the area for each unique cell value is
-#'    returned.
-#' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family Change functions
 #' @export
-getArea.SpatRaster <- function(x, byValue, ...){
-  area <- expanse(x, "km", byValue)
-  return(area)
+getArea.sf <- function(x, names_from = NA, ...) {
+  # Turn input into a symbol (works for bare names AND strings)
+  var <- ensym(names_from)
+
+  x |>
+    group_by(.data[[rlang::as_string(var)]]) |>
+    summarise(geometry = st_union(geometry))|>
+    st_area() |> set_units(km^2)
 }
 
-#' Calculates the Area of a Raster from SpatialPolygons.
-#'
-#' `getArea` reports the area of a SpatialPolygons object using sf::st_area
-#' @param x A SpatialPolygons object.
-#' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family Change functions
-#' @export
-getArea.SpatialPolygons <- function(x, ...){
-  sf_polygon <- st_as_sf(x)
-  area <- st_area(sf_polygon)
-  return(area)
-}
-
-#' Calculates the Area of a Raster from sf object
-#'
-#' `getArea` reports the area of a sf object using sf::st_area
-#' @param x A sf object
-#' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family Change functions
-#' @export
-getArea.sf <- function(x, ...){
-  area <- st_area(x) / 1000000
-  return(as.numeric(area))
-}
 
 #' Area change between two inputs in km2
 #'
 #' `getAreaLoss` reports the difference in area between two inputs. These
-#' can be RasterLayers, SpatialPolygons, SpatRaster, SpatVect, sf or numbers.
-#' Any combinations of these inputs are valid. If using number as input, ensure
-#' it is measured in km2
+#' can be  SpatRaster, SpatVector, sf or numbers.
+#' Any combinations of these inputs are valid, but may result in inaccuracies.
+#' If using number as input, ensure it is measured in km2
 #'
 #' @param x Spatial obect or numeric representing area in km2
 #' @param y Spatial object or numeric representing area in km2
@@ -157,23 +78,21 @@ getArea.sf <- function(x, ...){
 #' @export
 
 getAreaLoss <- function(x, y){
-  if(inherits(x, 'RasterLayer') | inherits(x, 'SpatialPolygons') |
-     inherits(x, 'SpatRaster') | inherits(x, 'SpatVect') | inherits(x, 'sf')){
+  if(inherits(x, 'sf') | inherits(x, 'SpatRaster') | inherits(x, 'SpatVector')){
     a.x <- getArea(x)
   } else if (is.numeric((x))){
     a.x <- x
   } else {
-    stop('x is not a RasterLayer, SpatialPolygons, SpatRaster, SpatVect, sf,
-         or Numeric')
+    stop('x is not a SpatRaster, SpatVector, sf, or Numeric. Please note that the
+         raster package is deprecated and RasterLayer types are no longer in use.')
   }
-  if(inherits(y, 'RasterLayer') | inherits(y, 'SpatialPolygons') |
-     inherits(y, 'SpatRaster') | inherits(y, 'SpatVect') | inherits(y, 'sf')){
+  if(inherits(x, 'sf') | inherits(x, 'SpatRaster') | inherits(x, 'SpatVector')){
     a.y <- getArea(y)
   } else if (is.numeric((y))){
     a.y <- y
   } else {
-    stop('y is not a RasterLayer, SpatialPolygons, SpatRaster, SpatVect, sf,
-         or Numeric')
+    stop('y is not a SpatRaster, SpatVector, sf, or Numeric. Please note that the
+         raster package is deprecated and RasterLayer types are no longer in use.')
   }
   a.dif.km2 <- (a.x - a.y)
   return(a.dif.km2)
