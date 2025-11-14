@@ -1,13 +1,16 @@
 #' Creates Extent of occurrence (EOO) Polygon
 #'
 #' `makeEOO` is a generic function that creates a  minimum convex polygon
-#' enclosing all occurrences of the provided spatial data. If the input provided
+#' enclosing all occurrences of the ecosystems provided in the input data. If the input provided
 #' is a raster layer, the points are taken from a buffer that has the radius of
 #' half of the shorter edge of the pixel around the centroid.
 #' @param input.data Spatial object of an ecosystem or species distribution.
 #'   Please use a CRS with units measured in metres.
-#' @return An object of class SpatVect representing the EOO of
-#'   `input.data`. Also inherits its CRS.
+#' @param names_from name of the column containing ecosystem names.
+#' If missing all features will be analysed together. Only needed for vector data.
+#' @return An object of class sf representing the EOO of
+#'   `input.data`, or a list of sf objects if multiple ecosystems were input.
+#'   Also inherits its CRS from input.data.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions
@@ -23,57 +26,47 @@
 #' ext(r1) <- c(0, 6100, 0, 8700)
 #' EOO.polygon <- makeEOO(r1)
 #' @export
-#' @import sp
-#' @import raster
+#' @import sf
 #' @import terra
 
-makeEOO <- function(input.data) UseMethod("makeEOO", input.data)
-
-#' @export
-makeEOO.RasterLayer <- function(input.data){
-  input_rast <- rast(input.data)
-  EOO.points <- as.points(input_rast)
-  EOO.buffer <- buffer(EOO.points, min(res(input_rast)) / 2)
-  EOO.polygon <- convHull(EOO.buffer)
-  return(EOO.polygon)
-}
+makeEOO <- function(input.data, names_from) UseMethod("makeEOO", input.data)
 
 #' @export
 makeEOO.SpatRaster <- function(input.data){
   EOO.points <- as.points(input.data)
-  EOO.buffer <- buffer(EOO.points, min(res(input.data)) / 2)
-  EOO.polygon <- convHull(EOO.buffer)
+  input.split <- split(EOO.points, names(EOO.points))
+  EOO.buffer <- lapply(input.split, buffer, width = min(res(input.data)) / 2)
+  EOO.polygon <- lapply(EOO.buffer, hull)
+
   return(EOO.polygon)
 }
 
 #' @export
-makeEOO.SpatialPoints <- function(input.data){
-  input_vect <- vect(input.data)
-  EOO.polygon <- convHull(input_vect)
-  return(EOO.polygon)
+makeEOO.sf <- function(input.data, names_from = NA){
+  names_from <- coalesce(names_from, "ecosystem_name")
+  if (!any(colnames(pols) %in% names_from)) {
+    pols <- pols |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")
+  }
+ input.split <- split(input.data, st_drop_geometry(input.data[names_from]))
+ EOO.polygon <- input.split |> lapply(st_union) |> lapply(st_convex_hull) |> lapply(st_sf)
+return(EOO.polygon)
 }
 
 #' @export
-makeEOO.SpatialPolygons <- function(input.data){
-  input_vect <- vect(input.data)
-  EOO.polygon <- convHull(input_vect)
-  return(EOO.polygon)
-}
-
-#' @export
-makeEOO.SpatVector <- function(input.data){
-  EOO.polygon <- convHull(input.data)
-  return(EOO.polygon)
+makeEOO.SpatVector <- function(input.data, names_from = NA){
+input.data <- st_sf(input.data)
+return(makeEOO.sf(input.data, names_from))
 }
 
 #' Calculates area of the created EOO polygon.
 #'
-#' `getAreaEOO` calculates the area of the EOO polygon generated from
-#' `makeEOO` the provided data
+#' `getEOO` calculates the area of the EOO polygon generated from
+#' `makeEOO` the provided data and returns a formatted output with defined summary and plot functions
 #' @param EOO.polygon An object of class SpatVect, usually the output
 #'   from `makeEOO`.
 #' @param unit Character. Output unit of area. One of "m", "km", or "ha"
-#' @return The area of the `EOO.polygon` in km2
+#' @return An object of type EOO or a list of EOO objects that store the
+#' EOO polygon, its area, and its input.data
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions
@@ -86,8 +79,57 @@ makeEOO.SpatVector <- function(input.data){
 #' EOO.area <- getAreaEOO(EOO.polygon)
 #' @export
 #' @import terra
+#' @import sf
+#' @import units
 
-getAreaEOO <- function(EOO.polygon, unit = "km"){
-  EOO.area <- expanse(EOO.polygon, unit)
-  return(EOO.area)
+getEOO <- function(input.data, names_from = NA) UseMethod("getEOO", input.data)
+
+#' @export
+getEOO.SpatRaster<- function(input.data){
+
+  binary_rasters <- lapply(sort(unique(terra::values(input.data))), function(v) {
+    binary <- as.numeric(input.data == v)
+    names(binary) <- paste0("value_", v)
+    binary
+  })
+
+  EOO.polygon <- makeEOO(input.data) |> lapply(st_as_sf)
+  EOO.area <- lapply(EOO.polygon, st_area, unit) |> lapply(set_units, km^2)
+
+  EOO_list <- lapply(1:length(binary_rasters),
+                         function(x) new("EOO",
+                                         pol = EOO.polygon[[x]],
+                                         EOO = as.numeric(EOO.area[[x]]),
+                                         unit = as.character(units(EOO.area[[x]])),
+                                         input = binary_rasters[[x]]))
+
+  return(EOO_list)
+}
+
+#' @export
+getEOO.sf <- function(input.data, names_from = NA){
+
+  names_from <- dplyr::coalesce(names_from, "ecosystem_name")
+  if (!any(colnames(input.data) %in% names_from)) {                 # check for ecosystem names
+    input.data <- input.data |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")  #put new name label if not present
+  }
+  input_split <- input.data |> split(st_drop_geometry(input.data[names_from]))
+
+  EOO.polygon <- makeEOO(input.data, names_from)
+  EOO.area <- lapply(EOO.polygon, st_area) |> lapply(set_units, km^2)
+
+  EOO_list <- lapply(1:length(binary_rasters),
+                     function(x) new("EOO",
+                                     pol = EOO.polygon[[x]],
+                                     EOO = as.numeric(EOO.area[[x]]),
+                                     unit = as.character(units(EOO.area[[x]])),
+                                     input = input_split[[x]]))
+
+  return(EOO_list)
+}
+
+#' @export
+getEOO.SpatVector <- function(input.data, names_from = NA){
+  input.data <- st_sf(input.data)
+  return(getEOO.sf(input.data, names_from))
 }
