@@ -65,10 +65,13 @@ top_pct <- function(v, pct = 99) {
 #' important for assessing the IUCN Red List of Ecosystems Criteria B.
 #'
 #' @inheritParams createGrid
+#' @param names_from
 #' @param bottom.1pct.rule Logical. If `TRUE`, grid cells containing the least
 #' ecosystem area are dropped up to 1% of the total distribution.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the `bottom.1pct.rule`
+#' @param n_jitter the number of grids to test for ecosystems near
+#' the AOO thresholds.
 #' @return A shapefile of grid cells occupied by an ecosystem or species, or a
 #' list of these if multiple ecosystems were input.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
@@ -89,7 +92,7 @@ top_pct <- function(v, pct = 99) {
 #' @import sf
 #' @import dplyr
 
-makeAOOGrid <- function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+makeAOOGrid <- function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
   UseMethod("makeAOOGrid", input.data)
 }
 
@@ -149,9 +152,9 @@ makeAOOGrid.sf <-
     ecosystem_names <- dplyr::pull(input.data, !!names_from)  # pull ecosystem names
 
     # count number of ecosystem types
-    if (dplyr::n_distinct(ecosystem_names) == 1) {
-      message("No names provided, all features will be combined into one unit.")
-    }
+    # if (dplyr::n_distinct(ecosystem_names) == 1) {
+    #   message("No names provided, all features will be combined into one unit.")
+    # }
 
     # create assessment grid
     grid <- createGrid(input.data, grid.size)
@@ -240,7 +243,7 @@ makeAOOGrid.sf <-
   }
 
 makeAOOGrid.AOOgrid <-
-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE){
+  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35){
 
     # flag NA values for computation purposes
    if (inherits(input.data@input, "SpatRaster")){
@@ -250,9 +253,7 @@ makeAOOGrid.AOOgrid <-
      ecosystemunit <- input.data@input
    }
    grid.size <- input.data@params$gridsize
-
-   n = 10
-   output <- lapply(1:n, function(x) makeAOOGrid(ecosystemunit, grid.size)) |>
+   output <- lapply(1:n_jitter, function(x) makeAOOGrid(ecosystemunit, grid.size)) |>
      lapply(`[[`, 1) #flatten list
    AOO_vals <- sapply(output, nrow)
    best_grid <- output[[which.min(AOO_vals)[1]]]
@@ -261,7 +262,7 @@ makeAOOGrid.AOOgrid <-
      new("AOOgrid",
        grid = best_grid,
        AOO = nrow(best_grid),
-       params = list(gridsize = grid.size, jitter = jitter, pct = percent, n = n),
+       params = list(gridsize = grid.size, jitter = jitter, pct = percent, n = n_jitter),
        pctrule = bottom.1pct.rule,
        input = input.data@input,
        AOOvals = AOO_vals)
@@ -278,7 +279,7 @@ makeAOOGrid.AOOgrid <-
 #'
 #' @inheritParams makeAOOGrid
 #' @return an object of class AOOgrid or a list of AOOgrid objects. Ecosystems that received
-#' an AOO of 60 cells or fewer on a first pass are run with a jittered grid of n=10
+#' an AOO of 60 cells or fewer on a first pass are run with a jittered grid with n specified by n_jitter
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
@@ -293,12 +294,12 @@ makeAOOGrid.AOOgrid <-
 #' extent(r1) <- extent(0, 6100, 0, 8700)
 #' AOO <- getAOO(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
 #' @export
-getAOO <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+getAOO <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
   UseMethod("getAOO", input.data)
 }
 
 #' @export
-getAOO.SpatRaster <- function(input.data, grid.size = 10000, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+getAOO.SpatRaster <- function(input.data, grid.size = 10000, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
   message("Initialising grids")
   AOO_grid <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule, percent, jitter)
 
@@ -316,19 +317,26 @@ getAOO.SpatRaster <- function(input.data, grid.size = 10000, bottom.1pct.rule = 
                                          AOO = nrow(AOO_grid[[x]]),
                                          params = list(gridsize = grid.size, jitter = jitter, pct = percent),
                                          pctrule = bottom.1pct.rule,
-                                         input = binary_rasters[[x]]))
+                                         input = binary_rasters[[x]])) |>
+    setNames(paste0("value_", sort(unique(terra::values(r)))))
 
   # run grid jitter on units with AOO near a threshold
   if(jitter){
     message("Running jitter on units with 60 or fewer cells")
-    AOOgrid_list <- lapply(AOOgrid_list, function(x) if(x@AOO <= 60 & x@AOO > 2) {return(makeAOOGrid(x)) } else {return(x)})
+    AOOgrid_list <- lapply(seq_along(AOOgrid_list),
+                           function(x) {
+                             if(AOOgrid_list[[x]]@AOO <= 60 & AOOgrid_list[[x]]@AOO > 2) {
+                               message(names(AOOgrid_list)[[x]])
+                               message(paste("jittering n = ", n_jitter))
+                               return(makeAOOGrid(AOOgrid_list[[x]], n_jitter = n_jitter))
+                               } else { return(AOOgrid_list[[x]])}})
     AOOgrid_list <- setNames(AOOgrid_list, names(AOO_grid))
     return(AOOgrid_list)
   }
 }
 
 #' @export
-getAOO.sf <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE){
+getAOO.sf <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35){
   message("Initialising grids")
   AOO_grid <- makeAOOGrid(input.data, grid.size, names_from, bottom.1pct.rule, percent, jitter)
 
@@ -345,17 +353,51 @@ getAOO.sf <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1p
                                          AOO = nrow(AOO_grid[[x]]),
                                          params = list(gridsize = grid.size, jitter = jitter, pct = percent),
                                          pctrule = bottom.1pct.rule,
-                                         input = input_split[[x]]))
+                                         input = input_split[[x]])) |>
+    setNames(names(AOO_grid))
 
   # run grid jitter on units with AOO near a threshold
   if(jitter){
-    message("Running jitter on units with 60 or fewer cells")
-    AOOgrid_list <- lapply(AOOgrid_list, function(x) if(x@AOO <= 60 & x@AOO > 2) {return(makeAOOGrid(x, names_from = names_from)) } else {return(x)})
-    AOOgrid_list <- setNames(AOOgrid_list, names(AOO_grid))
+    message(paste("Running jitter on units with 60 or fewer cells, n =", n_jitter))
+    AOOgrid_list <- lapply(1:length(AOOgrid_list),
+                           function(x){
+                             if(AOOgrid_list[[x]]@AOO <= 60 & AOOgrid_list[[x]]@AOO > 2) {
+                               message(paste("jittering ", names(AOOgrid_list)[[x]]))
+                               return(makeAOOGrid(AOOgrid_list[[x]], names_from = names_from, n_jitter = n_jitter))
+                               } else {return(AOOgrid_list[[x]])}
+                           }  )
   }
 
   if(length(AOOgrid_list) == 1) { return(AOOgrid_list[[1]])
   } else {
       return(AOOgrid_list) }
+
+}
+
+
+
+
+#' Make elbow plot to check jitter iterations
+#'
+#' `jplot` creates an elbow plot of the min AOO against
+#' the number of grid replicates run. Jplots that fall to the
+#' minimum value well before the highest n are robust.
+#'
+#' @param x an AOOgrid object
+#' @return NULL; plots min AOO against number of reps
+#' @author Aniko B. Toth \email{anikobtoth@@gmail.com}
+#' @family AOO functions
+
+#' @export
+
+jplot <- function(x){
+ z <- x@AOOvals
+ if(length(z) > 1){
+    data.frame(n = seq_along(z),
+            min = seq_along(z) |> sapply(function(x) min(z[1:x]))) |>
+   plot(type = "l", pch = 16)
+ } else {
+   warning("Grid was not jittered")
+ }
 
 }
