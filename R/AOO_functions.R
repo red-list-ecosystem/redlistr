@@ -7,8 +7,9 @@
 #'   Please use a CRS with units measured in metres.
 #' @param grid.size A number specifying the width of the desired grid square (in
 #'   same units as your coordinate reference system)
-#' @return A regular grid raster with extent `input.data` and grid size
-#'   `grid.size`. Each grid square has a unique identification number.
+#' @return A regular grid raster with extent `input.data` expanded by two
+#' cells in each direction and grid size `grid.size`. Each grid square has a
+#' unique raster value that serves as its identification number.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
@@ -36,6 +37,7 @@ createGrid <- function(input.data, grid.size = 10000){
 #'
 #' @param v A numeric vector.
 #' @param pct percent of area to drop
+#' @return a numeric vector indicating the indeces of the elements to keep.
 #' @author Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
 #' @references IUCN (2024). Guidelines for the application of IUCN Red
@@ -67,7 +69,8 @@ top_pct <- function(v, pct = 99) {
 #' ecosystem area are dropped up to 1% of the total distribution.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the `bottom.1pct.rule`
-#' @return A shapefile of grid cells occupied by an ecosystem or species
+#' @return A shapefile of grid cells occupied by an ecosystem or species, or a
+#' list of these if multiple ecosystems were input.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
@@ -133,6 +136,10 @@ makeAOOGrid.SpatRaster <-
 makeAOOGrid.sf <-
   function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
 
+    if (st_is_longlat(input.data)) { # check CRS
+      stop("AOO cannot be calculated in a geographic coordinate reference system. Use st_transform() to change to a planar CRS.")
+    }  # check CRS
+
     names_from <- dplyr::coalesce(names_from, "ecosystem_name")
 
     # identify name field
@@ -143,7 +150,7 @@ makeAOOGrid.sf <-
 
     # count number of ecosystem types
     if (dplyr::n_distinct(ecosystem_names) == 1) {
-      #message("Only one ecosystem type entered, consider using `create_AOO_grid` to get more detailed summary.")
+      message("No names provided, all features will be combined into one unit.")
     }
 
     # create assessment grid
@@ -205,12 +212,15 @@ makeAOOGrid.sf <-
 
         } else if (all(st_geometry_type(input.data) %in% c("POLYGON", "MULTIPOLYGON"))) { ## case where all input geometries are POLYGON or MULTIPOLYGON
 
-          if (st_is_longlat(input.data)) { # check CRS
-            warning("AOO is being calculated in a geographic coordinate reference system. Use st_project() to change to a planar CRS first!")
-        }  # check CRS
           grid_poly <- as.polygons(grid, dissolve = FALSE) |> sf::st_as_sf()
 
-          overlaps <- st_intersection(grid_poly, input.data)
+          overlaps <- withCallingHandlers(  # gets intersections and silences attribute warnings.
+            st_intersection(grid_poly, input.data[,names_from]),
+            warning = function(w) {
+              if (grepl("attribute variables are assumed to be spatially constant", conditionMessage(w)))
+                invokeRestart("muffleWarning")
+            }
+          )
           overlaps$area_m2 <- st_area(overlaps) |> as.numeric()
 
           AOO <- overlaps |> base::split(st_drop_geometry(overlaps[names_from]))
@@ -230,7 +240,7 @@ makeAOOGrid.sf <-
   }
 
 makeAOOGrid.AOOgrid <-
-  function(input.data){
+  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE){
 
     # flag NA values for computation purposes
    if (inherits(input.data@input, "SpatRaster")){
@@ -251,7 +261,7 @@ makeAOOGrid.AOOgrid <-
      new("AOOgrid",
        grid = best_grid,
        AOO = nrow(best_grid),
-       params = list(gridsize = grid.size, jitter = TRUE, pct = percent, n = n),
+       params = list(gridsize = grid.size, jitter = jitter, pct = percent, n = n),
        pctrule = bottom.1pct.rule,
        input = input.data@input,
        AOOvals = AOO_vals)
@@ -267,8 +277,8 @@ makeAOOGrid.AOOgrid <-
 #' Red List of Ecosystems Criteria B.
 #'
 #' @inheritParams makeAOOGrid
-#' @return an object of class AOOgrid or a list of AOOgrid objects. Ecosystems that recieved
-#' an AOO of 60 cells or fewer on a first pass are run with a jittered grid of n=100
+#' @return an object of class AOOgrid or a list of AOOgrid objects. Ecosystems that received
+#' an AOO of 60 cells or fewer on a first pass are run with a jittered grid of n=10
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
@@ -340,7 +350,7 @@ getAOO.sf <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1p
   # run grid jitter on units with AOO near a threshold
   if(jitter){
     message("Running jitter on units with 60 or fewer cells")
-    AOOgrid_list <- lapply(AOOgrid_list, function(x) if(x@AOO <= 60 & x@AOO > 2) {return(makeAOOGrid(x)) } else {return(x)})
+    AOOgrid_list <- lapply(AOOgrid_list, function(x) if(x@AOO <= 60 & x@AOO > 2) {return(makeAOOGrid(x, names_from = names_from)) } else {return(x)})
     AOOgrid_list <- setNames(AOOgrid_list, names(AOO_grid))
   }
 
@@ -349,106 +359,3 @@ getAOO.sf <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1p
       return(AOOgrid_list) }
 
 }
-
-#' Alternate function for getting AOO (with custom grid)
-#'
-#' `getAOOSilent` is identical to `getAOO`, but allows the custom
-#' input of the grid parameter. Used for `gridUncertainty`.
-#' @param input.data Spatial object of an ecosystem or species distribution.
-#'   Please use a CRS with units measured in metres.
-#' @param grid Custom grid to be used to calculate AOO. Usually the output of
-#'   `gridUncertainty`
-#' @param bottom.1pct.rule Logical. If `TRUE`, grid cells containing the least
-#' ecosystem area are dropped up to 1% of the total distribution.
-#' @param percent Numeric. The percent to be applied as a threshold for
-#'   the `bottom.1pct.rule`
-#' @return Value. The AOO calculated with the input distribution and grid.
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family AOO functions
-#' @import raster
-
-getAOOSilent <- function(input.data, grid, bottom.1pct.rule = TRUE, percent = 1) {
-  UseMethod("getAOOSilent", input.data)
-}
-
-#' @export
-getAOOSilent.RasterLayer <-
-  function(input.data, grid, bottom.1pct.rule = TRUE, percent = 1) {
-    # Different from getAOO
-    grid <- grid
-    grid.size <- res(grid)
-
-    # Same as getAOO
-    input.points <- rasterToPoints(input.data)
-    xy <- as.matrix(input.points)[,c(1,2)] # select xy column only
-    x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
-    names(x) <- 'count'
-    grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-    if (bottom.1pct.rule == FALSE){
-      outGrid <- grid.shp
-    }
-    if (bottom.1pct.rule == TRUE){
-      cell.res <- res(input.data)
-      area <- cell.res[1] * cell.res[2]
-      one.pc.grid <- grid.size[1] * grid.size[2] / 100 # 1pc of grid cell
-      threshold <- one.pc.grid * percent / area
-      outGrid <- grid.shp[grid.shp$count > threshold, ] # select only grids that meet one percent threshold
-    }
-
-    # end getAOO
-    AOO.number <- length(outGrid)
-    return(list(AOO.number = AOO.number,
-                out.grid = outGrid))
-  }
-
-#' @export
-getAOOSilent.SpatialPoints <-
-  function(input.data, grid, bottom.1pct.rule = TRUE, percent = 1){
-
-    if (bottom.1pct.rule == T) {
-      stop("bottom.1pct.rule cannot be used when input is SpatialPoints as
-           points do not have an inherent area. Consider converting into another
-           format to use this function")
-    }
-
-    # Different from getAOO
-    grid <- grid
-    grid.size <- res(grid)
-
-    #Same as getAOO
-    xy <- input.data@coords
-    x <- rasterize(xy, grid, fun='count') # returns a 10 * 10 raster where cell value is the number of points in the cell
-    names(x) <- 'count'
-    grid.shp <- rasterToPolygons(x, dissolve=FALSE)
-    outGrid <- grid.shp
-
-    # end getAOO
-    AOO.number <- length(outGrid)
-    return(list(AOO.number = AOO.number,
-                out.grid = outGrid))
-  }
-
-#' @export
-getAOOSilent.SpatialPolygons <-
-  function(input.data, grid, bottom.1pct.rule = TRUE, percent = 1){
-    # Different from getAOO
-    grid <- grid
-    grid.size <- res(grid)
-
-    #Same as getAOO
-    x <- rasterize(input.data, grid, getCover = T)
-    names(x) <- 'count'
-    grid.shp <- rasterToPolygons(x, dissolve = F)
-    if (bottom.1pct.rule == FALSE){
-      outGrid <- grid.shp[grid.shp$count > 0, ]
-    }
-    if (bottom.1pct.rule == TRUE){
-      outGrid <- grid.shp[grid.shp$count > (percent / 100), ]
-    }
-
-    # end getAOO
-    AOO.number <- length(outGrid)
-    return(list(AOO.number = AOO.number,
-                out.grid = outGrid))
-  }
