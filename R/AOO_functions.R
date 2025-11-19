@@ -65,7 +65,7 @@ top_pct <- function(v, pct = 99) {
 #' important for assessing the IUCN Red List of Ecosystems Criteria B.
 #'
 #' @inheritParams createGrid
-#' @param names_from
+#' @param names_from the name of the column containing ecosystem labels
 #' @param bottom.1pct.rule Logical. If `TRUE`, grid cells containing the least
 #' ecosystem area are dropped up to 1% of the total distribution.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
