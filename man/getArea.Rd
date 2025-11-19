@@ -2,23 +2,26 @@
 % Please edit documentation in R/change_functions.R
 \name{getArea}
 \alias{getArea}
-\title{Calculates the Area of a Raster.}
+\title{Calculates the Area of ecosystems in spatial data}
 \usage{
-getArea(x, ...)
+getArea(x, names_from = NA, ...)
 }
 \arguments{
-\item{x}{Either a RasterLayer or SpatialPolygons object. For a RasterLayer,
-no data value should be NA}
+\item{x}{A SpatRaster, SpatVector, or an sf object with POLYGONS geometry.}
+
+\item{names_from}{a column names containing ecosystem labels, as a string or
+dplyr-style column name. Only required for SpatVector and sf types. Units are
+assumed to be delineated by raster value for SpatRasters.}
 
 \item{...}{Addition arguments based on input format}
 }
 \value{
-The total area of the cells of interest in km2
+A data frame containing ecosystem identifiers and the total area of the
+ecosystem units in x as a units vector (km^2). For raster bricks it also contains
+the layer number.
 }
 \description{
-\code{getArea} reports the area of a RasterLayer object using the pixel
-counting method, or terra::expanse for SpatRaster and SpatVector objects,
-or the area of a SpatialPolygons or sf object using sf::st_area
+\code{getArea} reports the area of ecosystem units provided as spatial data
 }
 \examples{
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
@@ -28,16 +31,12 @@ a.r1 <- getArea(r1) # area of all non-NA cells in r1
 }
 \seealso{
 Other Change functions: 
-\code{\link{getArea.RasterLayer}()},
-\code{\link{getArea.SpatRaster}()},
-\code{\link{getArea.SpatVect}()},
-\code{\link{getArea.SpatialPolygons}()},
-\code{\link{getArea.sf}()},
-\code{\link{getAreaLoss}()},
+\code{\link{getAreaChange}()},
+\code{\link{getAreaTrend}()},
 \code{\link{getDeclineStats}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-\email{calvinkflee@gmail.com}
+\email{calvinkflee@gmail.com}, Aniko B. Toth \email{anikobtoth@gmail.com}
 }
 \concept{Change functions}

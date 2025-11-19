@@ -4,7 +4,7 @@
 \alias{createGrid}
 \title{Create empty Area of Occupancy (AOO) Grid.}
 \usage{
-createGrid(input.data, grid.size)
+createGrid(input.data, grid.size = 10000)
 }
 \arguments{
 \item{input.data}{Spatial object of an ecosystem or species distribution.
@@ -14,8 +14,9 @@ Please use a CRS with units measured in metres.}
 same units as your coordinate reference system)}
 }
 \value{
-A regular grid raster with extent \code{input.data} and grid size
-\code{grid.size}. Each grid square has a unique identification number.
+A regular grid raster with extent \code{input.data} expanded by two
+cells in each direction and grid size \code{grid.size}. Each grid square has a
+unique raster value that serves as its identification number.
 }
 \description{
 \code{createGrid} produces empty grid which can be used as the basis to help
@@ -30,12 +31,13 @@ Switzerland: IUCN. ix + 94pp. Available at the following web site:
 }
 \seealso{
 Other AOO functions: 
-\code{\link{getAOOSilent}()},
 \code{\link{getAOO}()},
-\code{\link{makeAOOGrid}()}
+\code{\link{jplot}()},
+\code{\link{makeAOOGrid}()},
+\code{\link{top_pct}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-\email{calvinkflee@gmail.com}
+\email{calvinkflee@gmail.com}, Aniko B. Toth \email{anikobtoth@gmail.com}
 }
 \concept{AOO functions}

@@ -4,7 +4,15 @@
 \alias{makeAOOGrid}
 \title{Create Area of Occupancy (AOO) grid for an ecosystem or species distribution}
 \usage{
-makeAOOGrid(input.data, grid.size, min.percent.rule = FALSE, percent = 1)
+makeAOOGrid(
+  input.data,
+  grid.size = 10000,
+  names_from = NA,
+  bottom.1pct.rule = TRUE,
+  percent = 1,
+  jitter = TRUE,
+  n_jitter = 35
+)
 }
 \arguments{
 \item{input.data}{Spatial object of an ecosystem or species distribution.
@@ -13,27 +21,33 @@ Please use a CRS with units measured in metres.}
 \item{grid.size}{A number specifying the width of the desired grid square (in
 same units as your coordinate reference system)}
 
-\item{min.percent.rule}{Logical. If \code{TRUE}, a minimum area threshold
-must be passed before a grid is counted as an AOO grid.}
+\item{names_from}{the name of the column containing ecosystem labels}
+
+\item{bottom.1pct.rule}{Logical. If \code{TRUE}, grid cells containing the least
+ecosystem area are dropped up to 1\% of the total distribution.}
 
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
-the \code{min.percent.rule}}
+the \code{bottom.1pct.rule}}
+
+\item{n_jitter}{the number of grids to test for ecosystems near
+the AOO thresholds.}
 }
 \value{
-A shapefile of grid cells occupied by an ecosystem or species
+A shapefile of grid cells occupied by an ecosystem or species, or a
+list of these if multiple ecosystems were input.
 }
 \description{
 \code{makeAOOGrid} is a generic function that creates grids representing the
 area of occupancy for distributions based on the input spatial data. It
-includes capability for specifying whether a minimum percent of the grid cell
-needs to be occupied before it is counted in the AOO. This functionality is
+includes capability for specifying whether the least occupied cells collectively
+containing less than 1\% of the ecosystem are counted in the AOO. This functionality is
 important for assessing the IUCN Red List of Ecosystems Criteria B.
 }
 \examples{
 crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
+r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
 extent(r1) <- extent(0, 6100, 0, 8700)
-AOO_grid <- makeAOOGrid(r1, 1000, min.percent.rule = TRUE, percent = 1)
+AOO_grid <- makeAOOGrid(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
@@ -45,11 +59,12 @@ Switzerland: IUCN. ix + 94pp. Available at the following web site:
 \seealso{
 Other AOO functions: 
 \code{\link{createGrid}()},
-\code{\link{getAOOSilent}()},
-\code{\link{getAOO}()}
+\code{\link{getAOO}()},
+\code{\link{jplot}()},
+\code{\link{top_pct}()}
 }
 \author{
 Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-\email{calvinkflee@gmail.com}
+\email{calvinkflee@gmail.com}, Aniko B. Toth \email{anikobtoth@gmail.com}
 }
 \concept{AOO functions}
