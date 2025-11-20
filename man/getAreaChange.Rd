@@ -38,6 +38,7 @@ extent(r1) <- extent(0, 6100, 0, 8700)
 r2 <- raster(ifelse((volcano<145), NA, 1), crs = crs.UTM55S)
 extent(r2) <- extent(0, 6100, 0, 8700)
 a.dif <- getAreaChange(r1, r2) # distribution rasters
+
 }
 \seealso{
 Other Change functions: 

@@ -242,6 +242,7 @@ makeAOOGrid.sf <-
      }  ## case where there are unusual geometries in the input data.
   }
 
+#' @export
 makeAOOGrid.AOOgrid <-
   function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35){
 
