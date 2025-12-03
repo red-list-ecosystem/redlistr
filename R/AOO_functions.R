@@ -99,6 +99,12 @@ makeAOOGrid <- function(input.data, grid.size = 10000, names_from = NA, bottom.1
 #' @export
 makeAOOGrid.SpatRaster <-
   function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+
+    if (is.lonlat(input.data)) { # check CRS
+      stop("AOO cannot be calculated in a geographic coordinate reference system. Use terra::project() to change to a planar CRS.")
+    }  # check CRS
+
+
     grid <- createGrid(input.data, grid.size)
 
     if(jitter){
@@ -319,7 +325,7 @@ getAOO.SpatRaster <- function(input.data, grid.size = 10000, bottom.1pct.rule = 
                                          params = list(gridsize = grid.size, jitter = jitter, pct = percent),
                                          pctrule = bottom.1pct.rule,
                                          input = binary_rasters[[x]])) |>
-    setNames(paste0("value_", sort(unique(terra::values(r)))))
+    setNames(paste0("value_", sort(unique(terra::values(input.data)))))
 
   # run grid jitter on units with AOO near a threshold
   if(jitter){
@@ -332,7 +338,8 @@ getAOO.SpatRaster <- function(input.data, grid.size = 10000, bottom.1pct.rule = 
                                return(makeAOOGrid(AOOgrid_list[[x]], n_jitter = n_jitter))
                                } else { return(AOOgrid_list[[x]])}})
     AOOgrid_list <- setNames(AOOgrid_list, names(AOO_grid))
-    return(AOOgrid_list)
+
+    if(length(AOOgrid_list) == 1) return(AOOgrid_list[[1]]) else return(AOOgrid_list)
   }
 }
 

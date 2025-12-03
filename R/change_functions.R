@@ -155,32 +155,32 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
         dplyr::mutate(area_diff = area_km2.y - area_km2.x)
       )
     }else{
-      nfy <- ensym(names_from_y)
+      nfy <- rlang::ensym(names_from_y)
       a.x <- getArea(x, names_from = {{names_from_y}})
       a.y <- getArea(y, names_from = {{names_from_y}})
       return(
-        dplyr::full_join(a.x, a.y, by = as_string(nfy)) |>
+        dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
         dplyr::mutate(area_diff = area_km2.y - area_km2.x)
       )
     }
   }else if(missing(names_from_y)){
     message("names_from_y not provided, using names_from_x for both datasets")
-    nfx <- ensym(names_from_x)
+    nfx <- rlang::ensym(names_from_x)
     a.x <- getArea(x, names_from = {{names_from_x}})
     a.y <- getArea(y, names_from = {{names_from_x}})
     return(
-      dplyr::full_join(a.x, a.y, by = as_string(nfx)) |>
+      dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
       dplyr::mutate(area_diff = area_km2.y - area_km2.x)
       )
   }else{
 
-  nfx <- ensym(names_from_x)
-  nfy <- ensym(names_from_y)
+  nfx <- rlang::ensym(names_from_x)
+  nfy <- rlang::ensym(names_from_y)
 
   a.x <- getArea(x, names_from = {{names_from_x}})
   a.y <- getArea(y, names_from = {{names_from_y}})
   return(
-    dplyr::full_join(a.x, a.y, by = as_string(nfy) |> stats::setNames(as_string(nfx))) |>
+    dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
     dplyr::mutate(area_diff = area_km2.y - area_km2.x)
   )
   }
@@ -199,32 +199,32 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
           dplyr::mutate(area_diff = area_km2.y - area_km2.x)
       )
     }else{
-      nfy <- ensym(names_from_y)
+      nfy <- rlang::ensym(names_from_y)
       a.x <- x |> getArea(names_from = {{names_from_y}})
       a.y <- y |> getArea(names_from = {{names_from_y}})
       return(
-        dplyr::full_join(a.x, a.y, by = as_string(nfy)) |>
+        dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
           dplyr::mutate(area_diff = area_km2.y - area_km2.x)
       )
     }
   }else if(missing(names_from_y)){
     message("names_from_y not provided, using names_from_x for both datasets")
-    nfx <- ensym(names_from_x)
+    nfx <- rlang::ensym(names_from_x)
     a.x <- x |> getArea(names_from = {{names_from_x}})
     a.y <- y |> getArea(names_from = {{names_from_x}})
     return(
-      dplyr::full_join(a.x, a.y, by = as_string(nfx)) |>
+      dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
         dplyr::mutate(area_diff = area_km2.y - area_km2.x)
     )
   }else{
 
-    nfx <- ensym(names_from_x)
-    nfy <- ensym(names_from_y)
+    nfx <- rlang::ensym(names_from_x)
+    nfy <- rlang::ensym(names_from_y)
 
     a.x <- x |> getArea(names_from = {{names_from_x}})
     a.y <- y |> getArea(names_from = {{names_from_y}})
     return(
-      dplyr::full_join(a.x, a.y, by = as_string(nfy) |> stats::setNames(as_string(nfx))) |>
+      dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
         dplyr::mutate(area_diff = area_km2.y - area_km2.x)
     )
   }
@@ -240,20 +240,20 @@ getAreaChange.data.frame <- function(x, y, names_from_x = NA, names_from_y = NA)
     if(missing(names_from_y)){
       stop("At least one names_from column must be given")
     }else{
-      nfy <- ensym(names_from_y)
-      return(dplyr::full_join(a.x, a.y, by = as_string(nfy)) |>
+      nfy <- rlang::ensym(names_from_y)
+      return(dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
                dplyr::mutate(area_diff = area.y - area.x))
     }
   }else if(missing(names_from_y)){
-    nfx <- ensym(names_from_x)
-    return(dplyr::full_join(a.x, a.y, by = as_string(nfx)) |>
+    nfx <- rlang::ensym(names_from_x)
+    return(dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
              dplyr::mutate(area_diff = area.y - area.x))
   }else{
 
-    nfx <- ensym(names_from_x)
-    nfy <- ensym(names_from_y)
+    nfx <- rlang::ensym(names_from_x)
+    nfy <- rlang::ensym(names_from_y)
 
-    return(dplyr::full_join(a.x, a.y, by = as_string(nfy) |> stats::setNames(as_string(nfx))) |>
+    return(dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
              dplyr::mutate(area_diff = area.y - area.x))
   }
 
@@ -295,22 +295,27 @@ getAreaTrend.SpatRaster <- function(x){
   names(binary_stacks) <- paste0("value_", vals)
 
   areas <- lapply(binary_stacks, getArea) |> lapply(function(v) v |> dplyr::filter(value == 1) |> dplyr::select(-value))
-
+  diff_stack <- binary_stacks |> lapply(deepcopy) |> lapply(function(x) {x[is.na(x)] <- 0
+  return(x)})
   trend_list <- lapply(1:length(binary_stacks),
-                         function(i) list(
+                         function(i) new("trend",
                                          input = binary_stacks[[i]],
                                          areas = areas[[i]],
-                                         netdiff = last(areas[[i]]$area) - first(areas[[i]]$area),
-                                         diff = binary_stacks[[i]][[nlyr(x)]]*2+binary_stacks[[i]][[1]])  # 1 = lost, 2 = gained, 3 = kept
+                                         netdiff = dplyr::last(areas[[i]]$area) - dplyr::first(areas[[i]]$area),
+                                         diff = diff_stack[[i]][[nlyr(x)]]*2+diff_stack[[i]][[1]])  # 1 = lost, 2 = gained, 3 = kept
                                          ) |>
     setNames(paste0("value_",vals))
 
-
+if(length(trend_list)<=1) trend_list <- trend_list[[1]]
 return(trend_list)
 }
 
 
 # TODO; getAreaTrend for list of polygon layers.
+getAreaTrend.sf <- function(x, names_from = NA){
+
+}
+
 
 #' Change statistics.
 #'
