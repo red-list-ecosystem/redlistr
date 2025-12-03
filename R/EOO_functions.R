@@ -58,13 +58,15 @@ input.data <- st_sf(input.data)
 return(makeEOO.sf(input.data, names_from))
 }
 
-#' Calculates area of the created EOO polygon.
+#' Calculates area of the created EOO polygon and returns a summary object with useful info.
 #'
 #' `getEOO` calculates the area of the EOO polygon generated from
-#' `makeEOO` the provided data and returns a formatted output with defined summary and plot functions
-#' @param EOO.polygon An object of class SpatVect, usually the output
-#'   from `makeEOO`.
-#' @param unit Character. Output unit of area. One of "m", "km", or "ha"
+#' `makeEOO` the provided data and returns an EOO class object or a list of these with
+#' defined summary and plot functions available.
+#' @param input.data Spatial object of an ecosystem or species distribution.
+#'   Please use a CRS with units measured in metres.
+#' @param names_from name of the column containing ecosystem names.
+#' If missing all features will be analysed together. Only needed for vector data.
 #' @return An object of type EOO or a list of EOO objects that store the
 #' EOO polygon, its area, and its input.data
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
@@ -94,7 +96,7 @@ getEOO.SpatRaster<- function(input.data){
   })
 
   EOO.polygon <- makeEOO(input.data) |> lapply(st_as_sf)
-  EOO.area <- lapply(EOO.polygon, st_area, unit) |> lapply(set_units, km^2)
+  EOO.area <- lapply(EOO.polygon, st_area, unit) |> lapply(units::set_units, km^2)
 
   EOO_list <- lapply(1:length(binary_rasters),
                          function(x) new("EOO",
@@ -103,7 +105,7 @@ getEOO.SpatRaster<- function(input.data){
                                          unit = as.character(units(EOO.area[[x]])),
                                          input = binary_rasters[[x]]))
 
-  return(EOO_list)
+  if(length(EOO_list) == 1) return(EOO_list[[1]]) else return(EOO_list)
 }
 
 #' @export
@@ -116,7 +118,7 @@ getEOO.sf <- function(input.data, names_from = NA){
   input_split <- input.data |> split(st_drop_geometry(input.data[names_from]))
 
   EOO.polygon <- makeEOO(input.data, names_from)
-  EOO.area <- lapply(EOO.polygon, st_area) |> lapply(set_units, km^2)
+  EOO.area <- lapply(EOO.polygon, st_area) |> lapply(units::set_units, km^2)
 
   EOO_list <- lapply(1:length(binary_rasters),
                      function(x) new("EOO",
@@ -125,11 +127,25 @@ getEOO.sf <- function(input.data, names_from = NA){
                                      unit = as.character(units(EOO.area[[x]])),
                                      input = input_split[[x]]))
 
-  return(EOO_list)
+  if(length(EOO_list) == 1) return(EOO_list[[1]]) else return(EOO_list)
 }
 
 #' @export
 getEOO.SpatVector <- function(input.data, names_from = NA){
   input.data <- st_sf(input.data)
   return(getEOO.sf(input.data, names_from))
+}
+
+
+
+#' Extracts the area from an EOO polygon
+#'
+#' `getEOOarea` wrapper that extracts the area slot of the EOO input
+#' @param EOO an object of class EOO
+#' @return an integer
+#' @family EOO functions
+#' @export
+
+getEOOarea <- function(EOO){
+  return(EOO@area)
 }
