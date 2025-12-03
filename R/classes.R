@@ -194,4 +194,109 @@ setMethod("plot", "EOO", function(x, y, ...) {
 })
 
 
+#' trend class
+#'
+#' A class to represent change in area over time for an ecosystem.
+#'
+#' @slot input binary raster or list of sf POLYGON objects representing the input ecosystem extent
+#' @slot areas the area of the ecosystem in each layer or list element
+#' @slot netdiff difference between the area in the first layer or list element and the last.
+#' @slot diff raster stack showing change over layers or list elements of the ecosystem extent.
+#' @export
+setClass(
+  "trend",
+  slots = list(
+    input =    "geospatial",
+    areas =    "data.frame",
+    netdiff =  "numeric",
+    diff =     "geospatial"
+  ),
+  prototype = list(
+    input = NULL,
+    areas = data.frame(),
+    netdiff = numeric(0),
+    diff = NULL
+  )
+)
 
+
+#' @export
+setMethod("summary", "trend", function(object, ...) {
+  cat("Summary of ecosystem trend\n")
+  cat("----------------------------\n")
+  cat("Net change in area:\n", format(object@netdiff, big.mark = ","), "kms squared\n\n")
+  cat("Ecosystem area:\n", object@areas$area, "\n")
+  cat("Input data class: ", class(object@input)[1], "\n", sep = "")
+
+  if (inherits(object@input, "sf")) {
+    cat("Input feature count: ", nrow(object@input), "\n", sep = "")
+  } else if (inherits(object@input, "SpatRaster")) {
+    cat("Input raster layers: ", terra::nlyr(object@input), "\n", sep = "")
+    cat("Raster dimensions: ", paste(terra::ext(object@input), collapse = " × "), "\n", sep = "")
+  }
+  invisible(object)
+  object@areas |> ggplot2::ggplot(ggplot2::aes(x = layer, y = area, group = 1)) + ggplot2::geom_line()
+})
+
+
+#' @export
+setMethod("plot", "trend", function(x, y, ...) {
+  if (is.null(x@input) || nrow(x@input) == 0) {
+    stop("No data found in slot 'input'.")
+  }
+  if (is.null(x@diff)) {
+    stop("No data found in slot 'diff'.")
+  }
+
+  # --- Compute combined extent (same as before) ---
+  if (inherits(x@input, "sf")) {
+    bbox_all <- sf::st_bbox(sf::st_union(sf::st_geometry(x@input)))
+  } else if (inherits(x@input, "SpatRaster")) {
+    bbox_all <- sf::st_bbox(sf::st_as_sf(terra::as.polygons(x@input)))
+  } else {
+    stop("Unsupported input type. Must be 'sf' or 'SpatRaster'.")
+  }
+
+  # --- Convert SpatRaster to data frame for ggplot ---
+  # keep only the first layer of diff if multi-layer
+  r <- x@diff[[1]]
+
+  # terra::as.data.frame with xy = TRUE for coordinates
+  df <- terra::as.data.frame(r, xy = TRUE, na.rm = FALSE)
+  names(df)[3] <- "value"   # rename the raster column
+
+  # Make value a factor with labels for 0,1,2,3
+  df$value <- factor(
+    df$value,
+    levels = c(0, 1, 2, 3),
+    labels = c("NA", "Lost", "Gained", "Kept")
+  )
+
+  # --- Build ggplot ---
+  p <- ggplot2::ggplot(df) +
+    ggplot2::geom_raster(
+      ggplot2::aes(x = x, y = y, fill = value)
+    ) +
+    ggplot2::coord_sf(
+      xlim = c(bbox_all["xmin"], bbox_all["xmax"]),
+      ylim = c(bbox_all["ymin"], bbox_all["ymax"]),
+      expand = FALSE
+    ) +
+    ggplot2::scale_fill_viridis_d(
+      name = "Ecosystem change"  # legend title
+    ) +
+    ggplot2::labs(
+      title = "Ecosystem change"
+    ) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      # legend outside the main plot area
+      legend.position = "right",
+      legend.box = "vertical",
+      legend.title = ggplot2::element_text(size = 10),
+      legend.text  = ggplot2::element_text(size = 9),
+      plot.title   = ggplot2::element_text(hjust = 0.5)
+    )
+
+  print(p)
+})
