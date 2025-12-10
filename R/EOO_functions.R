@@ -120,7 +120,7 @@ getEOO.sf <- function(input.data, names_from = NA){
   EOO.polygon <- makeEOO(input.data, names_from)
   EOO.area <- lapply(EOO.polygon, st_area) |> lapply(units::set_units, km^2)
 
-  EOO_list <- lapply(1:length(binary_rasters),
+  EOO_list <- lapply(1:length(input_split),
                      function(x) new("EOO",
                                      pol = EOO.polygon[[x]],
                                      EOO = as.numeric(EOO.area[[x]]),
