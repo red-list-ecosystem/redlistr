@@ -261,7 +261,7 @@ makeAOOGrid.AOOgrid <-
      ecosystemunit <- input.data@input
    }
    grid.size <- input.data@params$gridsize
-   output <- lapply(1:n_jitter, function(x) makeAOOGrid(ecosystemunit, grid.size)) |>
+   output <- lapply(1:n_jitter, function(x) makeAOOGrid(ecosystemunit, names_from = names_from, grid.size = grid.size, bottom.1pct.rule = bottom.1pct.rule, percent = percent, jitter = jitter)) |>
      lapply(`[[`, 1) #flatten list
    AOO_vals <- sapply(output, nrow)
    best_grid <- output[[which.min(AOO_vals)[1]]]
@@ -336,7 +336,7 @@ getAOO.SpatRaster <- function(input.data, grid.size = 10000, bottom.1pct.rule = 
                              if(AOOgrid_list[[x]]@AOO <= 60 & AOOgrid_list[[x]]@AOO > 2) {
                                message(names(AOOgrid_list)[[x]])
                                message(paste("jittering n = ", n_jitter))
-                               return(makeAOOGrid(AOOgrid_list[[x]], n_jitter = n_jitter))
+                               return(makeAOOGrid(AOOgrid_list[[x]], n_jitter = n_jitter, grid.size = grid.size, bottom.1pct.rule = bottom.1pct.rule, percent = percent, jitter = jitter))
                                } else { return(AOOgrid_list[[x]])}})
     AOOgrid_list <- setNames(AOOgrid_list, names(AOO_grid))
 
@@ -372,7 +372,7 @@ getAOO.sf <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1p
                            function(x){
                              if(AOOgrid_list[[x]]@AOO <= 60 & AOOgrid_list[[x]]@AOO > 2) {
                                message(paste("jittering ", names(AOOgrid_list)[[x]]))
-                               return(makeAOOGrid(AOOgrid_list[[x]], names_from = names_from, n_jitter = n_jitter))
+                               return(makeAOOGrid(AOOgrid_list[[x]], names_from = names_from, grid.size = grid.size, bottom.1pct.rule = bottom.1pct.rule, jitter = jitter, percent = percent, n_jitter = n_jitter))
                                } else {return(AOOgrid_list[[x]])}
                            }  )
   }
