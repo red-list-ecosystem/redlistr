@@ -44,8 +44,8 @@ makeEOO.SpatRaster <- function(input.data){
 #' @export
 makeEOO.sf <- function(input.data, names_from = NA){
   names_from <- coalesce(names_from, "ecosystem_name")
-  if (!any(colnames(pols) %in% names_from)) {
-    pols <- pols |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")
+  if (!any(colnames(input.data) %in% names_from)) {
+    input.data <- input.data |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")
   }
  input.split <- split(input.data, st_drop_geometry(input.data[names_from]))
  EOO.polygon <- input.split |> lapply(st_union) |> lapply(st_convex_hull) |> lapply(st_sf)
