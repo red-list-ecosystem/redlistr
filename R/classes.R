@@ -91,6 +91,9 @@ setMethod(
              ...)
         plot(sf::st_geometry(x@input), col = "darkgreen", add = TRUE)
       } else if (inherits(x@input, "SpatRaster")) {
+        # TODO FIX THIS
+        #unionextent <- terra::union(terra::ext(x@input), sf::st_bbox(x@grid) |> terra::ext()) |> as.vector()
+        #x@input <- extend(x@input, unionextent)
         terra::plot(x@input, col = c("seashell3", "midnightblue"), range = c(0,1))
         # Overlay grid
         plot(sf::st_geometry(x@grid), col = NA, border = "grey30", ..., add = TRUE)

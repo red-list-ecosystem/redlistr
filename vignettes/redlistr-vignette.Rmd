@@ -241,7 +241,7 @@ summary(area.trend[[1]])
 plot(area.trend[[1]])
 
 #input polygons
-#TODO
+#this function is not supported for lists of polygons. 
 ```
 
 ### Rate of change

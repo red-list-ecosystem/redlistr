@@ -310,11 +310,8 @@ if(length(trend_list)<=1) trend_list <- trend_list[[1]]
 return(trend_list)
 }
 
-
-# TODO; getAreaTrend for list of polygon layers.
-getAreaTrend.sf <- function(x, names_from = NA){
-
-}
+# TODO; getAreaTrend for list of polygon layers?? Perhaps not necessary.
+#getAreaTrend.sf <- function(x, names_from = NA){}
 
 
 #' Change statistics.

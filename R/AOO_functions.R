@@ -133,8 +133,9 @@ makeAOOGrid.SpatRaster <-
       })
     AOO_grid <- lapply(x, as.polygons, dissolve=FALSE) |> lapply(function(.x) .x[.x$count > 0,]) # remove grid cells with no instances of the ecosystem
 
-    if(bottom.1pct.rule)
+    if(bottom.1pct.rule){
       AOO_grid <- lapply(AOO_grid, function(.x) .x[top_pct(.x$count, pct = 100-percent)])
+    }
 
     AOO_grid <- lapply(AOO_grid, st_as_sf)
 

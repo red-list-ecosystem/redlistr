@@ -146,6 +146,6 @@ getEOO.SpatVector <- function(input.data, names_from = NA){
 #' @family EOO functions
 #' @export
 
-getEOOarea <- function(EOO){
-  return(EOO@area)
+getAreaEOO <- function(EOO){
+  return(EOO@EOO)
 }
