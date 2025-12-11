@@ -229,8 +229,10 @@ element, for each ecosystem. The function returns a list of `trend`
 class objects, with one element for each ecosystem or raster value in
 the input data.
 
-```{r}
+```{r temporal trends with raster stacks, eval=FALSE}
 #input multilayer raster 
+rstack <- rast(system.file("extdata", "example_raster_stack.tif", 
+                                    package = "redlistr"))
 # returns a list of trends, one per ecosystems
 area.trend <- getAreaTrend(rstack)
 
@@ -349,7 +351,7 @@ plot(EOO.polygon)
 
 We can then extract the area of the EOO polygon, if needed.
 
-```{r Calculating EOO area}
+```{r Calculating EOO area, eval = TRUE}
 EOO.area <- getAreaEOO(EOO.polygon)
 
 #or, alternately, extract the EOO directly from the object. 
@@ -370,7 +372,7 @@ ecosystems that are contained in more than 60 grid cells, the default
 grid is used, as a random grid search is unlikely to yield results near
 the IUCN Criteria thresholds.
 
-```{r Creating AOO grid, fig.width=7, fig.height=7}
+```{r Creating AOO grid, fig.width=7, fig.height=7, eval = FALSE}
 AOO.grid <- getAOO(mangrove.2017, grid.size = 10000)
 
 # summary
@@ -391,7 +393,7 @@ very low. If these plots look unconvincing, you can increase the number
 of iterations with the argument `n_jitter` directly in the `getAOO()`
 function.
 
-```{r Getting number of AOO grids}
+```{r Getting number of AOO grids, eval = FALSE}
 
 # jplot
 jplot(AOO.grid)
@@ -416,7 +418,7 @@ involving species, for instance, this option should be turned off.
 Here, we demonstrate the differences between including or not including
 the one percent rule and changing the percent parameter:
 
-```{r One percent grid, fig.width=14, fig.height=5}
+```{r One percent grid, fig.width=14, fig.height=5, eval = FALSE}
 AOO.grid.keep.all <- getAOO(mangrove.2017, grid.size = 10000, 
                             bottom.1pct.rule = F, n_jitter = 150)
 AOO.grid.5.pct <- getAOO(mangrove.2017, grid.size = 10000, 

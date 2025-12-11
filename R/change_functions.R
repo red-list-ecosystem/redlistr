@@ -138,7 +138,7 @@ getAreaChange.SpatRaster <- function(x, y){
   a.y <- getArea(y)
   adiff <- dplyr::full_join(a.x, a.y, by = "value") |>
     dplyr::mutate(area_diff = area.y - area.x,
-                  percent_diff = 100*area_change/area.x) |>
+                  percent_diff = 100*area_diff/area.x) |>
     dplyr::select(-layer.x, -layer.y)
 
   return(adiff)
