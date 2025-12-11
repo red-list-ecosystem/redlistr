@@ -54,7 +54,9 @@ setMethod(
 
     # Summarise parameters
     cat("\nfunction call parameters:\n")
-    print(object@params)
+    cat("grid size: ", object@params$gridsize, "\n")
+    cat("jitter: ", object@params$jitter, "\n")
+    cat("n_jitter: ", object@params$n)
 
     invisible(object)
   }
@@ -77,7 +79,7 @@ setMethod(
 #' @export
 setMethod(
   "plot", "AOOgrid",
-  function(x, y, ...) {
+  function(x, ...) {
     if (!inherits(x@grid, "sf"))
       stop("Grid must be an sf object to plot.")
 
@@ -90,12 +92,14 @@ setMethod(
              xlab = "Easting (m)",            # sensible axis label for projected CRS
              ylab = "Northing (m)",            # sensible axis label for projected CRS
              ...)
-        plot(sf::st_geometry(x@input), col = "darkgreen", add = TRUE)
+        plot(sf::st_geometry(x@input), col = "darkgreen", add = TRUE, ...)
       } else if (inherits(x@input, "SpatRaster")) {
         # TODO FIX THIS
-        #unionextent <- terra::union(terra::ext(x@input), sf::st_bbox(x@grid) |> terra::ext()) |> as.vector()
-        #x@input <- extend(x@input, unionextent)
-        terra::plot(x@input, col = c("seashell3", "midnightblue"), range = c(0,1))
+        unionextent <- terra::union(terra::ext(x@input), sf::st_bbox(x@grid) |> terra::ext())
+        x@input <- terra::extend(x@input, unionextent)
+        x@input <- terra::extend(x@input, 10)
+        #x@input <- terra::extend(x@input, x@params$gridsize/60)
+        terra::plot(x@input, col = c("seashell3", "midnightblue"), range = c(0,1), ...)
         # Overlay grid
         plot(sf::st_geometry(x@grid), col = NA, border = "grey30", ..., add = TRUE)
       }
@@ -191,7 +195,8 @@ setMethod("plot", "EOO", function(x, y, ...) {
          pch = 21, col = "black", bg = "blue",
          add = TRUE)
   } else if (inherits(x@input, "SpatRaster")) {
-    terra::plot(x@input, add = TRUE, col = c("gray45", "midnightblue"))
+    terra::plot(x@input, add = TRUE, col = c("gray55", "midnightblue"))
+    plot(sf::st_geometry(x@pol), add = TRUE)
   }
 
   box()
