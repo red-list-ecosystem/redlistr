@@ -7,7 +7,9 @@
 getAreaTrend(x, names_from = NA)
 }
 \arguments{
-\item{x}{SpatRaster with multiple layers or data frame containing}
+\item{x}{SpatRaster with multiple layers or data frame containing two numerical
+columns "area" and "time". The data.frame can contain an additional column containing
+a key, whose name should be placed in names_from.}
 
 \item{names_from}{name of column containing ecosystem labels. Ignored if
 x is a raster.}
