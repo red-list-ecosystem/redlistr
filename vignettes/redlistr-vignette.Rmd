@@ -386,9 +386,10 @@ jitter-plot (jplot) shows how the number of cells decreased as the
 random search iterations increased. The plot should fall to the minimum
 number early and stay flat. You can also plot a histogram of the AOO
 values generated with the random grid search iterations, and this should
-look like a bell curve. If these plots look unconvincing, you can
-increase the number of iterations with the argument `n_jitter` directly
-in the `getAOO()` function.
+look like a bell curve in most cases, unless the number of grid cells is
+very low. If these plots look unconvincing, you can increase the number
+of iterations with the argument `n_jitter` directly in the `getAOO()`
+function.
 
 ```{r Getting number of AOO grids}
 
@@ -409,18 +410,21 @@ the ecosystem, and collectively adding to less than 1% of the
 ecosystem's total area, are not counted by default. This prevents tiny,
 far-flung fragments of an ecosystem from inflating the AOO. This option
 can be turned off using the argument, `bottom.1pct.rule = FALSE`, or the
-percentage changed using the `percent` argument.
+percentage changed using the `percent` argument. For assessments
+involving species, for instance, this option should be turned off.
 
-Here, we demonstrate the differences between including, or not including
-the one percent rule:
+Here, we demonstrate the differences between including or not including
+the one percent rule and changing the percent parameter:
 
-```{r One percent grid, fig.width=7, fig.height=7}
-AOO.grid.one.percent <- getAOO(mangrove.2017, grid.size = 10000, 
-                                    bottom.1pct.rule = F, n_jitter = 150)
-
-par(mfrow = c(2,1))
-plot(AOO.grid.one.percent)
-plot(AOO.grid)
+```{r One percent grid, fig.width=14, fig.height=5}
+AOO.grid.keep.all <- getAOO(mangrove.2017, grid.size = 10000, 
+                            bottom.1pct.rule = F, n_jitter = 150)
+AOO.grid.5.pct <- getAOO(mangrove.2017, grid.size = 10000, 
+                         bottom.1pct.rule = T, n_jitter = 150, percent = 5)
+par(mfrow = c(1,3))
+plot(AOO.grid.keep.all, main = "Keep all")
+plot(AOO.grid, main = "Remove bottom 1% (default)")
+plot(AOO.grid.5.pct, main = "Remove bottom 5%")
 par(mfrow = c(1,1))
 
 
