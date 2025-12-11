@@ -40,6 +40,7 @@ Switzerland: IUCN. ix + 94pp. Available at the following web site:
 }
 \seealso{
 Other EOO functions: 
+\code{\link{getAreaEOO}()},
 \code{\link{getEOO}()}
 }
 \author{

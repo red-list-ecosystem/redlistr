@@ -2,15 +2,16 @@
 % Please edit documentation in R/EOO_functions.R
 \name{getEOO}
 \alias{getEOO}
-\title{Calculates area of the created EOO polygon.}
+\title{Calculates area of the created EOO polygon and returns a summary object with useful info.}
 \usage{
 getEOO(input.data, names_from = NA)
 }
 \arguments{
-\item{EOO.polygon}{An object of class SpatVect, usually the output
-from \code{makeEOO}.}
+\item{input.data}{Spatial object of an ecosystem or species distribution.
+Please use a CRS with units measured in metres.}
 
-\item{unit}{Character. Output unit of area. One of "m", "km", or "ha"}
+\item{names_from}{name of the column containing ecosystem names.
+If missing all features will be analysed together. Only needed for vector data.}
 }
 \value{
 An object of type EOO or a list of EOO objects that store the
@@ -18,7 +19,8 @@ EOO polygon, its area, and its input.data
 }
 \description{
 \code{getEOO} calculates the area of the EOO polygon generated from
-\code{makeEOO} the provided data and returns a formatted output with defined summary and plot functions
+\code{makeEOO} the provided data and returns an EOO class object or a list of these with
+defined summary and plot functions available.
 }
 \examples{
 library(terra)
@@ -30,6 +32,7 @@ EOO.area <- getAreaEOO(EOO.polygon)
 }
 \seealso{
 Other EOO functions: 
+\code{\link{getAreaEOO}()},
 \code{\link{makeEOO}()}
 }
 \author{
