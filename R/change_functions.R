@@ -275,7 +275,9 @@ getAreaChange.data.frame <- function(x, y, names_from_x = NA, names_from_y = NA)
 #'
 #' `getAreaTrend` is used to calculate changes in area over time. Output
 #' is a list can be used to easily visualise trends for one ecosystem at a time.
-#' @param x SpatRaster with multiple layers or a list of sf or SpatVector objects.
+#' @param x SpatRaster with multiple layers or data frame containing two numerical
+#' columns "area" and "time". The data.frame can contain an additional column containing
+#' a key, whose name should be placed in names_from.
 #' @param names_from name of column containing ecosystem labels. Ignored if
 #' x is a raster.
 
@@ -299,6 +301,8 @@ getAreaTrend <- function(x, names_from = NA){
 
 #' @export
 getAreaTrend.SpatRaster <- function(x){
+
+  # transform stack into binary stacks
  vals <- terra::values(x) |> as.vector() |> unique() |> sort()
   binary_stacks <- lapply(vals, function(v) {
                              binaries <- as.numeric(x == v)
@@ -306,16 +310,21 @@ getAreaTrend.SpatRaster <- function(x){
   })
   names(binary_stacks) <- paste0("value_", vals)
 
+  # calculate areas at each layer
   areas <- lapply(binary_stacks, getArea) |>
     lapply(function(v) v |> dplyr::filter(value == 1) |> dplyr::select(-value)) |>
     lapply(function(v) v |> mutate(t = stringr::str_extract(
       layer, "\\d+"
     ) |> as.numeric())) ## regexp that will extract numbers (e.g., year or index values) from layer names.
 
+  # fit models
   models <- lapply(areas, fit_glm_ll)
 
+  # make copies for plotting purposes
   diff_stack <- binary_stacks |> lapply(deepcopy) |> lapply(function(x) {x[is.na(x)] <- 0
   return(x)})
+
+  # make trend objects
   trend_list <- lapply(1:length(binary_stacks),
                          function(i) new("trend",
                                          input = binary_stacks[[i]],
@@ -330,7 +339,34 @@ if(length(trend_list)<=1) trend_list <- trend_list[[1]]
 return(trend_list)
 }
 
-# TODO; getAreaTrend for data frame imput
+#' @export
+getAreaTrend.data.frame <- function(x, names_from = NA){
+  names_from <- dplyr::coalesce(names_from, "ecosystem_name")
+
+  # identify name field
+  if (!any(colnames(x) %in% names_from)) {                 # check for ecosystem names
+    x <- x |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")  #put new name label if not present
+  }
+
+  input_split <- x |> mutate(t = stringr::str_extract(time, "\\d+") |> as.numeric()) |>  # extract numeric values from t
+  split(x[names_from])
+
+  models <- lapply(input_split, fit_glm_ll)
+
+  # make trend objects
+  trend_list <- lapply(1:length(input_split),
+                       function(i) new("trend",
+                                       input = NULL,
+                                       areas = input_split[[i]],
+                                       model = models[[i]],
+                                       netdiff = dplyr::last(input_split[[i]]$area) - dplyr::first(input_split[[i]]$area),
+                                       diff = NULL)) |>
+                         setNames(names(input_split))
+
+  if(length(trend_list)<=1) trend_list <- trend_list[[1]]
+  return(trend_list)
+
+}
 
 #' Fit linear model with log-link.
 #'

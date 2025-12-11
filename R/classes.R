@@ -1,8 +1,9 @@
+
 #' Union of spatial classes
 #'
 #' Allows either sf, spatVector, or SpatRaster objects in the spatial slot.
 #' @importFrom methods setClassUnion
-setClassUnion("geospatial", c("sf", "SpatRaster"))
+setClassUnion("geospatial", c("sf", "SpatRaster", "NULL"))
 
 #' AOOgrid class
 #'
