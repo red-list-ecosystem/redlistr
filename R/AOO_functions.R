@@ -261,7 +261,7 @@ makeAOOGrid.AOOgrid <-
      ecosystemunit <- input.data@input
    }
    grid.size <- input.data@params$gridsize
-   output <- lapply(1:n_jitter, function(x) makeAOOGrid(ecosystemunit, names_from = names_from, grid.size = grid.size, bottom.1pct.rule = bottom.1pct.rule, percent = percent, jitter = jitter)) |>
+   output <- lapply(1:n_jitter, function(x) makeAOOGrid(ecosystemunit, grid.size = grid.size, bottom.1pct.rule = bottom.1pct.rule, percent = percent, jitter = jitter)) |>
      lapply(`[[`, 1) #flatten list
    AOO_vals <- sapply(output, nrow)
    best_grid <- output[[which.min(AOO_vals)[1]]]
