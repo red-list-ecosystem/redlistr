@@ -362,8 +362,8 @@ getAOO.sf <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1p
                                          AOO = nrow(AOO_grid[[x]]),
                                          params = list(gridsize = grid.size, jitter = jitter, pct = percent),
                                          pctrule = bottom.1pct.rule,
-                                         input = input_split[[x]])) |>
-    setNames(names(AOO_grid))
+                                         input = input_split[[x]]))
+  names(AOOgrid_list) <- names(input_split)
 
   # run grid jitter on units with AOO near a threshold
   if(jitter){

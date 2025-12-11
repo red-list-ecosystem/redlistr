@@ -126,6 +126,7 @@ getEOO.sf <- function(input.data, names_from = NA){
                                      EOO = as.numeric(EOO.area[[x]]),
                                      unit = as.character(units(EOO.area[[x]])),
                                      input = input_split[[x]]))
+  names(EOO_list) <- names(input_split)
 
   if(length(EOO_list) == 1) return(EOO_list[[1]]) else return(EOO_list)
 }

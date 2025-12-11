@@ -144,7 +144,7 @@ setMethod("show", "EOO", function(object) {
 setMethod("summary", "EOO", function(object, ...) {
   cat("Summary of EOO object\n")
   cat("----------------------------\n")
-  cat("EOO area: ", format(object@EOO, big.mark = ","), " square units\n", sep = "")
+  cat("EOO area: ", format(object@EOO, big.mark = ","), " square kms\n", sep = "")
   cat("Polygon geometry type(s): ", paste(unique(sf::st_geometry_type(object@pol)), collapse = ", "), "\n", sep = "")
   cat("Number of polygon features: ", nrow(object@pol), "\n", sep = "")
   cat("Input data class: ", class(object@input)[1], "\n", sep = "")
