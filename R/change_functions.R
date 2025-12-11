@@ -137,7 +137,8 @@ getAreaChange.SpatRaster <- function(x, y){
   a.x <- getArea(x)
   a.y <- getArea(y)
   adiff <- dplyr::full_join(a.x, a.y, by = "value") |>
-    dplyr::mutate(area_change = area.y - area.x) |>
+    dplyr::mutate(area_diff = area.y - area.x,
+                  percent_diff = 100*area_change/area.x) |>
     dplyr::select(-layer.x, -layer.y)
 
   return(adiff)
@@ -152,7 +153,8 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
       a.y <- getArea(y)
       return(
         dplyr::full_join(a.x, a.y, by = "ecosystem_name") |>
-        dplyr::mutate(area_diff = area_km2.y - area_km2.x)
+        dplyr::mutate(area_diff = area_km2.y - area_km2.x,
+                      percent_diff = area_diff/area_km2.x*100)
       )
     }else{
       nfy <- rlang::ensym(names_from_y)
@@ -160,7 +162,8 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
       a.y <- getArea(y, names_from = {{names_from_y}})
       return(
         dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
-        dplyr::mutate(area_diff = area_km2.y - area_km2.x)
+        dplyr::mutate(area_diff = area_km2.y - area_km2.x,
+                      percent_diff = area_diff/area_km2.x*100)
       )
     }
   }else if(missing(names_from_y)){
@@ -170,7 +173,8 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
     a.y <- getArea(y, names_from = {{names_from_x}})
     return(
       dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
-      dplyr::mutate(area_diff = area_km2.y - area_km2.x)
+      dplyr::mutate(area_diff = area_km2.y - area_km2.x,
+                    percent_diff = area_diff/area_km2.x*100)
       )
   }else{
 
@@ -181,7 +185,8 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
   a.y <- getArea(y, names_from = {{names_from_y}})
   return(
     dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
-    dplyr::mutate(area_diff = area_km2.y - area_km2.x)
+    dplyr::mutate(area_diff = area_km2.y - area_km2.x,
+                  percent_diff = area_diff/area_km2.x*100)
   )
   }
 
@@ -196,7 +201,8 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
       a.y <- getArea(y)
       return(
         dplyr::full_join(a.x, a.y, by = "ecosystem_name") |>
-          dplyr::mutate(area_diff = area_km2.y - area_km2.x)
+          dplyr::mutate(area_diff = area_km2.y - area_km2.x, ,
+                        percent_diff = area_diff/area_km2.x*100)
       )
     }else{
       nfy <- rlang::ensym(names_from_y)
@@ -204,7 +210,8 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
       a.y <- y |> getArea(names_from = {{names_from_y}})
       return(
         dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
-          dplyr::mutate(area_diff = area_km2.y - area_km2.x)
+          dplyr::mutate(area_diff = area_km2.y - area_km2.x, ,
+                        percent_diff = area_diff/area_km2.x*100)
       )
     }
   }else if(missing(names_from_y)){
@@ -214,7 +221,8 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
     a.y <- y |> getArea(names_from = {{names_from_x}})
     return(
       dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
-        dplyr::mutate(area_diff = area_km2.y - area_km2.x)
+        dplyr::mutate(area_diff = area_km2.y - area_km2.x,
+                      percent_diff = area_diff/area_km2.x*100)
     )
   }else{
 
@@ -225,7 +233,8 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
     a.y <- y |> getArea(names_from = {{names_from_y}})
     return(
       dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
-        dplyr::mutate(area_diff = area_km2.y - area_km2.x)
+        dplyr::mutate(area_diff = area_km2.y - area_km2.x,
+                      percent_diff = area_diff/area_km2.x*100)
     )
   }
 
@@ -242,19 +251,22 @@ getAreaChange.data.frame <- function(x, y, names_from_x = NA, names_from_y = NA)
     }else{
       nfy <- rlang::ensym(names_from_y)
       return(dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
-               dplyr::mutate(area_diff = area.y - area.x))
+               dplyr::mutate(area_diff = area.y - area.x,
+                             percent_diff = area_diff/area.x*100))
     }
   }else if(missing(names_from_y)){
     nfx <- rlang::ensym(names_from_x)
     return(dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
-             dplyr::mutate(area_diff = area.y - area.x))
+             dplyr::mutate(area_diff = area.y - area.x,
+                           percent_diff = area_diff/area.x*100))
   }else{
 
     nfx <- rlang::ensym(names_from_x)
     nfy <- rlang::ensym(names_from_y)
 
     return(dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
-             dplyr::mutate(area_diff = area.y - area.x))
+             dplyr::mutate(area_diff = area.y - area.x,
+                           percent_diff = area_diff/area.x*100))
   }
 
 }
@@ -294,13 +306,21 @@ getAreaTrend.SpatRaster <- function(x){
   })
   names(binary_stacks) <- paste0("value_", vals)
 
-  areas <- lapply(binary_stacks, getArea) |> lapply(function(v) v |> dplyr::filter(value == 1) |> dplyr::select(-value))
+  areas <- lapply(binary_stacks, getArea) |>
+    lapply(function(v) v |> dplyr::filter(value == 1) |> dplyr::select(-value)) |>
+    lapply(function(v) v |> mutate(t = stringr::str_extract(
+      layer, "\\d+"
+    ) |> as.numeric())) ## regexp that will extract numbers (e.g., year or index values) from layer names.
+
+  models <- lapply(areas, fit_glm_ll)
+
   diff_stack <- binary_stacks |> lapply(deepcopy) |> lapply(function(x) {x[is.na(x)] <- 0
   return(x)})
   trend_list <- lapply(1:length(binary_stacks),
                          function(i) new("trend",
                                          input = binary_stacks[[i]],
                                          areas = areas[[i]],
+                                         model = models[[i]],
                                          netdiff = dplyr::last(areas[[i]]$area) - dplyr::first(areas[[i]]$area),
                                          diff = diff_stack[[i]][[nlyr(x)]]*2+diff_stack[[i]][[1]])  # 1 = lost, 2 = gained, 3 = kept
                                          ) |>
@@ -310,8 +330,65 @@ if(length(trend_list)<=1) trend_list <- trend_list[[1]]
 return(trend_list)
 }
 
-# TODO; getAreaTrend for list of polygon layers?? Perhaps not necessary.
-#getAreaTrend.sf <- function(x, names_from = NA){}
+# TODO; getAreaTrend for data frame imput
+
+#' Fit linear model with log-link.
+#'
+#' `fit_lm_ll` produces a simple model to estimate trends in short time series.
+#'
+#' @param df a data frame containing the columns "area" and "t" for time. Time
+#' can be an index or year.
+#' @return an lm object
+#' @author Aniko B. Toth \email{anikobtoth@@gmail.com}
+#' @name trend_fitting_functions
+#' @import stats
+#' @import mgcv
+NULL
+
+#' @rdname trend_fitting_functions
+fit_lm_ll <- function(df){
+
+  fit_loglin <- lm(log(area) ~ t, data = df)
+
+}
+
+#' @rdname trend_fitting_functions
+fit_glm_ll <- function(df){
+
+  fit_glm <- glm(area ~ t,
+               data = df,
+               family = Gamma(link = "log"))
+
+}
+
+#' @rdname trend_fitting_functions
+fit_spline <- function(df){
+  library(mgcv)
+  fit_gam <- mgcv::gam(log(area) ~ s(t, k = 5), data = df)
+}
+
+#
+# ## Simple bayesian linear model; don't use, too many dependencies.
+# fit_blm <- function(df){
+#   library(brms)
+#
+#   # Bayesian linear model:
+#   # log(y_t) = beta0 + beta1 * t + error
+#   fit_bayes <- brm(
+#     formula = log(area) ~ as.numeric(layer),
+#     data    = df,
+#     family  = gaussian(),   # normal errors on log scale
+#     prior   = c(
+#       prior(normal(0, 5), class = "b"),          # for slope beta1
+#       prior(normal(0, 1000), class = "Intercept"), # for beta0
+#       prior(exponential(1), class = "sigma")     # for residual SD
+#     ),
+#     chains  = 4,
+#     iter    = 2000,
+#     cores   = 4
+#   )
+#   df$pred <- exp(predict(fit_bayes))
+# }
 
 
 #' Change statistics.

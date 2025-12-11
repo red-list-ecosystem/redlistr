@@ -211,12 +211,14 @@ setClass(
   slots = list(
     input =    "geospatial",
     areas =    "data.frame",
+    model =    "lm",
     netdiff =  "numeric",
     diff =     "geospatial"
   ),
   prototype = list(
     input = NULL,
     areas = data.frame(),
+    model = NULL,
     netdiff = numeric(0),
     diff = NULL
   )
@@ -225,9 +227,23 @@ setClass(
 
 #' @export
 setMethod("summary", "trend", function(object, ...) {
+  #predictions
+  newdat <- data.frame(t = seq(min(object@areas$t), max(object@areas$t), length.out = 100))
+  pred <- predict(object@model, newdata = newdat, type = "link", se.fit = TRUE)
+  pred_df <- data.frame(
+    t       = newdat$t,
+    mean     = exp(pred$fit),
+    l95 = exp(pred$fit - 1.96 * pred$se.fit),
+    u95 = exp(pred$fit + 1.96 * pred$se.fit))
+
+  pred_change <- pred_df$mean[nrow(pred_df)]-pred_df$mean[1]
+
+  #printout
   cat("Summary of ecosystem trend\n")
   cat("----------------------------\n")
   cat("Net change in area:\n", format(object@netdiff, big.mark = ","), "kms squared\n\n")
+  cat("Modeled change in area:\n", format(pred_change, big.mark = ","), "kms squared\n\n")
+  cat("Modeled percent change in area:\n", format(100*pred_change/pred_df$mean[1], big.mark = ","), "%\n\n")
   cat("Ecosystem area:\n", object@areas$area, "\n")
   cat("Input data class: ", class(object@input)[1], "\n", sep = "")
 
@@ -238,7 +254,30 @@ setMethod("summary", "trend", function(object, ...) {
     cat("Raster dimensions: ", paste(terra::ext(object@input), collapse = " × "), "\n", sep = "")
   }
   invisible(object)
-  object@areas |> ggplot2::ggplot(ggplot2::aes(x = layer, y = area, group = 1)) + ggplot2::geom_line()
+
+  #plotting_code
+
+  ggplot2::ggplot() +
+    # original data
+    ggplot2::geom_point(data = object@areas, ggplot2::aes(x = t, y = area), size = 2) +
+    # CI ribbon
+    ggplot2::geom_ribbon(data = pred_df,
+                         ggplot2::aes(x = t, ymin = l95, ymax = u95),
+                         alpha = 0.25) +
+
+    # fitted mean line
+    ggplot2::geom_line(data = pred_df,
+                       ggplot2::aes(x = t, y = mean),
+                       linewidth = 1, col = "dodgerblue4") +
+
+    ggplot2::labs(
+      x = "Time",
+      y = "Value",
+      title = "Observed Data and Fitted Log-Link Model with 95% CI"
+    ) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+
 })
 
 
