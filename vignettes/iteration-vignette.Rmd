@@ -9,24 +9,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-A major motivation we have when developing `redlistr` was to allow users to
-easily iterate through a large amount of data. 
+A major motivation we have when developing `redlistr` was to allow users to easily iterate through a large amount of data.
 
 # Iterating over all tif files in a folder
-First, we provide an example showing how users can perform EOO and AOO
-calculations on all `.tif` files within a folder.
+
+First, we provide an example showing how users can perform EOO and AOO calculations on all `.tif` files within a folder.
 
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(eval = FALSE)
 ```
 
 ## Loading packages
+
 ```{r}
 library(redlistr)
 library(stringr)
 ```
 
 ## Preparing workspace and variables
+
 ```{r}
 # Example directory
 input_dir <- # Path to folder with tif files
@@ -37,8 +38,7 @@ input_list <- list.files(input_dir, pattern = '.tif$')
 saveSHP <- T
 ```
 
-We also create an empty data frame to store our results in, with each row
-representing one file in the folder.
+We also create an empty data frame to store our results in, with each row representing one file in the folder.
 
 ```{r}
 # set up data capture
@@ -60,8 +60,8 @@ results_df <- data.frame (
 ```
 
 ## Running code
-We use a for loop to tell `R` to systematically go through each tif file
-within the specified folder.
+
+We use a for loop to tell `R` to systematically go through each tif file within the specified folder.
 
 ```{r}
 for (i in seq_along(input_list)){
@@ -111,26 +111,23 @@ message ("Analysis complete.")
 write.csv(results_df, paste(out_dir, "redlistr_analysis.csv"))
 ```
 
-This example code demonstrates how a user could calculate the range size metrics
-provided in `redlistr` on all tif files within a folder. Users can also
-parallelise the for loop using the `foreach` package.
+This example code demonstrates how a user could calculate the range size metrics provided in `redlistr` on all tif files within a folder. Users can also parallelise the for loop using the `foreach` package.
 
 # Iterating over all classes within an ecosystem
-Another case where users might want to iterate multiple inputs are when they
-have a single raster file which contains multiclass data.
 
-The workflow here is very similar to the code provided above. The only
-difference is that we will be looping over every class within a raster,
-converting each of them into a binary layer and performing analyses on them
-iteratively.
+Another case where users might want to iterate multiple inputs are when they have a single raster file which contains multiclass data.
+
+The workflow here is very similar to the code provided above. The only difference is that we will be looping over every class within a raster, converting each of them into a binary layer and performing analyses on them iteratively.
 
 ## Loading packages
+
 ```{r}
 library(redlistr)
 library(stringr)
 ```
 
 ## Preparing workspace and variables
+
 ```{r}
 # Example directory
 input_rast <- # raster(...)
@@ -139,8 +136,7 @@ out_dir <- "C:/Users/Username/Desktop"
 saveSHP <- T
 ```
 
-We also create an empty data frame to store our results in, with each row
-representing one file in the folder.
+We also create an empty data frame to store our results in, with each row representing one file in the folder.
 
 ```{r}
 # set up data capture
@@ -162,8 +158,8 @@ results_df <- data.frame (
 ```
 
 ## Running code
-We use a for loop to tell `R` to systematically go through each tif file
-within the specified folder.
+
+We use a for loop to tell `R` to systematically go through each tif file within the specified folder.
 
 ```{r}
 val_table <- freq(input_rast, useNA = "no") # get class values from raster
