@@ -43,6 +43,11 @@ makeEOO.SpatRaster <- function(input.data){
 
 #' @export
 makeEOO.sf <- function(input.data, names_from = NA){
+  # deal with any invalid geometries early.
+  if(any(!st_is_valid(input.data))){
+    input.data <- st_make_valid(input.data)
+  }
+
   names_from <- coalesce(names_from, "ecosystem_name")
   if (!any(colnames(input.data) %in% names_from)) {
     input.data <- input.data |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")
@@ -110,6 +115,11 @@ getEOO.SpatRaster<- function(input.data){
 
 #' @export
 getEOO.sf <- function(input.data, names_from = NA){
+
+  # deal with any invalid geometries early.
+  if(any(!st_is_valid(input.data))){
+    input.data <- st_make_valid(input.data)
+  }
 
   names_from <- dplyr::coalesce(names_from, "ecosystem_name")
   if (!any(colnames(input.data) %in% names_from)) {                 # check for ecosystem names
