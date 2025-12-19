@@ -56,7 +56,7 @@ setMethod(
     cat("\nfunction call parameters:\n")
     cat("grid size: ", object@params$gridsize, "\n")
     cat("jitter: ", object@params$jitter, "\n")
-    cat("n_jitter: ", object@params$n)
+    cat("n_jitter: ", object@params$n, "\n\n\n")
 
     invisible(object)
   }
@@ -155,10 +155,10 @@ setMethod("summary", "EOO", function(object, ...) {
   cat("Input data class: ", class(object@input)[1], "\n", sep = "")
 
   if (inherits(object@input, "sf")) {
-    cat("Input feature count: ", nrow(object@input), "\n", sep = "")
+    cat("Input feature count: ", nrow(object@input), "\n\n", sep = "")
   } else if (inherits(object@input, "SpatRaster")) {
     cat("Input raster layers: ", terra::nlyr(object@input), "\n", sep = "")
-    cat("Raster dimensions: ", paste(terra::ext(object@input), collapse = " × "), "\n", sep = "")
+    cat("Raster dimensions: ", paste(terra::ext(object@input), collapse = " × "), "\n\n", sep = "")
   }
   invisible(object)
 })
