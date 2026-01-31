@@ -151,6 +151,10 @@ raster object including only that value, or for smaller rasters, simply
 filter your output table to the value(s) of interest. Here's an example
 with a dummy raster.
 
+rstack \<- rast(system.file("extdata", "example_raster_stack.tif",
+
+package = "redlistr"))
+
 ```{r rasters with multiple values, eval=FALSE}
 # Load dummy multilayer raster for example
 rstack <- rast(system.file("extdata", "example_raster_stack.tif", 
@@ -177,9 +181,9 @@ empty, for polygon inputs the function will treat all polygons as part
 of a single ecosystem type.
 
 ```{r polygon data for multiple ecosystems, eval = F}
-# need example polygon data
-#TODO
-
+# polygon example
+polygons <- st_read('./inst/extdata/', 'example_polygons')
+poly_areas <- getArea(polygons, names_from = "time1")
 ```
 
 ## 4. Assessing Criterion A
@@ -209,7 +213,7 @@ unique ecosystem labels must be included in the function call. If the
 column name is different in the two inputs, both names must be provided
 in the same order as the input datasets.
 
-```{r Using getAreaChange}
+```{r Using getAreaChange, eval = F}
 # input rasters
 area.change <- getAreaChange(mangrove.2000, mangrove.2017)
 
@@ -219,7 +223,8 @@ area.change <- getAreaChange(mangrove.2000, mangrove.2017)
 area.change <- getAreaChange(a.2000, a.2017, value) 
 
 # input polygons 
-# TODO
+polygonsT5 <- st_read('./inst/extdata/', 'example_polygons_t5')
+area.change <- getAreaChange(polygons, polygonsT5, names_from_x = "time1", names_from_y = "time5")
 
 ```
 
@@ -380,6 +385,20 @@ summary(Aoo.grid)
 
 # handy plotting function
 plot(AOO.grid)
+
+```
+
+Both the `getEOO` and `getAOO` functions work on polygons too, just be
+sure to specify which column contains ecosystem names. If all polygons
+are from one ecosystem, you can leave out this argument.
+
+```{r EOO and AOO with polygons, eval = F}
+mangrove.2000.poly <- as.polygons(mangrove.2000) |> st_as_sf() 
+#fix crs encoding
+st_crs(mangrove.2000.poly)$wkt <- enc2utf8(st_crs(mangrove.2000.poly)$wkt)
+
+EOO.poly <- getEOO(mangrove.2000.poly)
+AOO.poly <- getAOO(mangrove.2000.poly)
 
 ```
 
