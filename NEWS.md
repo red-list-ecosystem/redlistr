@@ -1,3 +1,5 @@
+# redlistr 3.0.0
+
 # redlistr 1.0.4
 * Submission of update to CRAN to remove dependencies on retiring packages.
 * Updated functions to remove dependencies on rgdal and rgeos.
