@@ -29,8 +29,10 @@ ecosystem area are dropped up to 1\% of the total distribution.}
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
 the \code{bottom.1pct.rule}}
 
+\item{jitter}{logical. Whether grid randomization should be applied to units with low grid counts.}
+
 \item{n_jitter}{the number of grids to test for ecosystems near
-the AOO thresholds.}
+the AOO thresholds. Ignored if jitter = FALSE.}
 }
 \value{
 A shapefile of grid cells occupied by an ecosystem or species, or a
@@ -44,10 +46,9 @@ containing less than 1\% of the ecosystem are counted in the AOO. This functiona
 important for assessing the IUCN Red List of Ecosystems Criteria B.
 }
 \examples{
-crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-extent(r1) <- extent(0, 6100, 0, 8700)
-AOO_grid <- makeAOOGrid(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
+m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+r1 <- terra::rast(m, crs = "EPSG:32755")
+AOO_grid <- makeAOOGrid(r1, grid.size = 3)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

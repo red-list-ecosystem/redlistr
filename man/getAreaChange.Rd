@@ -32,11 +32,11 @@ data for multiple ecosystem types. Ensure x and y are the same data type.
 If using data frame as input, ensure areas are measured in km2
 }
 \examples{
-crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-extent(r1) <- extent(0, 6100, 0, 8700)
-r2 <- raster(ifelse((volcano<145), NA, 1), crs = crs.UTM55S)
-extent(r2) <- extent(0, 6100, 0, 8700)
+m1 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+r1 <- terra::rast(m1, crs = "EPSG:32755")
+
+m2 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+r2 <- terra::rast(m2, crs = "EPSG:32755")
 a.dif <- getAreaChange(r1, r2) # distribution rasters
 
 }

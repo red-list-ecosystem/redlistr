@@ -24,9 +24,8 @@ the layer number.
 \code{getArea} reports the area of ecosystem units provided as spatial data
 }
 \examples{
-crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-extent(r1) <- extent(0, 6100, 0, 8700)
+m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+r1 <- terra::rast(m, crs = "EPSG:32755")
 a.r1 <- getArea(r1) # area of all non-NA cells in r1
 }
 \seealso{

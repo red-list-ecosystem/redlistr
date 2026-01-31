@@ -21,14 +21,6 @@ returns a list
 \code{getAreaTrend} is used to calculate changes in area over time. Output
 is a list can be used to easily visualise trends for one ecosystem at a time.
 }
-\examples{
-crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-extent(r1) <- extent(0, 6100, 0, 8700)
-r2 <- raster(ifelse((volcano<145), NA, 1), crs = crs.UTM55S)
-extent(r2) <- extent(0, 6100, 0, 8700)
-a.dif <- getAreaChange(r1, r2) # distribution rasters
-}
 \seealso{
 Other Change functions: 
 \code{\link{getArea}()},

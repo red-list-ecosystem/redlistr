@@ -23,12 +23,9 @@ EOO polygon, its area, and its input.data
 defined summary and plot functions available.
 }
 \examples{
-library(terra)
-crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-ext(r1) <- c(0, 6100, 0, 8700)
-EOO.polygon <- makeEOO(r1)
-EOO.area <- getAreaEOO(EOO.polygon)
+m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+r1 <- terra::rast(m, crs = "EPSG:32755")
+EOO <- getEOO(r1)
 }
 \seealso{
 Other EOO functions: 

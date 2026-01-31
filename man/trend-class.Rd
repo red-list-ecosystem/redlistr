@@ -14,6 +14,8 @@ A class to represent change in area over time for an ecosystem.
 
 \item{\code{areas}}{the area of the ecosystem in each layer or list element}
 
+\item{\code{model}}{a fitted model object typically of the class lm containing the model used to calculate the trend}
+
 \item{\code{netdiff}}{difference between the area in the first layer or list element and the last.}
 
 \item{\code{diff}}{raster stack showing change over layers or list elements of the ecosystem extent.}
