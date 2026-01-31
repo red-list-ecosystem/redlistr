@@ -20,19 +20,15 @@
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   <https://iucnrle.org/>
 #' @examples
-#' library(terra)
-#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-#' ext(r1) <- c(0, 6100, 0, 8700)
+#' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#' r1 <- terra::rast(m, crs = "EPSG:32755")
 #' EOO.polygon <- makeEOO(r1)
 #' @export
-#' @import sf
-#' @import terra
 
 makeEOO <- function(input.data, names_from) UseMethod("makeEOO", input.data)
 
 #' @export
-makeEOO.SpatRaster <- function(input.data){
+makeEOO.SpatRaster <- function(input.data, names_from = NA){
   EOO.points <- as.points(input.data)
   input.split <- split(EOO.points, names(EOO.points))
   EOO.buffer <- lapply(input.split, buffer, width = min(res(input.data)) / 2)
@@ -48,7 +44,7 @@ makeEOO.sf <- function(input.data, names_from = NA){
     input.data <- st_make_valid(input.data)
   }
 
-  names_from <- coalesce(names_from, "ecosystem_name")
+  names_from <- dplyr::coalesce(names_from, "ecosystem_name")
   if (!any(colnames(input.data) %in% names_from)) {
     input.data <- input.data |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")
   }
@@ -78,12 +74,9 @@ return(makeEOO.sf(input.data, names_from))
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions
 #' @examples
-#' library(terra)
-#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-#' ext(r1) <- c(0, 6100, 0, 8700)
-#' EOO.polygon <- makeEOO(r1)
-#' EOO.area <- getAreaEOO(EOO.polygon)
+#' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#' r1 <- terra::rast(m, crs = "EPSG:32755")
+#' EOO <- getEOO(r1)
 #' @export
 #' @import terra
 #' @import sf
@@ -92,7 +85,7 @@ return(makeEOO.sf(input.data, names_from))
 getEOO <- function(input.data, names_from = NA) UseMethod("getEOO", input.data)
 
 #' @export
-getEOO.SpatRaster<- function(input.data){
+getEOO.SpatRaster<- function(input.data, names_from = NA){
 
   binary_rasters <- lapply(sort(unique(terra::values(input.data))), function(v) {
     binary <- as.numeric(input.data == v)
@@ -101,7 +94,7 @@ getEOO.SpatRaster<- function(input.data){
   })
 
   EOO.polygon <- makeEOO(input.data) |> lapply(st_as_sf)
-  EOO.area <- lapply(EOO.polygon, st_area, unit) |> lapply(units::set_units, km^2)
+  EOO.area <- lapply(EOO.polygon, st_area, unit) |> lapply(units::set_units, "km^2")
 
   EOO_list <- lapply(1:length(binary_rasters),
                          function(x) new("EOO",
@@ -128,7 +121,7 @@ getEOO.sf <- function(input.data, names_from = NA){
   input_split <- input.data |> split(st_drop_geometry(input.data[names_from]))
 
   EOO.polygon <- makeEOO(input.data, names_from)
-  EOO.area <- lapply(EOO.polygon, st_area) |> lapply(units::set_units, km^2)
+  EOO.area <- lapply(EOO.polygon, st_area) |> lapply(units::set_units, "km^2")
 
   EOO_list <- lapply(1:length(input_split),
                      function(x) new("EOO",

@@ -21,20 +21,23 @@ License: GPL (>=3)| file LICENSE
 URL: https://github.com/red-list-ecosystem/redlistr
 BugReports: https://github.com/red-list-ecosystem/redlistr/issues
 Depends:
-    R (>= 3.5.0),
-    terra (>= 1.8-54),
-    sf (>= 1.0-21)
+    R (>= 3.5.0)
 Imports:
+    terra (>= 1.8-54),
+    sf (>= 1.0-21),
     dplyr,
+    methods,
+    ggplot2,
     rlang,
-    sf,
-    terra,
-    units
+    scales,
+    units, 
+    stringr, 
+    mgcv
 Suggests:
     devtools,
     knitr,
     rmarkdown,
-    testthat
+    testthat,
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

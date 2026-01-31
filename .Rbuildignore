@@ -6,3 +6,5 @@
 ^README-.*\.png$
 ^CRAN-RELEASE$
 ^\.github$
+^doc$
+^Meta$

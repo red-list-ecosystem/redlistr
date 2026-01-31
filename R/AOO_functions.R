@@ -18,7 +18,6 @@
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   <https://iucnrle.org/>
-#' @import terra
 
 createGrid <- function(input.data, grid.size = 10000){
   grid <- terra::rast(ext(input.data), res = grid.size, crs = crs(input.data))
@@ -70,8 +69,9 @@ top_pct <- function(v, pct = 99) {
 #' ecosystem area are dropped up to 1% of the total distribution.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the `bottom.1pct.rule`
+#' @param jitter logical. Whether grid randomization should be applied to units with low grid counts.
 #' @param n_jitter the number of grids to test for ecosystems near
-#' the AOO thresholds.
+#' the AOO thresholds. Ignored if jitter = FALSE.
 #' @return A shapefile of grid cells occupied by an ecosystem or species, or a
 #' list of these if multiple ecosystems were input.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
@@ -83,14 +83,11 @@ top_pct <- function(v, pct = 99) {
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   <https://iucnrle.org/>
 #' @examples
-#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-#' extent(r1) <- extent(0, 6100, 0, 8700)
-#' AOO_grid <- makeAOOGrid(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
+#' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#' r1 <- terra::rast(m, crs = "EPSG:32755")
+#' AOO_grid <- makeAOOGrid(r1, grid.size = 3)
 #' @export
-#' @import terra
-#' @import sf
-#' @import dplyr
+
 
 makeAOOGrid <- function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
   UseMethod("makeAOOGrid", input.data)
@@ -98,7 +95,7 @@ makeAOOGrid <- function(input.data, grid.size = 10000, names_from = NA, bottom.1
 
 #' @export
 makeAOOGrid.SpatRaster <-
-  function(input.data, grid.size, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+  function(input.data, grid.size, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
 
     if (is.lonlat(input.data)) { # check CRS
       stop("AOO cannot be calculated in a geographic coordinate reference system. Use terra::project() to change to a planar CRS.")
@@ -144,7 +141,7 @@ makeAOOGrid.SpatRaster <-
 
 #' @export
 makeAOOGrid.sf <-
-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE) {
+  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
     # deal with any invalid geometries early.
     if(any(!st_is_valid(input.data))){
       input.data <- st_make_valid(input.data)
@@ -215,7 +212,7 @@ makeAOOGrid.sf <-
                  format. Rule has been applied based on LINESTRING lengths in each grid square.")
             AOO <- lapply(AOO, function(.x) .x[top_pct(.x$length_m, pct = 100-percent),])  # remove bottom 1% of ecosystem area.
            }
-          AOO_grid <- AOO |> lapply(function(.x) return(grid_poly |> dplyr::filter(lyr.1 %in% .x$lyr.1)))
+          AOO_grid <- AOO |> lapply(function(.x) return(grid_poly |> dplyr::filter(.data$lyr.1 %in% .x$lyr.1)))
           return(AOO_grid)
 
 
@@ -237,7 +234,7 @@ makeAOOGrid.sf <-
           if(bottom.1pct.rule)
             AOO <- lapply(AOO, function(.x) .x[top_pct(.x$area_m2, pct = 100-percent),])  # remove bottom 1% of ecosystem area.
 
-          AOO_grid <- AOO |> lapply(function(.x) return(grid_poly |> dplyr::filter(lyr.1 %in% .x$lyr.1)))
+          AOO_grid <- AOO |> lapply(function(.x) return(grid_poly |> dplyr::filter(.data$lyr.1 %in% .x$lyr.1)))
           return(AOO_grid)
       } else {
          stop("Multiple geometry types detected. Please enter input data with a consistent geometry")
@@ -295,18 +292,15 @@ makeAOOGrid.AOOgrid <-
 #'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   <https://iucnrle.org/>
-#' @examples
-#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-#' extent(r1) <- extent(0, 6100, 0, 8700)
-#' AOO <- getAOO(r1, 1000, bottom.1pct.rule = TRUE, percent = 1)
 #' @export
 getAOO <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
   UseMethod("getAOO", input.data)
 }
 
+
+#'
 #' @export
-getAOO.SpatRaster <- function(input.data, grid.size = 10000, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
+getAOO.SpatRaster <- function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
   message("Initialising grids")
   AOO_grid <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule, percent, jitter)
 
@@ -319,13 +313,13 @@ getAOO.SpatRaster <- function(input.data, grid.size = 10000, bottom.1pct.rule = 
   })
 
   AOOgrid_list <- lapply(1:length(AOO_grid),
-                         function(x) new("AOOgrid",
+                         function(x) methods::new("AOOgrid",
                                          grid = AOO_grid[[x]],
                                          AOO = nrow(AOO_grid[[x]]),
                                          params = list(gridsize = grid.size, jitter = jitter, pct = percent),
                                          pctrule = bottom.1pct.rule,
                                          input = binary_rasters[[x]])) |>
-    setNames(paste0("value_", sort(unique(terra::values(input.data)))))
+    stats::setNames(paste0("value_", sort(unique(terra::values(input.data)))))
 
   # run grid jitter on units with AOO near a threshold
   if(jitter){
@@ -337,7 +331,7 @@ getAOO.SpatRaster <- function(input.data, grid.size = 10000, bottom.1pct.rule = 
                                message(paste("jittering n = ", n_jitter))
                                return(makeAOOGrid(AOOgrid_list[[x]], n_jitter = n_jitter, grid.size = grid.size, bottom.1pct.rule = bottom.1pct.rule, percent = percent, jitter = jitter))
                                } else { return(AOOgrid_list[[x]])}})
-    AOOgrid_list <- setNames(AOOgrid_list, names(AOO_grid))
+    AOOgrid_list <- stats::setNames(AOOgrid_list, names(AOO_grid))
 
     if(length(AOOgrid_list) == 1) return(AOOgrid_list[[1]]) else return(AOOgrid_list)
   }
@@ -361,7 +355,7 @@ getAOO.sf <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1p
   input_split <- input.data |> split(st_drop_geometry(input.data[names_from]))
 
   AOOgrid_list <- lapply(1:length(AOO_grid),
-                         function(x) new("AOOgrid",
+                         function(x) methods::new("AOOgrid",
                                          grid = AOO_grid[[x]],
                                          AOO = nrow(AOO_grid[[x]]),
                                          params = list(gridsize = grid.size, jitter = jitter, pct = percent),

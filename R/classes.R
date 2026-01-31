@@ -2,8 +2,15 @@
 #' Union of spatial classes
 #'
 #' Allows either sf, spatVector, or SpatRaster objects in the spatial slot.
-#' @importFrom methods setClassUnion
-setClassUnion("geospatial", c("sf", "SpatRaster", "NULL"))
+#' @name geospatial_imports
+#' @import methods
+#' @import sf
+#' @importClassesFrom terra SpatRaster
+#' @keywords internal
+NULL
+
+methods::setOldClass("sf")
+methods::setClassUnion("geospatial", c("sf", "SpatRaster", "NULL"))
 
 #' AOOgrid class
 #'
@@ -16,7 +23,7 @@ setClassUnion("geospatial", c("sf", "SpatRaster", "NULL"))
 #' @slot input the input ecosystem data used to generate the AOO grid
 #' @slot AOOvals the list of AOO values
 #' @export
-setClass(
+methods::setClass(
   "AOOgrid",
   slots = list(
     grid =     "sf",
@@ -37,10 +44,15 @@ setClass(
 )
 
 
+#' AOOgrid summary
+#'
+#' summary method for AOOgrid object
+#'
+#' @param object an AOOgrid object
 #' @export
-setMethod(
+methods::setMethod(
   "summary", "AOOgrid",
-  function(object, ...) {
+  function(object) {
     cat("Class: AOO_grid\n")
     cat("Number of grid cells:", object@AOO, "\n")
 
@@ -62,9 +74,13 @@ setMethod(
   }
 )
 
-
+#' AOOgrid show
+#'
+#' show method for AOOgrid object
+#'
+#' @param object an AOOgrid object
 #' @export
-setMethod(
+methods::setMethod(
   "show", "AOOgrid",
   function(object) {
     cat("<AOO_grid object>\n")
@@ -76,8 +92,15 @@ setMethod(
   }
 )
 
+#' AOOgrid plot
+#'
+#' plot method for AOOgrid object
+#'
+#' @param x an AOOgrid object
+#' @param y Ignored. Included for consistency with the \code{plot} generic.
+#' @param ... Additional graphical parameters passed to \code{\link[graphics]{plot}}.
 #' @export
-setMethod(
+methods::setMethod(
   "plot", "AOOgrid",
   function(x, ...) {
     if (!inherits(x@grid, "sf"))
@@ -120,7 +143,7 @@ setMethod(
 #' @slot unit the unit in which the area is provided
 #' @slot input the input ecosystem data used to generate the EOO polygon
 #' @export
-setClass(
+methods::setClass(
   "EOO",
   slots = list(
     pol =     "sf",
@@ -137,16 +160,26 @@ setClass(
 )
 
 
+#' EOO show
+#'
+#' show method for EOO object
+#'
+#' @param object an EOO object
 #' @export
-setMethod("show", "EOO", function(object) {
+methods::setMethod("show", "EOO", function(object) {
   cat("Class 'EOO'\n")
   cat("  EOO area:", format(object@EOO, big.mark = ","), object@unit , "\n", sep = " ")
   cat("  Polygon geometry type: ", paste(unique(sf::st_geometry_type(object@pol)), collapse = ", "), "\n", sep = "")
   cat("  Input object class: ", class(object@input)[1], "\n", sep = "")
 })
 
+#' EOO summary
+#'
+#' summary method for EOO object
+#'
+#' @param object an EOO object
 #' @export
-setMethod("summary", "EOO", function(object, ...) {
+methods::setMethod("summary", "EOO", function(object) {
   cat("Summary of EOO object\n")
   cat("----------------------------\n")
   cat("EOO area: ", format(object@EOO, big.mark = ","), " square kms\n", sep = "")
@@ -158,13 +191,21 @@ setMethod("summary", "EOO", function(object, ...) {
     cat("Input feature count: ", nrow(object@input), "\n\n", sep = "")
   } else if (inherits(object@input, "SpatRaster")) {
     cat("Input raster layers: ", terra::nlyr(object@input), "\n", sep = "")
-    cat("Raster dimensions: ", paste(terra::ext(object@input), collapse = " × "), "\n\n", sep = "")
+    cat("Raster dimensions: ", paste(terra::ext(object@input), collapse = " x "), "\n\n", sep = "")
   }
   invisible(object)
 })
 
+#' EOO plot
+#'
+#' plot method for EOO object
+#'
+#' @param x an EOO object
+#' @param y Ignored. Included for consistency with the \code{plot} generic.
+#' @param ... Additional graphical parameters passed to \code{\link[graphics]{plot}}.
+#' @importFrom graphics box
 #' @export
-setMethod("plot", "EOO", function(x, y, ...) {
+methods::setMethod("plot", "EOO", function(x, ...) {
   if (is.null(x@pol) || nrow(x@pol) == 0) {
     stop("No polygon data found in slot 'pol'.")
   }
@@ -199,7 +240,7 @@ setMethod("plot", "EOO", function(x, y, ...) {
     plot(sf::st_geometry(x@pol), add = TRUE)
   }
 
-  box()
+  graphics::box()
 })
 
 
@@ -209,10 +250,11 @@ setMethod("plot", "EOO", function(x, y, ...) {
 #'
 #' @slot input binary raster or list of sf POLYGON objects representing the input ecosystem extent
 #' @slot areas the area of the ecosystem in each layer or list element
+#' @slot model a fitted model object typically of the class lm containing the model used to calculate the trend
 #' @slot netdiff difference between the area in the first layer or list element and the last.
 #' @slot diff raster stack showing change over layers or list elements of the ecosystem extent.
 #' @export
-setClass(
+methods::setClass(
   "trend",
   slots = list(
     input =    "geospatial",
@@ -231,8 +273,14 @@ setClass(
 )
 
 
+#' trend summary
+#'
+#' summary method for trend object
+#'
+#' @param object a trend object
 #' @export
-setMethod("summary", "trend", function(object, ...) {
+methods::setMethod("summary", "trend",
+                   function(object) {
   #predictions
   newdat <- data.frame(t = seq(min(object@areas$t), max(object@areas$t), length.out = 100))
   pred <- predict(object@model, newdata = newdat, type = "link", se.fit = TRUE)
@@ -257,7 +305,7 @@ setMethod("summary", "trend", function(object, ...) {
     cat("Input feature count: ", nrow(object@input), "\n", sep = "")
   } else if (inherits(object@input, "SpatRaster")) {
     cat("Input raster layers: ", terra::nlyr(object@input), "\n", sep = "")
-    cat("Raster dimensions: ", paste(terra::ext(object@input), collapse = " × "), "\n", sep = "")
+    cat("Raster dimensions: ", paste(terra::ext(object@input), collapse = " x "), "\n", sep = "")
   }
   invisible(object)
 
@@ -268,7 +316,7 @@ setMethod("summary", "trend", function(object, ...) {
     ggplot2::geom_point(data = object@areas, ggplot2::aes(x = t, y = area), size = 2) +
     # CI ribbon
     ggplot2::geom_ribbon(data = pred_df,
-                         ggplot2::aes(x = t, ymin = l95, ymax = u95),
+                         ggplot2::aes(x = t, ymin = .data$l95, ymax = .data$u95),
                          alpha = 0.25) +
 
     # fitted mean line
@@ -287,8 +335,16 @@ setMethod("summary", "trend", function(object, ...) {
 })
 
 
+#' trend plot
+#'
+#' plot method for trend object
+#'
+#' @param x an trend object
+#' @param y Ignored. Included for consistency with the \code{plot} generic.
+#' @param ... Additional graphical parameters passed to \code{\link[graphics]{plot}}.
 #' @export
-setMethod("plot", "trend", function(x, y, ...) {
+methods::setMethod("plot", "trend",
+                   function(x, ...) {
   if (is.null(x@input) || nrow(x@input) == 0) {
     stop("No data found in slot 'input'.")
   }
@@ -307,23 +363,23 @@ setMethod("plot", "trend", function(x, y, ...) {
 
   # --- Convert SpatRaster to data frame for ggplot ---
   # keep only the first layer of diff if multi-layer
-  r <- x@diff[[1]]
+  r <- diff[[1]]
 
   # terra::as.data.frame with xy = TRUE for coordinates
-  df <- terra::as.data.frame(r, xy = TRUE, na.rm = FALSE)
-  names(df)[3] <- "value"   # rename the raster column
+  r_df <- terra::as.data.frame(r, xy = TRUE, na.rm = FALSE)
+  names(r_df)[3] <- "value"   # rename the raster column
 
   # Make value a factor with labels for 0,1,2,3
-  df$value <- factor(
-    df$value,
+  r_df$value <- factor(
+    r_df$value,
     levels = c(0, 1, 2, 3),
     labels = c("NA", "Lost", "Gained", "Kept")
   )
 
   # --- Build ggplot ---
-  p <- ggplot2::ggplot(df) +
+  p <- ggplot2::ggplot(r_df) +
     ggplot2::geom_raster(
-      ggplot2::aes(x = x, y = y, fill = value)
+      ggplot2::aes(x = x, y = y, fill = .data$value)
     ) +
     ggplot2::coord_sf(
       xlim = c(bbox_all["xmin"], bbox_all["xmax"]),
