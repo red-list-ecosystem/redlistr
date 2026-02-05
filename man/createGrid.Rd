@@ -7,7 +7,7 @@
 createGrid(input.data, grid.size = 10000)
 }
 \arguments{
-\item{input.data}{Spatial object of an ecosystem or species distribution.
+\item{input.data}{Spatial object (sf or SpatRaster) of an ecosystem or species distribution.
 Please use a CRS with units measured in metres.}
 
 \item{grid.size}{A number specifying the width of the desired grid square (in
