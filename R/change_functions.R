@@ -1,183 +1,414 @@
-#' Calculates the Area of a Raster.
+#' Calculates the Area of ecosystems in spatial data
 #'
-#' `getArea` reports the area of a RasterLayer object using the pixel
-#'  counting method, or terra::expanse for SpatRaster and SpatVector objects,
-#'  or the area of a SpatialPolygons or sf object using sf::st_area
-#' @param x Either a RasterLayer or SpatialPolygons object. For a RasterLayer,
-#'   no data value should be NA
+#' `getArea` reports the area of ecosystem units provided as spatial data
+#' @param x A SpatRaster, SpatVector, or an sf object with POLYGONS geometry.
+#' @param names_from  a column names containing ecosystem labels, as a string or
+#' dplyr-style column name. Only required for SpatVector and sf types. Units are
+#' assumed to be delineated by raster value for SpatRasters.
 #' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
+#' @return A data frame containing ecosystem identifiers and the total area of the
+#' ecosystem units in x as a units vector (km^2). For raster bricks it also contains
+#' the layer number.
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
+#'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family Change functions
 #' @examples
-#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-#' extent(r1) <- extent(0, 6100, 0, 8700)
+#' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#' r1 <- terra::rast(m, crs = "EPSG:32755")
 #' a.r1 <- getArea(r1) # area of all non-NA cells in r1
 #' @export
-#' @import raster
-#' @import terra
-#' @import sf
 
-getArea <- function(x, ...){
-  if(isLonLat(x)){
-    stop('Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
+getArea <- function(x, names_from = NA, ...){
+  if(st_is_longlat(x)){
+    stop('Input has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
   }
   UseMethod("getArea", x)
 }
 
-#' Calculates the Area of a Raster from RasterLayer.
-#'
-#' `getArea` reports the area of a RasterLayer object using the pixel
-#'  counting method.
-#' @param x Either a RasterLayer object. No data value should be NA
-#' @param value.to.count Optional. Value of the cells in a RasterLayer to be
-#'   counted
-#' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family Change functions
 #' @export
-getArea.RasterLayer <- function(x, value.to.count, ...){
-  if(length(raster::unique(x)) != 1 & missing(value.to.count)){
-    warning("The input raster is not binary, counting ALL non NA cells\n")
-    cell.res <- res(x)
-    cell.area <- cell.res[1] * cell.res[2]
-    x.df <- plyr::count(values(x))
-    n.cell <- sum(x.df[which(!is.na(x.df[, 1])), ]$freq)
-    aream2 <- cell.area * n.cell
-    areakm2 <- aream2/1000000
-    return (areakm2)
-  }
-  else if(length(raster::unique(x)) != 1){
-    cell.res <- res(x)
-    cell.area <- cell.res[1] * cell.res[2]
-    x.df <- plyr::count(values(x))
-    n.cell <- x.df[which(x.df[, 1] == value.to.count), ]$freq
-    aream2 <- cell.area * n.cell
-    areakm2 <- aream2/1000000
-    return (areakm2)
-  }
-  else{
-    cell.res <- res(x)
-    cell.area <- cell.res[1] * cell.res[2]
-    x.df <- plyr::count(values(x))
-    n.cell <- x.df[which(!is.na(x.df[,1])), ]$freq
-    aream2 <- cell.area * n.cell
-    areakm2 <- aream2/1000000
-    return (areakm2)
-  }
-}
-
-#' Calculates the Area of a Raster from SpatVect.
-#'
-#' `getArea` reports the area of a SpatVect. object using terra::expanse
-#' @param x A SpatVect object
-#' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family Change functions
-#' @export
-getArea.SpatVect <- function(x, ...){
-  area <- expanse(x, "km")
+getArea.SpatRaster <- function(x, names_from = NA,...){
+  area <- terra::expanse(x, "km", byValue=TRUE, usenames = TRUE)
   return(area)
 }
 
-#' Calculates the Area of a Raster from SpatRaster.
-#'
-#' `getArea` reports the area of a SpatRaster object using terra::expanse
-#' @param x SpatRaster
-#' @param byValue Logical. If TRUE, the area for each unique cell value is
-#'    returned.
-#' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family Change functions
 #' @export
-getArea.SpatRaster <- function(x, byValue, ...){
-  area <- expanse(x, "km", byValue)
-  return(area)
+getArea.SpatVector <- function(x, names_from = NA, ...){
+  x <- st_as_sf(x)
+  if(missing(names_from)){
+    return(
+      x |>
+        dplyr::summarise(geometry = sf::st_union(.data$geometry))|>
+        dplyr::mutate(area = sf::st_area(.data$geometry) |> units::set_units("km^2")) |>
+        sf::st_drop_geometry() |>
+        as.data.frame() |>
+        dplyr::mutate(ecosystem_name = "unnamed ecosystem") |>
+        dplyr::mutate(area_km2 = as.numeric(area)) |>
+        dplyr::select(-area)
+    )
+  }
+
+  # Turn input into a symbol (works for bare names AND strings)
+  var <- rlang::ensym(names_from)
+
+  # group by ecosystem names and get areas.
+  x |>
+    dplyr::group_by(.data[[rlang::as_string(var)]]) |>
+    dplyr::summarise(geometry = st_union(.data$geometry))|>
+    dplyr::mutate(area = sf::st_area(.data$geometry) |> units::set_units("km^2")) |>
+    sf::st_drop_geometry() |>
+    as.data.frame() |> dplyr::mutate(area_km2 = as.numeric(area)) |>
+    dplyr::select(-area)
 }
 
-#' Calculates the Area of a Raster from SpatialPolygons.
-#'
-#' `getArea` reports the area of a SpatialPolygons object using sf::st_area
-#' @param x A SpatialPolygons object.
-#' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family Change functions
 #' @export
-getArea.SpatialPolygons <- function(x, ...){
-  sf_polygon <- st_as_sf(x)
-  area <- st_area(sf_polygon)
-  return(area)
+getArea.sf <- function(x, names_from = NA, ...) {
+  if(missing(names_from)){
+    return(
+      x |>
+      dplyr::summarise(geometry = sf::st_union(.data$geometry))|>
+      dplyr::mutate(area = sf::st_area(.data$geometry) |> units::set_units("km^2")) |>
+      sf::st_drop_geometry() |>
+      as.data.frame() |>
+      dplyr::mutate(ecosystem_name = "unnamed ecosystem") |>
+      dplyr::mutate(area_km2 = as.numeric(area)) |>
+      dplyr::select(-area)
+    )
+  }
+
+  # Turn input into a symbol (works for bare names AND strings)
+  var <- rlang::ensym(names_from)
+  # group by ecosystem names and get areas.
+  x |>
+    dplyr::group_by(.data[[rlang::as_string(var)]]) |>
+    dplyr::summarise(geometry = sf::st_union(.data$geometry))|>
+    dplyr::mutate(area = sf::st_area(.data$geometry) |> units::set_units("km^2")) |>
+    sf::st_drop_geometry() |>
+    as.data.frame() |> dplyr::mutate(area_km2 = as.numeric(area)) |>
+    dplyr::select(-area)
 }
 
-#' Calculates the Area of a Raster from sf object
-#'
-#' `getArea` reports the area of a sf object using sf::st_area
-#' @param x A sf object
-#' @param ... Addition arguments based on input format
-#' @return The total area of the cells of interest in km2
-#' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
-#' @family Change functions
-#' @export
-getArea.sf <- function(x, ...){
-  area <- st_area(x) / 1000000
-  return(as.numeric(area))
-}
 
 #' Area change between two inputs in km2
 #'
-#' `getAreaLoss` reports the difference in area between two inputs. These
-#' can be RasterLayers, SpatialPolygons, SpatRaster, SpatVect, sf or numbers.
-#' Any combinations of these inputs are valid. If using number as input, ensure
-#' it is measured in km2
+#' `getAreaChange` reports the difference in area between two inputs. Inputs
+#' can be  SpatRaster, SpatVector, sf or a data frame of areas and may contain
+#' data for multiple ecosystem types. Ensure x and y are the same data type.
+#' If using data frame as input, ensure areas are measured in km2
 #'
-#' @param x Spatial obect or numeric representing area in km2
-#' @param y Spatial object or numeric representing area in km2
-#' @return Returns the difference in area of the two inputs in km2
+#' @param x SpatRaster, SpatVector, or sf object representing one or more
+#' ecosystems or a data frame with two columns, one of them labeled "area",
+#' and the other containing ecosystem labels names_from_x.
+#' @param y SpatRaster, SpatVector, or sf object representing one or more
+#' ecosystems or a data frame with two columns, one of them labeled "area",
+#' and the other containing ecosystem labels names_from_y.
+#' @param names_from_x name of column containing ecosystem labels. Ignored if
+#' x is a raster.
+#' @param names_from_y name of column containing ecosystem labels. Ignored if
+#' y is a raster. names_from_x used if not provided.
+#' @return Returns a table containing ecosystem labels, areas, and the
+#' difference in area of the two inputs in km2
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
-#'   \email{calvinkflee@@gmail.com}
+#'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family Change functions
 #' @examples
-#' crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-#' r1 <- raster(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-#' extent(r1) <- extent(0, 6100, 0, 8700)
-#' r2 <- raster(ifelse((volcano<145), NA, 1), crs = crs.UTM55S)
-#' extent(r2) <- extent(0, 6100, 0, 8700)
-#' a.dif <- getAreaLoss(r1, r2) # distribution rasters
+#' m1 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#' r1 <- terra::rast(m1, crs = "EPSG:32755")
+#'
+#' m2 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#' r2 <- terra::rast(m2, crs = "EPSG:32755")
+#' a.dif <- getAreaChange(r1, r2) # distribution rasters
+#'
 #' @export
 
-getAreaLoss <- function(x, y){
-  if(inherits(x, 'RasterLayer') | inherits(x, 'SpatialPolygons') |
-     inherits(x, 'SpatRaster') | inherits(x, 'SpatVect') | inherits(x, 'sf')){
-    a.x <- getArea(x)
-  } else if (is.numeric((x))){
-    a.x <- x
-  } else {
-    stop('x is not a RasterLayer, SpatialPolygons, SpatRaster, SpatVect, sf,
-         or Numeric')
-  }
-  if(inherits(y, 'RasterLayer') | inherits(y, 'SpatialPolygons') |
-     inherits(y, 'SpatRaster') | inherits(y, 'SpatVect') | inherits(y, 'sf')){
-    a.y <- getArea(y)
-  } else if (is.numeric((y))){
-    a.y <- y
-  } else {
-    stop('y is not a RasterLayer, SpatialPolygons, SpatRaster, SpatVect, sf,
-         or Numeric')
-  }
-  a.dif.km2 <- (a.x - a.y)
-  return(a.dif.km2)
+getAreaChange <- function(x, y, names_from_x = NA, names_from_y = NA){
+ UseMethod("getAreaChange", x)
 }
+
+#' @export
+getAreaChange.SpatRaster <- function(x, y, names_from_x = NA, names_from_y = NA){
+  a.x <- getArea(x)
+  a.y <- getArea(y)
+  adiff <- dplyr::full_join(a.x, a.y, by = "value") |>
+    dplyr::mutate(area_diff = .data$area.y - .data$area.x,
+                  percent_diff = 100*.data$area_diff/.data$area.x) |>
+    dplyr::select(- .data$layer.x, - .data$layer.y)
+
+  return(adiff)
+}
+
+#' @export
+getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA){
+
+  if(missing(names_from_x)){
+    if(missing(names_from_y)){
+      a.x <- getArea(x)
+      a.y <- getArea(y)
+      return(
+        dplyr::full_join(a.x, a.y, by = "ecosystem_name") |>
+        dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
+                      percent_diff = .data$area_diff/ .data$area_km2.x*100)
+      )
+    }else{
+      nfy <- rlang::ensym(names_from_y)
+      a.x <- getArea(x, names_from = {{names_from_y}})
+      a.y <- getArea(y, names_from = {{names_from_y}})
+      return(
+        dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
+        dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
+                      percent_diff = .data$area_diff/ .data$area_km2.x*100)
+      )
+    }
+  }else if(missing(names_from_y)){
+    message("names_from_y not provided, using names_from_x for both datasets")
+    nfx <- rlang::ensym(names_from_x)
+    a.x <- getArea(x, names_from = {{names_from_x}})
+    a.y <- getArea(y, names_from = {{names_from_x}})
+    return(
+      dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
+      dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
+                    percent_diff = .data$area_diff/ .data$area_km2.x*100)
+      )
+  }else{
+
+  nfx <- rlang::ensym(names_from_x)
+  nfy <- rlang::ensym(names_from_y)
+
+  a.x <- getArea(x, names_from = {{names_from_x}})
+  a.y <- getArea(y, names_from = {{names_from_y}})
+  return(
+    dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
+    dplyr::mutate(area_diff =  .data$area_km2.y - .data$area_km2.x,
+                  percent_diff = .data$area_diff/ .data$area_km2.x*100)
+  )
+  }
+
+}
+
+#' @export
+getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
+
+  if(missing(names_from_x)){
+    if(missing(names_from_y)){
+      a.x <- getArea(x)
+      a.y <- getArea(y)
+      return(
+        dplyr::full_join(a.x, a.y, by = "ecosystem_name") |>
+          dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
+                        percent_diff = .data$area_diff/ .data$area_km2.x*100)
+      )
+    }else{
+      nfy <- rlang::ensym(names_from_y)
+      a.x <- x |> getArea(names_from = {{names_from_y}})
+      a.y <- y |> getArea(names_from = {{names_from_y}})
+      return(
+        dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
+          dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
+                        percent_diff = .data$area_diff/ .data$area_km2.x*100)
+      )
+    }
+  }else if(missing(names_from_y)){
+    message("names_from_y not provided, using names_from_x for both datasets")
+    nfx <- rlang::ensym(names_from_x)
+    a.x <- x |> getArea(names_from = {{names_from_x}})
+    a.y <- y |> getArea(names_from = {{names_from_x}})
+    return(
+      dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
+        dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
+                      percent_diff = .data$area_diff/ .data$area_km2.x*100)
+    )
+  }else{
+
+    nfx <- rlang::ensym(names_from_x)
+    nfy <- rlang::ensym(names_from_y)
+
+    a.x <- x |> getArea(names_from = {{names_from_x}})
+    a.y <- y |> getArea(names_from = {{names_from_y}})
+    return(
+      dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
+        dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
+                      percent_diff = .data$area_diff/ .data$area_km2.x*100)
+    )
+  }
+
+}
+
+#' @export
+getAreaChange.data.frame <- function(x, y, names_from_x = NA, names_from_y = NA) {
+  a.x <- x
+  a.y <- y
+
+  if(missing(names_from_x)){
+    if(missing(names_from_y)){
+      stop("At least one names_from column must be given")
+    }else{
+      nfy <- rlang::ensym(names_from_y)
+      return(dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
+               dplyr::mutate(area_diff = .data$area.y - .data$area.x,
+                             percent_diff = .data$area_diff/.data$area.x*100))
+    }
+  }else if(missing(names_from_y)){
+    nfx <- rlang::ensym(names_from_x)
+    return(dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
+             dplyr::mutate(area_diff = .data$area.y - .data$area.x,
+                           percent_diff = .data$area_diff/.data$area.x*100))
+  }else{
+
+    nfx <- rlang::ensym(names_from_x)
+    nfy <- rlang::ensym(names_from_y)
+
+    return(dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
+             dplyr::mutate(area_diff = .data$area.y - .data$area.x,
+                           percent_diff = .data$area_diff/.data$area.x*100))
+  }
+
+}
+
+#' Calculate area trends of ecosystems
+#'
+#' `getAreaTrend` is used to calculate changes in area over time. Output
+#' is a list can be used to easily visualise trends for one ecosystem at a time.
+#' @param x SpatRaster with multiple layers or data frame containing two numerical
+#' columns "area" and "time". The data.frame can contain an additional column containing
+#' a key, whose name should be placed in names_from.
+#' @param names_from name of column containing ecosystem labels. Ignored if
+#' x is a raster.
+
+#' @return returns a list
+#' @author Aniko B. Toth \email{anikobtoth@@gmail.com}
+#' @family Change functions
+#' @export
+
+getAreaTrend <- function(x, names_from = NA){
+  UseMethod("getAreaTrend", x)
+}
+
+#' @export
+getAreaTrend.SpatRaster <- function(x, names_from = NA){
+
+  # transform stack into binary stacks
+ vals <- terra::values(x) |> as.vector() |> unique() |> sort()
+  binary_stacks <- lapply(vals, function(v) {
+                             binaries <- as.numeric(x == v)
+    return(binaries)
+  })
+  names(binary_stacks) <- paste0("value_", vals)
+
+  # calculate areas at each layer
+  areas <- lapply(binary_stacks, getArea) |>
+    lapply(function(v) v |> dplyr::filter(.data$value == 1) |> dplyr::select(-.data$value)) |>
+    lapply(function(v) v |> dplyr::mutate(t = stringr::str_extract(
+      .data$layer, "\\d+"
+    ) |> as.numeric())) ## regexp that will extract numbers (e.g., year or index values) from layer names.
+
+  # fit models
+  models <- lapply(areas, fit_glm_ll)
+
+  # make copies for plotting purposes
+  diff_stack <- binary_stacks |> lapply(deepcopy) |> lapply(function(x) {x[is.na(x)] <- 0
+  return(x)})
+
+  # make trend objects
+  trend_list <- lapply(1:length(binary_stacks),
+                         function(i) new("trend",
+                                         input = binary_stacks[[i]],
+                                         areas = areas[[i]],
+                                         model = models[[i]],
+                                         netdiff = dplyr::last(areas[[i]]$area) - dplyr::first(areas[[i]]$area),
+                                         diff = diff_stack[[i]][[nlyr(x)]]*2+diff_stack[[i]][[1]])  # 1 = lost, 2 = gained, 3 = kept
+                                         ) |>
+    stats::setNames(paste0("value_",vals))
+
+if(length(trend_list)<=1) trend_list <- trend_list[[1]]
+return(trend_list)
+}
+
+#' @export
+getAreaTrend.data.frame <- function(x, names_from = NA){
+  names_from <- dplyr::coalesce(names_from, "ecosystem_name")
+
+  # identify name field
+  if (!any(colnames(x) %in% names_from)) {                 # check for ecosystem names
+    x <- x |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")  #put new name label if not present
+  }
+
+  input_split <- x |> dplyr::mutate(t = stringr::str_extract(time, "\\d+") |> as.numeric()) |>  # extract numeric values from t
+  split(x[names_from])
+
+  models <- lapply(input_split, fit_glm_ll)
+
+  # make trend objects
+  trend_list <- lapply(1:length(input_split),
+                       function(i) new("trend",
+                                       input = NULL,
+                                       areas = input_split[[i]],
+                                       model = models[[i]],
+                                       netdiff = dplyr::last(input_split[[i]]$area) - dplyr::first(input_split[[i]]$area),
+                                       diff = NULL)) |>
+                         stats::setNames(names(input_split))
+
+  if(length(trend_list)<=1) trend_list <- trend_list[[1]]
+  return(trend_list)
+
+}
+
+#' Fit linear model with log-link.
+#'
+#' `fit_lm_ll` produces a simple model to estimate trends in short time series.
+#'
+#' @param df a data frame containing the columns "area" and "t" for time. Time
+#' can be an index or year.
+#' @return an lm object
+#' @author Aniko B. Toth \email{anikobtoth@@gmail.com}
+#' @name trend_fitting_functions
+
+NULL
+
+#' @rdname trend_fitting_functions
+fit_lm_ll <- function(df){
+
+  fit_loglin <- stats::lm(log(area) ~ t, data = df)
+
+}
+
+#' @rdname trend_fitting_functions
+fit_glm_ll <- function(df){
+
+  fit_glm <- stats::glm(area ~ t,
+               data = df,
+               family = stats::Gamma(link = "log"))
+
+}
+
+#' @rdname trend_fitting_functions
+fit_spline <- function(df){
+  if (!requireNamespace("mgcv", quietly = TRUE)) {
+    stop("Package 'mgcv' is required fit_spline() function.")
+  }
+  fit_gam <- mgcv::gam(log(area) ~ s(t, k = 5), data = df)
+}
+
+#
+# ## Simple bayesian linear model; don't use, too many dependencies.
+# fit_blm <- function(df){
+#   library(brms)
+#
+#   # Bayesian linear model:
+#   # log(y_t) = beta0 + beta1 * t + error
+#   fit_bayes <- brm(
+#     formula = log(area) ~ as.numeric(layer),
+#     data    = df,
+#     family  = gaussian(),   # normal errors on log scale
+#     prior   = c(
+#       prior(normal(0, 5), class = "b"),          # for slope beta1
+#       prior(normal(0, 1000), class = "Intercept"), # for beta0
+#       prior(exponential(1), class = "sigma")     # for residual SD
+#     ),
+#     chains  = 4,
+#     iter    = 2000,
+#     cores   = 4
+#   )
+#   df$pred <- exp(predict(fit_bayes))
+# }
 
 
 #' Change statistics.

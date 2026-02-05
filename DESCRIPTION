@@ -1,11 +1,13 @@
 Package: redlistr
 Title: Tools for the IUCN Red List of Ecosystems and Species
-Version: 1.0.4
+Version: 3.0.0
 Authors@R: c(
     person("Calvin", "Lee", , "calvinkflee@gmail.com", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0001-8277-8614")),
     person("Nicholas", "Murray", , "murr.nick@gmail.com", role = "aut",
-           comment = c(ORCID = "0000-0002-4008-3053"))
+           comment = c(ORCID = "0000-0002-4008-3053")),
+    person("Aniko", "Toth", , "anikobtoth@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0002-3063-1917"))
   )
 Description: A toolbox created by members of the International Union for
     Conservation of Nature (IUCN) Red List of Ecosystems Committee for
@@ -19,20 +21,25 @@ License: GPL (>=3)| file LICENSE
 URL: https://github.com/red-list-ecosystem/redlistr
 BugReports: https://github.com/red-list-ecosystem/redlistr/issues
 Depends:
-    R (>= 3.3.0),
-    raster (>= 2.5-8),
-    sp (>= 1.2-4)
+    R (>= 3.5.0)
 Imports:
-    plyr,
-    sf,
-    terra
+    terra (>= 1.8-54),
+    sf (>= 1.0-21),
+    dplyr,
+    methods,
+    ggplot2,
+    rlang,
+    scales,
+    units, 
+    stringr, 
+    mgcv
 Suggests:
     devtools,
     knitr,
     rmarkdown,
-    testthat
+    testthat,
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.3

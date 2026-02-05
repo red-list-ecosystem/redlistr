@@ -2,37 +2,22 @@
 % Please edit documentation in R/EOO_functions.R
 \name{getAreaEOO}
 \alias{getAreaEOO}
-\title{Calculates area of the created EOO polygon.}
+\title{Extracts the area from an EOO polygon}
 \usage{
-getAreaEOO(EOO.polygon, unit = "km")
+getAreaEOO(EOO)
 }
 \arguments{
-\item{EOO.polygon}{An object of class SpatVect, usually the output
-from \code{makeEOO}.}
-
-\item{unit}{Character. Output unit of area. One of "m", "km", or "ha"}
+\item{EOO}{an object of class EOO}
 }
 \value{
-The area of the \code{EOO.polygon} in km2
+an integer
 }
 \description{
-\code{getAreaEOO} calculates the area of the EOO polygon generated from
-\code{makeEOO} the provided data
-}
-\examples{
-library(terra)
-crs.UTM55S <- '+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-r1 <- rast(ifelse((volcano<130), NA, 1), crs = crs.UTM55S)
-ext(r1) <- c(0, 6100, 0, 8700)
-EOO.polygon <- makeEOO(r1)
-EOO.area <- getAreaEOO(EOO.polygon)
+\code{getEOOarea} wrapper that extracts the area slot of the EOO input
 }
 \seealso{
 Other EOO functions: 
+\code{\link{getEOO}()},
 \code{\link{makeEOO}()}
-}
-\author{
-Nicholas Murray \email{murr.nick@gmail.com}, Calvin Lee
-\email{calvinkflee@gmail.com}
 }
 \concept{EOO functions}

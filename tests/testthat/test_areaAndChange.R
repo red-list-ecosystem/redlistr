@@ -1,42 +1,41 @@
 test_that("input cannot be in lonlat crs",{
-  r.crs <- raster(nrows=10, ncols=10)
-  expect_error(getArea(r.crs), "Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system")
+  r.crs <- rast(nrows=10, ncols=10)
+  expect_error(getArea(r.crs), "Input has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system")
 })
 
 test_that("accepts different input rasters", {
   # Dummy rasters for testing
-  r <- raster(nrows=10, ncols=10)
-  crs(r) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
+  r <- rast(nrows=10, ncols=10)
+  crs(r) <- "epsg:32755"
   r.bin <- r
   values(r.bin) <- 1
   r.multiple <- r
   values(r.multiple) <- rep(c(1:10), 10)
 
-  expect_equal(getArea(r.bin), 0.0648)
-  expect_warning(getArea(r.multiple), "The input raster is not binary, counting ALL non NA cells\n")
-  expect_equal(getArea(r.multiple, 1), 0.00648)
+  expect_equal(getArea(r.bin)$area, 0.06445729)
+  expect_equal(nrow(getArea(r.multiple)), 10)
+  expect_equal(getArea(r.multiple)$area[1], getArea(r.multiple)$area[2])
 })
 
 test_that("output is a single value", {
   # Dummy raster
-  r <- raster(nrows=10, ncols=10)
-  crs(r) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
+  r <- rast(nrows=10, ncols=10)
+  crs(r) <- "epsg:32755"
   values(r) <- rep(c(1, NA), 50)
 
-  expect_equal(length(getArea(r)), 1)
+  expect_equal(nrow(getArea(r)), 1)
 })
 
-test_that("accepts SpatialPolygons", {
+test_that("accepts sf POLYGONS", {
   # Dummy rectangle
   x1 = 0
   x2 = 1000
   y1 = 0
   y2 = 1000
-  my_polygon = Polygon(cbind(c(x1,x1,x2,x2,x1),c(y1,y2,y2,y1,y1)))
-  my_polygons = Polygons(list(my_polygon), ID = "A")
-  dummy_polygon = SpatialPolygons(list(my_polygons))
+  my_polygon = st_polygon(list(cbind(c(x1,x1,x2,x2,x1),c(y1,y2,y2,y1,y1))))
+  my_polygons = st_sf(ID = "A", crs = 32755, geometry = st_sfc(my_polygon))
 
-  expect_equal(getArea(dummy_polygon), 1000*1000)
+  expect_equal(getArea(my_polygons)$area_km2, 1)
 })
 
 context("Change functions")
