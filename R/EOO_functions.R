@@ -94,7 +94,7 @@ getEOO.SpatRaster<- function(input.data, names_from = NA){
   })
 
   EOO.polygon <- makeEOO(input.data) |> lapply(st_as_sf)
-  EOO.area <- lapply(EOO.polygon, st_area, unit) |> lapply(units::set_units, "km^2")
+  EOO.area <- lapply(EOO.polygon, st_area) |> lapply(units::set_units, "km^2")
 
   EOO_list <- lapply(1:length(binary_rasters),
                          function(x) new("EOO",

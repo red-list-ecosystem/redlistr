@@ -3,7 +3,7 @@
 #' `createGrid` produces empty grid which can be used as the basis to help
 #' compute AOO.
 #'
-#' @param input.data Spatial object of an ecosystem or species distribution.
+#' @param input.data Spatial object (sf or SpatRaster) of an ecosystem or species distribution.
 #'   Please use a CRS with units measured in metres.
 #' @param grid.size A number specifying the width of the desired grid square (in
 #'   same units as your coordinate reference system)
@@ -301,6 +301,7 @@ getAOO <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.
 #'
 #' @export
 getAOO.SpatRaster <- function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
+
   message("Initialising grids")
   AOO_grid <- makeAOOGrid(input.data, grid.size, bottom.1pct.rule, percent, jitter)
 

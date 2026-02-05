@@ -2,15 +2,13 @@
 #' Union of spatial classes
 #'
 #' Allows either sf, spatVector, or SpatRaster objects in the spatial slot.
-#' @name geospatial_imports
+#' @name imports
 #' @import methods
 #' @import sf
 #' @importClassesFrom terra SpatRaster
+#' @importFrom rlang .data
 #' @keywords internal
 NULL
-
-methods::setOldClass("sf")
-methods::setClassUnion("geospatial", c("sf", "SpatRaster", "NULL"))
 
 #' AOOgrid class
 #'
@@ -30,7 +28,7 @@ methods::setClass(
     AOO =      "numeric",
     params =   "list",
     pctrule =  "logical",
-    input =    "geospatial",
+    input =    "ANY",
     AOOvals =  "integer"
   ),
   prototype = list(
@@ -149,7 +147,7 @@ methods::setClass(
     pol =     "sf",
     EOO =     "numeric",
     unit =    "character",
-    input =   "geospatial"
+    input =   "ANY"
   ),
   prototype = list(
     pol = NULL,
@@ -257,11 +255,11 @@ methods::setMethod("plot", "EOO", function(x, ...) {
 methods::setClass(
   "trend",
   slots = list(
-    input =    "geospatial",
+    input =    "ANY",
     areas =    "data.frame",
     model =    "lm",
     netdiff =  "numeric",
-    diff =     "geospatial"
+    diff =     "ANY"
   ),
   prototype = list(
     input = NULL,

@@ -48,7 +48,7 @@ getArea.SpatVector <- function(x, names_from = NA, ...){
   }
 
   # Turn input into a symbol (works for bare names AND strings)
-  var <- ensym(names_from)
+  var <- rlang::ensym(names_from)
 
   # group by ecosystem names and get areas.
   x |>
@@ -76,7 +76,7 @@ getArea.sf <- function(x, names_from = NA, ...) {
   }
 
   # Turn input into a symbol (works for bare names AND strings)
-  var <- ensym(names_from)
+  var <- rlang::ensym(names_from)
   # group by ecosystem names and get areas.
   x |>
     dplyr::group_by(.data[[rlang::as_string(var)]]) |>
@@ -297,7 +297,7 @@ getAreaTrend.SpatRaster <- function(x, names_from = NA){
   areas <- lapply(binary_stacks, getArea) |>
     lapply(function(v) v |> dplyr::filter(.data$value == 1) |> dplyr::select(-.data$value)) |>
     lapply(function(v) v |> dplyr::mutate(t = stringr::str_extract(
-      layer, "\\d+"
+      .data$layer, "\\d+"
     ) |> as.numeric())) ## regexp that will extract numbers (e.g., year or index values) from layer names.
 
   # fit models
