@@ -435,11 +435,12 @@ fit_spline <- function(df){
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family Change functions
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   <https://iucnrle.org/>
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#'   <https://doi.org/10.2305/CJDF9122>
 #'   Puyravaud, J.-P. 2003. Standardizing the calculation of the
 #'   annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 #' @examples
@@ -493,11 +494,12 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family change_functions
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   <https://iucnrle.org/>
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#'   <https://doi.org/10.2305/CJDF9122>
 #' @export
 
 futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){
@@ -527,11 +529,12 @@ futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = 
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family change_functions
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   <https://iucnrle.org/>
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#'   <https://doi.org/10.2305/CJDF9122>
 #' @examples
 #' a.r1 <- 23.55
 #' a.r2 <- 15.79
@@ -581,11 +584,12 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
 #'  }
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
 #' @family change_functions
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   <https://iucnrle.org/>
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#'   <https://doi.org/10.2305/CJDF9122>
 #' @examples
 #' a.r1 <- 23.55
 #' a.r2 <- 15.79

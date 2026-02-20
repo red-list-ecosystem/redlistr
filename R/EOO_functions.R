@@ -14,11 +14,12 @@
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   <https://iucnrle.org/>
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#'   <https://doi.org/10.2305/CJDF9122>
 #' @examples
 #' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
 #' r1 <- terra::rast(m, crs = "EPSG:32755")
