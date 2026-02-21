@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# redlistr
+# redlistr <img src="man/figures/logo.png" align="right" height="138" alt="Red List of Ecosystems logo" />
 
 `redlistr` is an R package that contains functions for calculating the
 metrics required for making risk assessments of species and ecosystems
@@ -48,8 +48,7 @@ is also included.
 
 Also included are the two standard measures of the size of an
 ecosystems' geographic distribution specified in the red list of
-ecosystems guidelines ([Bland et al.
-2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
+ecosystems guidelines ([IUCN 2024](https://doi.org/10.2305/CJDF9122)).
 These are the Extent of Occurrence (EOO) and Area of Occupancy (AOO). As
 many of these measures are also useful for assessing species under the
 IUCN Red List of Threatened Species criteria, we expect this package
@@ -59,8 +58,7 @@ In conducting an assessment with this package, we assume that you are
 familiar with IUCN red listing protocols. In particular, you should
 consult the IUCN guidelines for both of the red lists, which are the
 definitive sources of all information required to ensure consistent
-application of IUCN criteria ([Bland et al.
-2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
+application of IUCN criteria ([IUCN 2024](https://doi.org/10.2305/CJDF9122)).
 In addition, the papers by Keith et al.
 ([2013](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111))
 and Rodriguez et al. ([2015](https://doi.org/10.1098/rstb.2014.0003))
@@ -88,14 +86,15 @@ offers for collaborative development.
 
 ## Installation
 
-`redlistr` is now on CRAN! You can also install the development version
-from GitHub.
+You can install the development version (v 3.0.0) from GitHub.
 
 ```{r, eval = FALSE}
-# Easiest way to get redlistr:
-install.packages("redlistr")
-
-# For the development version from GitHub:
 # install.packages("devtools")
 devtools::install_github("red-list-ecosystem/redlistr")
+```
+
+An older version of `redlistr` is available on CRAN (v 1.0.4). The plan is to release the new version in CRAN during 2026.
+
+```{r, eval = FALSE}
+install.packages("redlistr")
 ```
