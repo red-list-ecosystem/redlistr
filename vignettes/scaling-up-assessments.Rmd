@@ -1,10 +1,11 @@
 ---
-title: "Calculating spatial metrics for IUCN RLE assessments"
-author: "Aniko Toth, José R. Ferrer-Paris, Calvin K.F. Lee, Nicholas J. Murray"
-date: "2026-01-27"
+title: "Scaling up Red List of Ecosystem assessments"
+subtitle: "Multiple ecosystems and time frames"
+author: "Aniko Toth, José R. Ferrer-Paris"
+date: "2026-02-17"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Calculating spatial metrics for IUCN RLE assessments}
+  %\VignetteIndexEntry{Working with raster and vector data}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -21,9 +22,11 @@ the extent of an ecosystem over time (Criterion A) and properties of the
 geographic distribution size (Criterion B). Both of these criteria
 require the use of maps of ecosystem distributions.
 
-We begin by loading the packages we need for data import and for calculation of the spatial metrics. Please ensure that these are already installed.
+We begin by loading the packages we need for the assessment. Please
+ensure that these are already installed.
 
 ```{r Loading packages, message=FALSE}
+library(sf)
 library(terra)
 library(redlistr)
 ```
@@ -42,9 +45,6 @@ Landsat 8, and represents mangrove distribution in 2017. Both of these
 geographic distributions are stored as rasters, and a raster value of 1
 denotes presence.
 
-We use function `rast` from the `terra` package to read these rasters. This function requires a valid path to find the files with the raster data. In this case both files are included in the `redlistr` package, so we use the `system.file` function to find the path to those files. More information about formats and functions of the `terra` package can be found
-[here](https://rspatial.github.io/terra/).
-
 ```{r Loading our example distributions}
 mangrove.2000 <- rast(system.file("extdata", "example_distribution_2000.tif", 
                                     package = "redlistr"))
@@ -52,16 +52,35 @@ mangrove.2017 <- rast(system.file("extdata", "example_distribution_2017.tif",
                                     package = "redlistr"))
 ```
 
-### Alternative formats
+### Importing data as rasters
 
-See vignette [Ecosystem distribution data in raster and vector format](redlistr-raster-vector.html) for instruction on how to read ecosystem distribution data in other formats.
+To import your own raster data, you can use the `terra::rast` function,
+which can handle many different types of georeferenced spatial data.
+More information on the `terra` package can be found
+[here](https://rspatial.github.io/terra/).
+
+### Importing data as shapefile or .KML file
+
+To import data as a shapefile (.shp), we can use the `sf::st_read`
+function.
+
+```{r Importing shapefile, eval=FALSE}
+library(sf)
+my.shapefile <- st_read('./path/to/folder/', 'shapefile.shp')
+my.KML.file <- st_read('./path/to/folder/kmlfile.kml')
+```
+
+Once these files are imported, they can then be converted into raster
+format via the `terra::rast` or `terra::rasterize` functions if desired.
+However, many of the functions in the package will accept shape files
+directly.
 
 ### Plotting out data
 
 We plot the data to view the two mangrove distributions to get a general
 idea of how the distribution might have changed over time.
 
-```{r Plotting the two rasters, fig.show='hold', fig.width=7, fig.height=7, fig.alt='Overlay of two mangrove distribution maps'}
+```{r Plotting the two rasters, fig.show='hold', fig.width=7, fig.height=7}
 plot(mangrove.2000, col = "grey30", legend = FALSE, main = "Mangrove Distribution")
 plot(mangrove.2017, add = T, col = "darkorange", legend = FALSE)
 ```
@@ -108,6 +127,10 @@ a.2000 <- getArea(mangrove.2000)
 a.2000
 a.2017 <- getArea(mangrove.2017)
 a.2017
+
+# you can also calculate areas for both layers at once by combining them into a raster stack:
+
+a <- getArea(c(mangrove.2000, mangrove.2017))
 ```
 
 The results: at time 1 (2000), the ecosystem was `r a.2000$area` km2,
@@ -116,20 +139,61 @@ and at time 2, (2017) the ecosystem was `r a.2017$area` km2.
 ### Rasters with multiple ecosystems or layers
 
 The `getArea` function is capable of processing rasters with multiple
-ecosystems and layers. For example you can also calculate areas for both layers at once by combining them into a raster stack:
+ecosystems and layers. Layers usually represent time slices. The
+function will return a table of areas, with a row for each ecosystem
+represented in the raster, and a separate row for each layer if there
+are multiple layers.
 
-```{r Calculate area of multiple rasters}
-a <- getArea(c(mangrove.2000, mangrove.2017))
+If you prefer to focus on a single ecosystem or raster value, and you do
+not know the value which represents your target ecosystem, you can plot
+the ecosystem and use the `terra::click` function. Once you know the
+value which represents your target ecosystem, you can create a new
+raster object including only that value, or for smaller rasters, simply
+filter your output table to the value(s) of interest. Here's an example
+with a dummy raster.
+
+rstack \<- rast(system.file("extdata", "example_raster_stack.tif",
+
+package = "redlistr"))
+
+```{r rasters with multiple values, eval=FALSE}
+# Load dummy multilayer raster for example
+rstack <- rast(system.file("extdata", "example_raster_stack.tif", 
+                                    package = "redlistr"))
+
+# If the target ecosystem is represented by value = 5
+r.bin <- rstack == 5 # Has values of 1 and 0
+# Convert 0s to NAs, if desired. 
+values(r.bin)[values(r.bin) != 1] <- NA
+# get area
+getArea(r.bin)
+
+# Alternatively: 
+getArea(rstack) |> 
+  dplyr::filter(value == 5)
+ # note this alternative is slower for large rasters. 
 ```
 
-See vignette [Scaling up Red List of Ecosystem assessments](scaling-up-assessments.html) for instruction on how to work with multiple ecosystem maps.
+### Polygon data with multiple ecosystems
+
+If your input data is in polygon format, you can enter the name of the
+column containing ecosystem labels into the names_from argument. If left
+empty, for polygon inputs the function will treat all polygons as part
+of a single ecosystem type.
+
+```{r polygon data for multiple ecosystems, eval = F}
+# polygon example
+polygons <- st_read('./inst/extdata/', 'example_polygons')
+poly_areas <- getArea(polygons, names_from = "time1")
+```
 
 ## 4. Assessing Criterion A
 
 The IUCN Red List of Ecosystems criterion A requires estimates of the
 magnitude of change over time. This is typically calculated over a 50
 year time period (past, present or future) or against a historical
-baseline ([IUCN 2024](https://doi.org/10.2305/CJDF9122)).
+baseline ([Bland et al.,
+2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
 The first step towards achieving this change estimate over a fixed time
 frame is to assess the amount of change observed in your data.
 
@@ -144,7 +208,7 @@ calculates the difference in area between two datasets, which can
 contain multiple ecosystems. It can accept data from `data.frame` such
 as those output by the `getArea()` function, `SpatRaster`, `SpatVector`
 or `sf` objects with POLYGON geometries. Make sure to provide area
-measure in $km^2$ if you are using a data.frame as the input. Note that
+measure in km2 if you are using a data.frame as the input. Note that
 when providing data frame and polygon inputs, the column name with
 unique ecosystem labels must be included in the function call. If the
 column name is different in the two inputs, both names must be provided
@@ -158,19 +222,47 @@ area.change <- getAreaChange(mangrove.2000, mangrove.2017)
 # value is the column that identifies the ecosystem in both tables.
 
 area.change <- getAreaChange(a.2000, a.2017, value) 
+
+# input polygons 
+polygonsT5 <- st_read('./inst/extdata/', 'example_polygons_t5')
+area.change <- getAreaChange(polygons, polygonsT5, names_from_x = "time1", names_from_y = "time5")
+
 ```
 
-The `getAreaTrend` can be used to work with multiple maps representing different ecosystem types and time frames. See vignette [Scaling up Red List of Ecosystem assessments](scaling-up-assessments.html) for instruction on how to work with multiple ecosystem maps.
+The `getAreaTrend` function takes one multilayer raster or a list of sf
+or SpatVector objects. It calculates the area for each layer or list
+element, for each ecosystem. The function returns a list of `trend`
+class objects, with one element for each ecosystem or raster value in
+the input data.
+
+```{r temporal trends with raster stacks, eval=FALSE}
+#input multilayer raster 
+rstack <- rast(system.file("extdata", "example_raster_stack.tif", 
+                                    package = "redlistr"))
+# returns a list of trends, one per ecosystems
+area.trend <- getAreaTrend(rstack)
+
+# summarise the change for ecosystem 1 (includes plot of area over time)
+summary(area.trend[[1]])
+
+# plot the diff raster for ecosystem 1
+plot(area.trend[[1]])
+
+#input polygons
+#this function is not supported for lists of polygons. 
+```
 
 ### Rate of change
 
 In the Red List of Ecosystems, two methods are suggested to determine
 the rate of decline of an ecosystem, each of which assumes a different
-functional form of the decline ([IUCN 2024](https://doi.org/10.2305/CJDF9122)).
+functional form of the decline ([Bland et al.,
+2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
 The proportional rate of decline (PRD) is a fraction of the previous
 year's remaining area, while the absolute rate of decline (ARD) is a
 constant fraction of the area of the ecosystem at the beginning of the
-decline ([IUCN 2024](https://doi.org/10.2305/CJDF9122)).
+decline ([Bland et al.,
+2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
 These rates of decline allow the use of two or more data points to
 extrapolate to the full 50 year timeframe required in an assessment.
 
@@ -189,7 +281,8 @@ decline.stats
 
 Each method represent a different shape of decline. For further
 information about the choice of each of these methods to extrapolate
-refer to the IUCN Red List of Ecosystems guidelines ([IUCN 2024](https://doi.org/10.2305/CJDF9122)).
+refer to the IUCN Red List of Ecosystems guidelines ([Bland et al.,
+2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf)).
 
 Now, it is possible to extrapolate, using only two estimates of an
 ecosystems' area, to the full 50 year period required for a Red List of
@@ -215,7 +308,9 @@ should be fully understood before submitting your ecosystem assessment
 to the IUCN Red List of Ecosystems Committee for Scientific Standards.
 Furthermore, the guidelines suggest using area estimates from more than
 two time points to estimate change, and providing a measure of
-uncertainty if possible. Please see the guidelines ([IUCN 2024](https://doi.org/10.2305/CJDF9122)) for more information.
+uncertainty if possible. Please see the guidelines ([Bland et al.,
+2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf))
+for more information.
 
 If we were to use the Proportional Rate of Decline (PRD) for our example
 assessment, our results here will be suitable for criterion A2b (Any 50
@@ -243,7 +338,8 @@ of risk due to spatially explicit catastrophes [(Murray et al.,
 Thus, it is critical that these measures are used consistently across
 all assessments, and the use of non-standard measures invalidates
 comparison against the thresholds. Please refer to the guidelines
-([IUCN 2024](https://doi.org/10.2305/CJDF9122))
+([Bland et al.,
+2016](https://portals.iucn.org/library/sites/library/files/documents/2016-010.pdf))
 for more information on AOO and EOO.
 
 ### Subcriterion B1 (calculating EOO)
@@ -253,7 +349,7 @@ For subcriterion B1, we will need to calculate the extent of occurrence
 enclosing all occurrences of our focal ecosystem. There are some handy
 summary functions for the EOO object that is returned.
 
-```{r Make and view EOO, fig.width=7, fig.height=7, fig.alt='Extent of occurrence of 2017 mangrove distribution map'}
+```{r Make and view EOO, fig.width=7, fig.height=7}
 EOO.polygon <- getEOO(mangrove.2017)
 summary(EOO.polygon)
 plot(EOO.polygon)
@@ -282,18 +378,30 @@ ecosystems that are contained in more than 60 grid cells, the default
 grid is used, as a random grid search is unlikely to yield results near
 the IUCN Criteria thresholds.
 
-```{r Creating AOO grid, fig.width=7, fig.height=7, eval = TRUE, fig.alt='Area of occupancy of 2017 mangrove distribution map'}
+```{r Creating AOO grid, fig.width=7, fig.height=7, eval = FALSE}
 AOO.grid <- getAOO(mangrove.2017, grid.size = 10000)
 
 # summary
-summary(AOO.grid)
+summary(Aoo.grid)
 
 # handy plotting function
 plot(AOO.grid)
 
 ```
 
-Both the `getEOO` and `getAOO` functions work on polygons too. See vignette [Ecosystem distribution data in raster and vector format](redlistr-raster-vector.html) for instruction on how to read ecosystem distribution data in other formats.
+Both the `getEOO` and `getAOO` functions work on polygons too, just be
+sure to specify which column contains ecosystem names. If all polygons
+are from one ecosystem, you can leave out this argument.
+
+```{r EOO and AOO with polygons, eval = F}
+mangrove.2000.poly <- as.polygons(mangrove.2000) |> st_as_sf() 
+#fix crs encoding
+st_crs(mangrove.2000.poly)$wkt <- enc2utf8(st_crs(mangrove.2000.poly)$wkt)
+
+EOO.poly <- getEOO(mangrove.2000.poly)
+AOO.poly <- getAOO(mangrove.2000.poly)
+
+```
 
 We can run some diagnostics to ensure we have the best grid. The
 jitter-plot (jplot) shows how the number of cells decreased as the
@@ -305,7 +413,7 @@ very low. If these plots look unconvincing, you can increase the number
 of iterations with the argument `n_jitter` directly in the `getAOO()`
 function.
 
-```{r Getting number of AOO grids, eval = TRUE}
+```{r Getting number of AOO grids, eval = FALSE}
 
 # jplot
 jplot(AOO.grid)
@@ -319,18 +427,18 @@ AOO.grid <- getAOO(mangrove.2017, grid.size = 10000, n_jitter = 150)
 
 #### One percent rule
 
-As per the Red List of Ecosystems guidelines ([IUCN 2024](https://doi.org/10.2305/CJDF9122)), the cells containing the smallest areas of
+As per the IUCN guidelines, the cells containing the smallest areas of
 the ecosystem, and collectively adding to less than 1% of the
-ecosystem's total area, could be excluded from the AOO calculation if their contribution to risk spreading is negligible. This prevents tiny,
-far-flung fragments of an ecosystem from inflating the AOO. 
-
-This option is set per default but can be turned off using the argument, `bottom.1pct.rule = FALSE`, or the percentage changed using the `percent` argument. For assessments
+ecosystem's total area, are not counted by default. This prevents tiny,
+far-flung fragments of an ecosystem from inflating the AOO. This option
+can be turned off using the argument, `bottom.1pct.rule = FALSE`, or the
+percentage changed using the `percent` argument. For assessments
 involving species, for instance, this option should be turned off.
 
 Here, we demonstrate the differences between including or not including
 the one percent rule and changing the percent parameter:
 
-```{r One percent grid, fig.width=14, fig.height=5, eval = TRUE, fig.alt='Testing options of AOO metric for 2017 mangrove distribution map'}
+```{r One percent grid, fig.width=14, fig.height=5, eval = FALSE}
 AOO.grid.keep.all <- getAOO(mangrove.2017, grid.size = 10000, 
                             bottom.1pct.rule = F, n_jitter = 150)
 AOO.grid.5.pct <- getAOO(mangrove.2017, grid.size = 10000, 
