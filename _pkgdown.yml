@@ -17,3 +17,43 @@ articles:
   contents:
   - scaling-up-assessments
   - iteration-vignette
+
+navbar:
+  structure:
+    left:  [getstarted, ecosystems, species, reference, articles, news]
+    right: [github, contact, search]
+  components:
+    getstarted:
+      text: "Get Started"
+      icon: fa fa-magic
+      href: articles/get-started.html
+
+    reference:
+      icon: fa-gears
+      text: "Functions"
+      href: reference/index.html
+
+    ecosystems:
+      icon: fa-tree
+      text: "Ecosystems"
+      href: articles/redlistr-vignette.html
+
+    species:
+      icon: fa-leaf
+      text: "Species"
+      href: articles/redlistr-raster-vector.html
+
+    articles:
+      icon: fa-graduation-cap
+      text: "More articles"
+      menu:
+       - text: "General Background"
+         icon: fa-book
+         href: articles/redlistr-raster-vector.html
+       - text: "Metrics for ecosystems"
+         icon: fa-tree
+         href: articles/redlistr-vignette.html
+
+home:
+  sidebar:
+    structure: [authors, license, community]
