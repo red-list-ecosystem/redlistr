@@ -1,0 +1,68 @@
+---
+title: "Get started"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get started}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+## What is this package for?
+
+`redlistr` is a package to assess spatial criteria of the [IUCN Red List of
+Ecosystems](https://iucnrle.org/) (RLE) and [IUCN Red List of
+Threatened Species](https://www.iucnredlist.org/) (RLTS). 
+
+The package has functions for calculating three metrics that are useful for different subcriteria of RLE and RLTS:
+
+<p style="text-align:center;">
+
+| Metrics  | main `redlistr` function | RLE subcriteria | RLTS subcriteria |
+| ------------- | -------------  | -------------  | ------------- | 
+| Declines in distribution   | `getDeclineStats` | A1, A2, A3|  A1c, A2c, A3c, A4c |
+| Extent of Occurrence (EOO) | `getEOO` | B1 | B1  |
+| Area of Occupancy (AOO) | `getAOO` | B2 | B2, D2 |
+</p>
+
+## Input data formats
+
+Functions in this package expect spatial data as input. They should represent a valid estimate of species or ecosystem distribution at one or multiple points in time.
+
+Since version 3.0.0 the `redlistr` functions will accept different formats for the input vector and raster data. The spatial data need to be read in R using functions from external packages, either `sf` or `terra`:
+ 
+<p style="text-align:center;">
+
+| Data type | Example formats | R package | R class | Example functions |
+| ------------- | -------------  | -------------  | ------------- | 
+| Vector   | Shapefile, Geopackage, GeoJSON, GDB | `sf` | `sf` |  `sf::read_sf` |
+| Vector   | Shapefile, Geopackage, GeoJSON, GDB | `terra` | `SpatVect` |  `terra::vect` |
+| Raster   | GeoTIFF | [`terra`](https://rspatial.github.io/terra/) | `SpatRast` |  `terra::rast` |
+</p>
+
+## Outputs of the functions 
+
+The output of the `redlistr` functions will be R objects with class attributes. There are `summary` and `print` functions for these classes.
+
+## Using `redlistr`
+
+A simple workflow for using `redlistr` consist of importing and preparing the input data, running the main function and using the `summary` function to get the main information from the resulting object.
+
+```{r Loading packages, message=FALSE, echo=FALSE, results="hide"}
+library(terra)
+library(redlistr)
+raster_file <- system.file("extdata", "example_distribution_2000.tif", 
+                                    package = "redlistr")
+```
+
+For example, if the path of the spatial data is in a R character variable names `raster_file` and the data already has a valid Coordinate Reference System in meters. These three lines of code will create the EOO polygon and print the results of the area in square kilometers.
+
+```{r Loading our example distributions}
+ecosystem_map <- rast(raster_file)
+ecosystem_EOO <- getEOO(ecosystem_map)
+summary(ecosystem_EOO)
+```
+
