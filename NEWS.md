@@ -1,4 +1,11 @@
-# redlistr 3.0.0
+# redlistr 2.0.0
+* Create SpatRaster and sf methods for getAOO
+* Deprecate raster and sp usage
+* Replace uncertainty functions with jitter functionality to makeAOOGrid
+* Update namespace, dependencies, and function documentation
+* Add classes, and summary, print and plot functions
+* Modify functions to accept multiple ecosystems at once
+* Update vignettes
 
 # redlistr 1.0.4
 * Submission of update to CRAN to remove dependencies on retiring packages.

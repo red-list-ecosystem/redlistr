@@ -73,7 +73,7 @@ offers for collaborative development.
 
 ## Installation
 
-You can install the development version (v 3.0.0) from GitHub.
+You can install the development version (v 2.0.0) from GitHub.
 
 ``` r
 # install.packages("devtools")
