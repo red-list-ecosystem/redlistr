@@ -6,7 +6,20 @@ template:
     bg: "#fdfdff"
     primary: "#c50000"
 
+articles:
+- title: Examples for ecosystems
+  contents:
+  - redlistr-vignette
+- title: Examples for species
+  contents:
+  - species-vignette
 
+- title: Learn more
+  desc: Vignettes about general topics
+  contents:
+  - get-started
+  - redlistr-raster-vector
+  - iteration-vignette
 
 navbar:
   structure:
@@ -29,19 +42,15 @@ navbar:
       menu:
        - text: "Ecosystems"
          icon: fa-tree
-       - text: "Metrics for ecosystems"
+       - text: "Metrics for RLE"
          href: articles/redlistr-vignette.html
        - text: "Species"
          icon: fa-leaf
-       - text: "General articles"
+       - text: "Metrics for RLTS"
+         href: articles/species-vignette.html
+       - text: "More documentation"
          icon: fa-book
-       - text: "Raster and vector format"
-         href: articles/redlistr-raster-vector.html
-       - text: "Multiple assessment units"
-         href: articles/scaling-up-assessments.html
-       - text: "Scaling up"
-         href: articles/iteration-vignette.html
-       - text: "All the documentaion"
+       - text: "All articles"
          href: articles/index.html
 
 home:

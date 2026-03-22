@@ -305,7 +305,7 @@ very low. If these plots look unconvincing, you can increase the number
 of iterations with the argument `n_jitter` directly in the `getAOO()`
 function.
 
-```{r Getting number of AOO grids, eval = TRUE}
+```{r Getting number of AOO grids, eval = TRUE, fig.alt='histogram of values generated with the jitter function'}
 
 # jplot
 jplot(AOO.grid)
