@@ -1,0 +1,161 @@
+# Iteration Examples
+
+A major motivation we have when developing `redlistr` was to allow users
+to easily iterate through a large amount of data.
+
+## Iterating over all tif files in a folder
+
+First, we provide an example showing how users can perform EOO and AOO
+calculations on all `.tif` files within a folder.
+
+### Loading packages
+
+``` r
+library(redlistr)
+library(stringr)
+```
+
+### Preparing workspace and variables
+
+``` r
+# Example directory
+input_dir <- # Path to folder with tif files
+out_dir <- "C:/Users/Username/Desktop" 
+# List all files within input_dir that ends with .tif
+input_list <- list.files(input_dir, pattern = '.tif$') 
+# Option to save shapefiles or not
+saveSHP <- T
+```
+
+We also create an empty data frame to store our results in, with each
+row representing one file in the folder.
+
+``` r
+# set up data capture
+results_df <- data.frame (
+  # Name of the raster
+  in.raster = NA,
+  # Estimated area of ecosystem
+  eco.area.km2 = NA,
+  # Spatial resolution of data
+  eco.grain = NA,
+  # EOO of ecosystem
+  eoo.area.km2 = NA,
+  # AOO of ecosystem
+  aoo.no = NA,
+  # AOO of ecosystem with at least 1% in each grid cell
+  aoo.1pc = NA,
+  # Time taken for the analysis to complete 
+  time.taken = NA)
+```
+
+### Running code
+
+We use a for loop to tell `R` to systematically go through each tif file
+within the specified folder.
+
+``` r
+for (i in seq_along(input_list)){
+  # Prints out a message showing progress
+  message (paste("working on number... ", i, " of ", length(input_list)))
+  start_time <- proc.time()
+  filename  <- input_list[i]
+  input_string <- paste(input_dir, "\\", input_list[i], sep="")
+  rast = raster(input_string)
+  NAvalue(rast) <- 0
+  eco.area.km2 <- getArea(rast)
+  message (paste("... area of ecosystem is", eco.area.km2, "km^2"))
+  eco.grain <- paste(res(rast)[1], 'x', res(rast)[2])
+  eoo <- getEOO(rast)
+  eoo.shp <- eoo@pol
+  eoo.area.km2 <- getAreaEOO(eoo)
+  message (paste("... area of EOO is", eoo.area.km2, "km^2"))
+  aoo <- getAOO(rast,  10000, bottom.1pct.rule = FALSE)
+  message (paste("... number of occupied grid cells is", aoo@AOO, "10 x 10-km cells"))
+  aoo.1pc <- getAOO(rast,  10000, TRUE)
+  message (paste("... number of AOO 1% grid cells is", aoo.1pc@AOO, "10 x 10-km cells"))
+  time_taken <- proc.time() - start_time
+  message (paste("file", i, "completed in ", time_taken))
+  
+  # Saving the results into the data frame
+  results_df$in.raster[i] <- filename
+  results_df$eco.area.km2[i] = eco.area.km2
+  results_df$eco.grain[i] = eco.grain
+  results_df$eoo.area.km2[i] = eoo.area.km2
+  results_df$aoo.no[i] = aoo@AOO
+  results_df$aoo.1pc[i] = aoo.1pc@AOO
+  results_df$time.taken[i] = time_taken
+  
+  # Saving shapefiles
+  if(saveShps == TRUE){
+    shapefile(eoo.shp, paste0(out_dir, filename, "eoo"), overwrite=TRUE)
+    aoo.shp <- makeAOOGrid (rast, 10000, one.percent.rule = FALSE)
+    shapefile(aoo.shp, paste0(out_dir, filename, "aoo"), overwrite=TRUE)
+    aoo1.shp <- makeAOOGrid (rast, 10000, one.percent.rule = TRUE)
+    shapefile(aoo1.shp, paste0(out_dir, filename, "aoo1"), overwrite=TRUE)
+  }
+}
+
+# Printing a message when everything is completed
+message ("Analysis complete.")
+
+# Saving the outputs as a csv file
+write.csv(results_df, paste(out_dir, "redlistr_analysis.csv"))
+```
+
+This example code demonstrates how a user could calculate the range size
+metrics provided in `redlistr` on all tif files within a folder. Users
+can also parallelise the for loop using the `foreach` package.
+
+## Iterating over all classes within an ecosystem
+
+Another case where users might want to iterate multiple inputs are when
+they have a single raster file which contains multiclass data. The
+package handles these rasters by returning list of AOO and EOO objects.
+Ecosystem metrics can be extracted from these lists. Please note that
+for large datasets, polygon inputs will typically run much faster.
+
+### Loading packages
+
+``` r
+library(redlistr)
+library(stringr)
+```
+
+### Preparing workspace and variables
+
+``` r
+# Example directory
+input_rast <- # raster(...)
+out_dir <- "C:/Users/Username/Desktop" 
+# Option to save shapefiles or not
+saveSHP <- T
+```
+
+### Running the analysis
+
+We use the default functions on the raster directly, then use
+[`sapply()`](https://rdrr.io/r/base/lapply.html) to extract values from
+the resulting list.
+
+``` r
+area.list <- getArea(input_rast)
+EOO.list <- getEOO(input.rast)
+AOO.list <- getAOO(input.rast)
+
+# results are returned in a consistent order, so while merging would be safer, it is not mandatory.
+# use sapply 
+results_df <- area.list
+results_df$AOO <- sapply(AOO.list, function(x) x@AOO) 
+results_df$EOO <- sapply(EOO.list, function(x) x@EOO)
+
+  # Saving EOO and AOO objects (which contain grids and convex hulls)
+if(saveSHP == TRUE){
+    saveRDS(EOO.list, paste0(out_dir, "/EOOlist.rds"))
+    saveRDS(AOO.list, paste0(out_dir, "/AOOlist.rds"))
+  }
+
+
+# Saving the outputs as a csv file
+write.csv(results_df, paste0(out_dir, "/redlistr_analysis.csv"))
+```
