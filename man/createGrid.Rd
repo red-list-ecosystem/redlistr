@@ -23,11 +23,12 @@ unique raster value that serves as its identification number.
 compute AOO.
 }
 \references{
-Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-Switzerland: IUCN. ix + 94pp. Available at the following web site:
-\url{https://iucnrle.org/}
+IUCN 2024. Guidelines for the application of IUCN Red List of
+Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
+J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
+E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
+& Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
+\url{https://doi.org/10.2305/CJDF9122}
 }
 \seealso{
 Other AOO functions: 

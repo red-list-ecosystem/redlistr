@@ -13,11 +13,12 @@
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   <https://iucnrle.org/>
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#'   <https://doi.org/10.2305/CJDF9122>
 
 createGrid <- function(input.data, grid.size = 10000){
   grid <- terra::rast(ext(input.data), res = grid.size, crs = crs(input.data))
@@ -39,13 +40,12 @@ createGrid <- function(input.data, grid.size = 10000){
 #' @return a numeric vector indicating the indeces of the elements to keep.
 #' @author Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
-#' @references IUCN (2024). Guidelines for the application of IUCN Red
-#' List of Ecosystems Categories and Criteria, Version 2.0. Keith, D.A.,
-#' Ferrer-Paris, J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray,
-#' N.J., Nicholson, E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng,
-#' A.B., Valderrábano, M. & Zager, I. (Eds.). Gland, Switzerland: IUCN.
-#' ix + 94pp. Available at the following web site:
-#'   <https://iucnrle.org/>
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#'   <https://doi.org/10.2305/CJDF9122>
 
 top_pct <- function(v, pct = 99) {
   target <- (pct/100)*sum(v)
@@ -77,11 +77,12 @@ top_pct <- function(v, pct = 99) {
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   <https://iucnrle.org/>
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#'   <https://doi.org/10.2305/CJDF9122>
 #' @examples
 #' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
 #' r1 <- terra::rast(m, crs = "EPSG:32755")
@@ -287,11 +288,12 @@ makeAOOGrid.AOOgrid <-
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
-#' @references Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
-#'   Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
-#'   List of Ecosystems Categories and Criteria, Version 1.0. Gland,
-#'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
-#'   <https://iucnrle.org/>
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#'   <https://doi.org/10.2305/CJDF9122>
 #' @export
 getAOO <-  function(input.data, grid.size = 10000, names_from = NA, bottom.1pct.rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
   UseMethod("getAOO", input.data)
