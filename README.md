@@ -10,10 +10,6 @@ List of Ecosystems categories and criteria.The paper describing
 `redlistr` has been published on Ecography and is available
 [here](https://onlinelibrary.wiley.com/doi/full/10.1111/ecog.04143).
 
-> important note: [rredlist](https://github.com/ropensci/rredlist) is a
-> different package that works with the IUCN Red List of Threatened
-> Species’ API.
-
 ## Overview
 
 The `redlistr` package was developed to assist users conduct assessments
@@ -33,16 +29,16 @@ compound interest law to determine the instantaneous rate of change
 is also included.
 
 Also included are the two standard measures of the size of an
-ecosystems’ geographic distribution specified in the red list of
-ecosystems guidelines ([IUCN 2024](https://doi.org/10.2305/CJDF9122)).
-These are the Extent of Occurrence (EOO) and Area of Occupancy (AOO). As
-many of these measures are also useful for assessing species under the
-IUCN Red List of Threatened Species criteria, we expect this package
-will also be useful for assessors conducting species assessments.
+ecosystems’ geographic distribution specified in the Red List of
+Ecosystems guidelines ([IUCN 2024](https://doi.org/10.2305/CJDF9122))
+and the Red List of Threatened Species guidelines ([IUCN Standards and
+Petitions Committee
+2024](https://www.iucnredlist.org/resources/redlistguidelines)). These
+are the Extent of Occurrence (EOO) and Area of Occupancy (AOO).
 
 In conducting an assessment with this package, we assume that you are
 familiar with IUCN red listing protocols. In particular, you should
-consult the IUCN guidelines for both of the red lists, which are the
+consult the IUCN guidelines for each of the red lists, which are the
 definitive sources of all information required to ensure consistent
 application of IUCN criteria ([IUCN
 2024](https://doi.org/10.2305/CJDF9122)). In addition, the papers by
@@ -64,8 +60,7 @@ prerequisite, but this package is built upon many of the functions
 available in these two packages.
 
 For a more detailed tutorial explaining how to use this package, please
-refer to the ‘Calculating spatial metrics for IUCN red list assessments’
-vignette available with the package.
+refer to the vignettes available with the package.
 
 Lastly, this is a work in progress and we aim to continually add new
 functions to newer versions of package. Suggestions are welcomed, as are
@@ -73,7 +68,7 @@ offers for collaborative development.
 
 ## Installation
 
-You can install the development version (v 2.0.0) from GitHub.
+You can install the development version from GitHub.
 
 ``` r
 # install.packages("devtools")
@@ -86,3 +81,7 @@ is to release the new version in CRAN during 2026.
 ``` r
 install.packages("redlistr")
 ```
+
+> important note: [rredlist](https://github.com/ropensci/rredlist) is a
+> different package that works with the IUCN Red List of Threatened
+> Species’ API.
