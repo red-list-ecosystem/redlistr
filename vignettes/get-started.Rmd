@@ -38,8 +38,8 @@ Since version 2.0.0 the `redlistr` functions will accept different formats for t
 
 | Data type | Example formats | R package | R class | Example functions |
 | ------------- | -------------  | -------------  | ------------- | 
-| Vector   | Shapefile, Geopackage, GeoJSON, GDB | `sf` | `sf` |  `sf::read_sf` |
-| Vector   | Shapefile, Geopackage, GeoJSON, GDB | `terra` | `SpatVect` |  `terra::vect` |
+| Vector   | Shapefile, Geopackage, GeoJSON, GDB | [`sf`](https://r-spatial.github.io/sf/) | `sf` |  `sf::read_sf` |
+| Vector   | Shapefile, Geopackage, GeoJSON, GDB | [`terra`](https://rspatial.github.io/terra/) | `SpatVect` |  `terra::vect` |
 | Raster   | GeoTIFF | [`terra`](https://rspatial.github.io/terra/) | `SpatRast` |  `terra::rast` |
 </p>
 
@@ -71,6 +71,7 @@ Keep in mind that:
 - Preparing the data is often the most time consuming task, and requires some knowledge of geospatial data and external packages (`sf` or `terra`).
 - The main functions might require extra parameters, and the values for these might be different for species and ecosystems.
 - Combinations of the helper functions are useful to check the validity of the results and summary statistics to use in the assessment. 
+- In some applications users might want to repeat assessment over multiple assessment units (different species or ecosystems)
 
 ## Elaborated examples
 
@@ -82,9 +83,10 @@ The examples use different types of input data and focus on different subcriteri
 
 | Example | Distribution data | Input format | Red list subcriteria |
 | ------------- | -------------  | -------------  | ------------- | 
-| Mangroves in Victoria, Australia | Ecosystem distribution in 2000 and 2017 | Raster: GeoTiff | RLE A1, B1 and B2 |
-| Tropical glaciers, Ecuador | Ecosystem distribution in year 2000 | Vector (Polygons): Geopackage | RLE B1 and B2 |
-| 3 |  | Vector (Points): Shapefile | RLTS |
+| [Mangroves in Victoria, Australia](articles/redlistr-vignette.html) | Ecosystem distribution in 2000 and 2017 | Raster: GeoTiff | RLE A1, B1 and B2 |
+| [Purple Copper butterfly, Australia](articles/species-vignette.html) | Species occurences | Vector (Points) from biodiversity portal | RLTS B1 and B2 |
+| Tropical glaciers, Ecuador (in prep.)| Ecosystem distribution in year 2000 | Vector (Polygons): Geopackage | RLE B1 and B2 |
+
 </p>
 
 

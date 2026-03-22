@@ -6,21 +6,11 @@ template:
     bg: "#fdfdff"
     primary: "#c50000"
 
-articles:
-- title: Introduction
-  contents:
-  - redlistr-vignette
-- title: Formats
-  contents:
-  - redlistr-raster-vector
-- title: Advanced uses
-  contents:
-  - scaling-up-assessments
-  - iteration-vignette
+
 
 navbar:
   structure:
-    left:  [getstarted, ecosystems, species, reference, articles, news]
+    left:  [getstarted, articles, reference,  news]
     right: [github, contact, search]
   components:
     getstarted:
@@ -33,26 +23,26 @@ navbar:
       text: "Functions"
       href: reference/index.html
 
-    ecosystems:
-      icon: fa-tree
-      text: "Ecosystems"
-      href: articles/redlistr-vignette.html
-
-    species:
-      icon: fa-leaf
-      text: "Species"
-      href: articles/redlistr-raster-vector.html
-
     articles:
       icon: fa-graduation-cap
-      text: "More articles"
+      text: "Documentation"
       menu:
-       - text: "General Background"
-         icon: fa-book
-         href: articles/redlistr-raster-vector.html
-       - text: "Metrics for ecosystems"
+       - text: "Ecosystems"
          icon: fa-tree
+       - text: "Metrics for ecosystems"
          href: articles/redlistr-vignette.html
+       - text: "Species"
+         icon: fa-leaf
+       - text: "General articles"
+         icon: fa-book
+       - text: "Raster and vector format"
+         href: articles/redlistr-raster-vector.html
+       - text: "Multiple assessment units"
+         href: articles/scaling-up-assessments.html
+       - text: "Scaling up"
+         href: articles/iteration-vignette.html
+       - text: "All the documentaion"
+         href: articles/index.html
 
 home:
   sidebar:
