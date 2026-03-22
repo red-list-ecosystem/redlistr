@@ -13,3 +13,4 @@
 ^pkgdown$
 ^CODE_OF_CONDUCT.md$
 ^CONTRIBUTING.md$
+^vignettes/articles$

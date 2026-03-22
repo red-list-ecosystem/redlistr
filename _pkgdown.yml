@@ -12,14 +12,14 @@ articles:
   - redlistr-vignette
 - title: Examples for species
   contents:
-  - species-vignette
+  - articles/species-vignette
 
 - title: Learn more
   desc: Vignettes about general topics
   contents:
   - get-started
-  - redlistr-raster-vector
-  - iteration-vignette
+  - articles/redlistr-raster-vector
+  - articles/iteration-vignette
 
 navbar:
   structure:
