@@ -1,58 +1,61 @@
-url: https://red-list-ecosystem.github.io/redlistr/
+url: http://red-list-ecosystem.github.io/redlistr/
 template:
   bootstrap: 5
   bslib:
-    fg: "#00183a"
-    bg: "#fdfdff"
-    primary: "#c50000"
-
+    fg: '#00183a'
+    bg: '#fdfdff'
+    primary: '#c50000'
 articles:
 - title: Examples for ecosystems
-  contents:
-  - redlistr-vignette
+  contents: redlistr-vignette
 - title: Examples for species
-  contents:
-  - articles/species-vignette
-
+  contents: articles/species-vignette
 - title: Learn more
   desc: Vignettes about general topics
   contents:
   - get-started
   - articles/redlistr-raster-vector
   - articles/iteration-vignette
-
 navbar:
   structure:
-    left:  [getstarted, articles, reference,  news]
-    right: [github, contact, search]
+    left:
+    - getstarted
+    - articles
+    - reference
+    - news
+    right:
+    - github
+    - contact
+    - search
   components:
     getstarted:
-      text: "Get Started"
+      text: Get Started
       icon: fa fa-magic
       href: articles/get-started.html
-
     reference:
       icon: fa-gears
-      text: "Functions"
+      text: Functions
       href: reference/index.html
-
     articles:
       icon: fa-graduation-cap
-      text: "Documentation"
+      text: Documentation
       menu:
-       - text: "Ecosystems"
-         icon: fa-tree
-       - text: "Metrics for RLE"
-         href: articles/redlistr-vignette.html
-       - text: "Species"
-         icon: fa-leaf
-       - text: "Metrics for RLTS"
-         href: articles/species-vignette.html
-       - text: "More documentation"
-         icon: fa-book
-       - text: "All articles"
-         href: articles/index.html
-
+      - text: Ecosystems
+        icon: fa-tree
+      - text: Metrics for RLE
+        href: articles/redlistr-vignette.html
+      - text: Species
+        icon: fa-leaf
+      - text: Metrics for RLTS
+        href: articles/species-vignette.html
+      - text: More documentation
+        icon: fa-book
+      - text: All articles
+        href: articles/index.html
 home:
   sidebar:
-    structure: [authors, license, community]
+    structure:
+    - authors
+    - license
+    - community
+

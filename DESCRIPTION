@@ -20,7 +20,7 @@ Description: A toolbox created by members of the International Union for
     website for detailed guidelines, the criteria, publications and other
     information.
 License: GPL (>=3)| file LICENSE
-URL: https://github.com/red-list-ecosystem/redlistr, https://red-list-ecosystem.github.io/redlistr
+URL: https://github.com/red-list-ecosystem/redlistr, https://red-list-ecosystem.github.io/redlistr, http://red-list-ecosystem.github.io/redlistr/
 BugReports: https://github.com/red-list-ecosystem/redlistr/issues
 Depends:
     R (>= 3.5.0)
