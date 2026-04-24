@@ -99,6 +99,7 @@ getEOO.SpatRaster<- function(input_data, names_from = NA){
 
   EOO_list <- lapply(1:length(binary_rasters),
                          function(x) new("EOO",
+                                         name = names(binary_rasters)[[x]],
                                          pol = EOO.polygon[[x]],
                                          EOO = as.numeric(EOO.area[[x]]),
                                          unit = as.character(units(EOO.area[[x]])),
@@ -126,6 +127,7 @@ getEOO.sf <- function(input_data, names_from = NA){
 
   EOO_list <- lapply(1:length(input_split),
                      function(x) new("EOO",
+                                     name = names(input_split)[[x]],
                                      pol = EOO.polygon[[x]],
                                      EOO = as.numeric(EOO.area[[x]]),
                                      unit = as.character(units(EOO.area[[x]])),

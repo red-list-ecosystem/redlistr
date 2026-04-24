@@ -264,6 +264,7 @@ makeAOOGrid.AOOgrid <-
 
    output <-
      new("AOOgrid",
+       name = input_data@name,
        grid = best_grid,
        AOO = nrow(best_grid),
        params = list(cellsize = cell_size, jitter = jitter, pct = percent, n = n_jitter),
@@ -315,6 +316,7 @@ getAOO.SpatRaster <- function(input_data, cell_size = 10000, names_from = NA, bo
 
   AOOgrid_list <- lapply(1:length(AOO_grid),
                          function(x) methods::new("AOOgrid",
+                                         name = names(binary_rasters)[[x]],
                                          grid = AOO_grid[[x]],
                                          AOO = nrow(AOO_grid[[x]]),
                                          params = list(cellsize = cell_size, jitter = jitter, pct = percent),
@@ -357,6 +359,7 @@ getAOO.sf <-  function(input_data, cell_size = 10000, names_from = NA, bottom_1p
 
   AOOgrid_list <- lapply(1:length(AOO_grid),
                          function(x) methods::new("AOOgrid",
+                                         name = names(input_split)[[x]],
                                          grid = AOO_grid[[x]],
                                          AOO = nrow(AOO_grid[[x]]),
                                          params = list(cellsize = cell_size, jitter = jitter, pct = percent),
@@ -370,7 +373,7 @@ getAOO.sf <-  function(input_data, cell_size = 10000, names_from = NA, bottom_1p
     AOOgrid_list <- lapply(1:length(AOOgrid_list),
                            function(x){
                              if(AOOgrid_list[[x]]@AOO <= 100 & AOOgrid_list[[x]]@AOO > 2) {
-                               message(paste("jittering ", names(AOOgrid_list)[[x]]))
+                               message(paste("jittering ", AOOgrid_list[[x]]@name))
                                return(makeAOOGrid(AOOgrid_list[[x]], names_from = names_from, cell_size = cell_size, bottom_1pct_rule = bottom_1pct_rule, jitter = jitter, percent = percent, n_jitter = n_jitter))
                                } else {return(AOOgrid_list[[x]])}
                            }  )
@@ -403,7 +406,7 @@ jplot <- function(x){
     data.frame(n = seq_along(z),
             min = seq_along(z) |> sapply(function(x) min(z[1:x]))) |>
    plot(type = "b", pch = 16,
-        main = "Running minimum AOO estimate from grid jitter",
+        main = paste(x@name, "\n Running minimum AOO estimate from grid jitter"),
         xlab = "Number of jitter iterations",
         ylab = "Minimum number of grid cells occupied")
  } else {

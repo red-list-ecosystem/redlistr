@@ -24,6 +24,7 @@ NULL
 methods::setClass(
   "AOOgrid",
   slots = list(
+    name =     "character",
     grid =     "sf",
     AOO =      "numeric",
     params =   "list",
@@ -32,6 +33,7 @@ methods::setClass(
     AOOvals =  "integer"
   ),
   prototype = list(
+    name = character(0),
     grid = NULL,
     AOO = numeric(0),
     params = list(),
@@ -51,24 +53,24 @@ methods::setClass(
 methods::setMethod(
   "summary", "AOOgrid",
   function(object) {
-    cat("Class: AOO_grid\n")
+    cat(object@name,": AOO_grid\n")
     cat("----------------------------\n")
-    cat("Number of grid cells:", object@AOO, "\n")
-    cat("Area of occupied grids", (object@params$cellsize^2 * object@AOO) / 1000000, "km^2\n")
+    cat(" Number of grid cells:", object@AOO, "\n")
+    cat(" Area of occupied grids", (object@params$cellsize^2 * object@AOO) / 1000000, "km^2\n")
 
     # Show extent and CRS if available
     if (inherits(object@grid, "sf")) {
+      cat(" CRS:", sf::st_crs(object@grid)$input, "\n")
       bbox <- sf::st_bbox(object@grid)
-      cat("Grid extent:\n")
+      cat(" Grid extent:\n")
       print(bbox)
-      cat("CRS:", sf::st_crs(object@grid)$input, "\n")
     }
 
     # Summarise parameters
     cat("\nfunction call parameters:\n")
-    cat("grid size: ", object@params$cellsize, "\n")
-    cat("jitter: ", object@params$jitter, "\n")
-    cat("n_jitter: ", object@params$n, "\n")
+    cat(" grid size: ", object@params$cellsize, "\n")
+    cat(" jitter: ", object@params$jitter, "\n")
+    cat(" n_jitter: ", object@params$n, "\n")
     cat("----------------------------\n\n")
 
     invisible(object)
@@ -87,9 +89,8 @@ methods::setMethod(
     cat("<AOO_grid object>\n")
     cat("  Cells:", object@AOO, "\n")
     if (!is.null(object@params$cellsize))
-      cat("  Grid size:", object@params$cellsize, "\n")
+      cat("  Cell size:", object@params$cellsize, "\n")
     cat("  CRS:", sf::st_crs(object@grid)$epsg, "\n")
-    cat("  Geometry type:", unique(sf::st_geometry_type(object@grid)), "\n")
   }
 )
 
@@ -103,53 +104,50 @@ methods::setMethod(
 #' @export
 methods::setMethod(
   "plot", "AOOgrid",
-  function(x, ...) {
+  function(x, title = x@name, ...) {
     if (!inherits(x@grid, "sf"))
       stop("Grid must be an sf object to plot.")
 
     # Leaflet plot
     if (!is.null(x@input)) {
-      if (inherits(x@input, "sf")) {
-        leaflet::leaflet() |>
-          leaflet::addProviderTiles("CartoDB.Positron") |>
-          leaflet::addPolygons(data = sf::st_transform(x@input, 4326), fillColor = "blue", fillOpacity = 0.5, color = "gray30", weight = 1, group = "Input") |>
-          leaflet::addPolygons(data = sf::st_transform(x@grid, 4326), color = "black", weight = 1, fillColor = "none", group = "AOOgrid") |>
-          leaflet::addLayersControl(overlayGroups = c("Input", "AOOgrid"), options = leaflet::layersControlOptions(collapsed = FALSE))
-        # Base Plot
-        # plot(sf::st_geometry(x@grid), border = "grey30",
-        #      col = NA,
-        #      axes = TRUE,                     # adds axes
-        #      xlab = "Easting (m)",            # sensible axis label for projected CRS
-        #      ylab = "Northing (m)",            # sensible axis label for projected CRS
-        #      ...)
-        # plot(sf::st_geometry(x@input), col = "darkgreen", add = TRUE, ...)
-      } else if (inherits(x@input, "SpatRaster")) {
+      p <- leaflet::leaflet() |>
+        leaflet::addProviderTiles("CartoDB.Positron") |>
+        leaflet::addPolygons(data = sf::st_transform(x@grid, 4326), color = "black", weight = 1, fillColor = "none", group = "AOOgrid") |>
+         leaflet::addControl(
+          html = paste("<div style='background:white; padding:8px; font-weight:bold;'>
+              ", title, "</div>"),
+          position = "topright") |>
+        leaflet::addLayersControl(overlayGroups = c("Input", "AOOgrid"), options = leaflet::layersControlOptions(collapsed = FALSE)) |>
+        leaflet::addControl(
+          html = paste("<div style='background:white; padding:8px;'>
+              <b>AOO: </b><br/>
+              ", x@AOO, "cells
+            </div>"),
+          position = "topright")
 
-        leaflet::leaflet() |>
-          leaflet::addProviderTiles("CartoDB.Positron") |>
+
+
+      if (inherits(x@input, "sf")) {
+        if(any(st_geometry_type(x@input) |> unique() |> as.character() %in% c("POLYGON", "MULTIPOLYGON"))){
+          p <- p |>
+            leaflet::addPolygons(data = sf::st_transform(x@input, 4326), fillColor = "darkgreen", fillOpacity = 0.85, color = "gray30", weight = 1, group = "Input")
+
+        }
+        if(any(st_geometry_type(x@input) |> unique() |> as.character() %in% c("POINT", "MULTIPOINT"))){
+          p <- p |>
+            leaflet::addCircleMarkers(data = sf::st_transform(x@input, 4326), radius = 3, color = "darkgreen", weight = 0, group = "Input")
+        }
+
+      } else if (inherits(x@input, "SpatRaster")) {
+        p <- p |>
           leaflet::addRasterImage(x = terra::project(x@input, "EPSG:4326"),
                                   colors = function(x) ifelse(is.na(x), NA, "darkgreen"),
-                                  opacity = 0.8,
-                                  group = "Input") |>
-          leaflet::addPolygons(data = sf::st_transform(x@grid, 4326),
-                               color = "black",
-                               weight = 1, fillColor = "none", group = "AOOgrid") |>
-          leaflet::addLayersControl(overlayGroups = c("Input", "AOOgrid"),
-                                    options = leaflet::layersControlOptions(collapsed = FALSE))
+                                  opacity = 0.85,
+                                  group = "Input")
 
-        # Base Plot
-        # unionextent <- terra::union(terra::ext(x@input), sf::st_bbox(x@grid) |> terra::ext())
-        # x@input <- terra::extend(x@input, unionextent)
-        # x@input <- terra::extend(x@input, 10)
-        # #x@input <- terra::extend(x@input, x@params$cellsize/60)
-        # terra::plot(x@input, col = c("seashell3", "midnightblue"), range = c(0,1), ...)
-        # # Overlay grid
-        # plot(sf::st_geometry(x@grid), col = NA, border = "grey30", ..., add = TRUE)
       }
     }
-
-
-
+   p
   }
 )
 
@@ -171,9 +169,9 @@ methods::setMethod(
     if(x@params$n > 1)
       if(diff(range(x@AOOvals)) <= 30){by <- 1}else{by <- 2}
       breaks <- seq(from = min(x@AOOvals-.5), to = max(x@AOOvals+.5), by = by)
-      hist(x@AOOvals, main = paste("Distribution of cell counts under", x@params$n, "iterations"),
+      hist(x@AOOvals, main = paste(x@name,"\n Distribution of cell counts under", x@params$n, "iterations"),
            xlab = "AOO cell count", ylab = "Frequency",
-           breaks = breaks, col = "dodgerblue4")
+           breaks = breaks, col = "dodgerblue4", las = 1, ...)
       box()
   })
 
@@ -190,12 +188,14 @@ methods::setMethod(
 methods::setClass(
   "EOO",
   slots = list(
+    name =    "character",
     pol =     "sf",
     EOO =     "numeric",
     unit =    "character",
     input =   "ANY"
   ),
   prototype = list(
+    name = character(0),
     pol = NULL,
     EOO = numeric(0),
     unit = character(0),
@@ -213,7 +213,7 @@ methods::setClass(
 methods::setMethod("show", "EOO", function(object) {
   cat("Class 'EOO'\n")
   cat("  EOO area:", format(object@EOO, big.mark = ","), object@unit , "\n", sep = " ")
-  cat("  Polygon geometry type: ", paste(unique(sf::st_geometry_type(object@pol)), collapse = ", "), "\n", sep = "")
+  cat("  CRS:", sf::st_crs(object@pol)$input, "\n")
   cat("  Input object class: ", class(object@input)[1], "\n", sep = "")
 })
 
@@ -224,18 +224,18 @@ methods::setMethod("show", "EOO", function(object) {
 #' @param object an EOO object
 #' @export
 methods::setMethod("summary", "EOO", function(object) {
-  cat("Summary of EOO object\n")
+  cat(object@name, ": EOO object\n")
   cat("----------------------------\n")
-  cat("EOO area: ", format(object@EOO, big.mark = ","), " square kms\n", sep = "")
-  cat("CRS:", sf::st_crs(object@pol)$input, "\n")
-  cat("Input data class: ", class(object@input)[1], "\n", sep = "")
+  cat(" EOO area: ", format(object@EOO, big.mark = ","), " square kms\n", sep = "")
+  cat(" CRS:", sf::st_crs(object@pol)$input, "\n")
+  cat(" Input data class: ", class(object@input)[1], "\n", sep = "")
 
   if (inherits(object@input, "sf")) {
-    cat("Input feature count: ", nrow(object@input), "\n\n", sep = "")
+    cat(" Input feature count: ", nrow(object@input), "\n", sep = "")
     cat("----------------------------\n")
   } else if (inherits(object@input, "SpatRaster")) {
-    cat("Input raster layers: ", terra::nlyr(object@input), "\n", sep = "")
-    cat("Raster dimensions: ", paste(terra::ext(object@input), collapse = " x "), "\n\n", sep = "")
+    cat(" Input raster layers: ", terra::nlyr(object@input), "\n", sep = "")
+    cat(" Raster dimensions: ", paste(terra::ext(object@input), collapse = " x "), "\n", sep = "")
     cat("----------------------------\n")
   }
   invisible(object)
@@ -250,7 +250,7 @@ methods::setMethod("summary", "EOO", function(object) {
 #' @param ... Additional graphical parameters passed to \code{\link[graphics]{plot}}.
 #' @importFrom graphics box
 #' @export
-methods::setMethod("plot", "EOO", function(x, ...) {
+methods::setMethod("plot", "EOO", function(x, title = x@name) {
   if (is.null(x@pol) || nrow(x@pol) == 0) {
     stop("No polygon data found in slot 'pol'.")
   }
@@ -258,56 +258,43 @@ methods::setMethod("plot", "EOO", function(x, ...) {
     stop("No input data found in slot 'input'.")
   }
 
-  # Set up combined extent if possible
+  # --- Leaflet plot ---
+  p <-  leaflet::leaflet() |>
+    leaflet::addProviderTiles("CartoDB.Positron") |>
+    leaflet::addPolygons(data = sf::st_transform(x@pol, 4326),
+                         color = "black",
+                         weight = 1, fillColor = "gray", fillOpacity = 0.2,
+                         group = "EOO_polygon") |>
+    leaflet::addControl(
+      html = paste("<div style='background:white; padding:8px; font-weight:bold;'>
+              ", title, "</div>"),
+      position = "topright") |>
+    leaflet::addLayersControl(overlayGroups = c("Input", "EOO_polygon"),
+                              options = leaflet::layersControlOptions(collapsed = FALSE)) |>
+    leaflet::addControl(
+      html = paste("<div style='background:white; padding:8px;'>
+              <b>EOO area: </b><br/>
+              ", round(x@EOO, 2), "km^2
+            </div>"),
+      position = "topright")
+
+
   if (inherits(x@input, "sf")) {
-    bbox_all <- sf::st_bbox(sf::st_union(sf::st_geometry(x@pol), sf::st_geometry(x@input)))
+    if(any(st_geometry_type(x@input) |> unique() |> as.character() %in% c("POLYGON", "MULTIPOLYGON"))){
+      p <- p |> leaflet::addPolygons(data = sf::st_transform(x@input, 4326), fillColor = "darkgreen", fillOpacity = 0.85, color = "none", weight = 0, group = "Input")
+    }
+    if(any(st_geometry_type(x@input) |> unique() |> as.character() %in% c("POINT", "MULTIPOINT"))){
+      p <- p |> leaflet::addCircleMarkers(data = sf::st_transform(x@input, 4326), radius = 3, color = "darkgreen", weight = 0, group = "Input")
+      }
+
   } else if (inherits(x@input, "SpatRaster")) {
-    bbox_all <- sf::st_bbox(sf::st_as_sf(terra::as.polygons(x@input)))
-  } else {
-    stop("Unsupported input type in slot 'input'. Must be 'sf' or 'SpatRaster'.")
+    p <- p |> leaflet::addRasterImage(x = terra::project(x@input, "EPSG:4326"),
+                                      colors = function(x) ifelse(is.na(x), NA, "darkgreen"),
+                                      opacity = 0.85,
+                                      group = "Input")
   }
 
-  # --- Base plot ---
-  # plot(sf::st_geometry(x@pol),
-  #      border = "gray12", col = scales::alpha("gray30", 0.2),
-  #      main = "EOO polygon and input data",
-  #      xlim = bbox_all[c("xmin", "xmax")],
-  #      ylim = bbox_all[c("ymin", "ymax")],
-  #      axes = TRUE, ...)
-
-  # --- Overlay input ---
-  if (inherits(x@input, "sf")) {
-    leaflet::leaflet() |>
-      leaflet::addProviderTiles("CartoDB.Positron") |>
-      leaflet::addPolygons(data = sf::st_transform(x@input, 4326), fillColor = "midnightblue", fillOpacity = 0.5, color = "none", weight = 0, group = "Input") |>
-      leaflet::addPolygons(data = sf::st_transform(x@pol, 4326), color = "black", weight = 1, fillColor = "gray", fillOpacity = 0.3, group = "EOO_polygon") |>
-      leaflet::addLayersControl(overlayGroups = c("Input", "EOO_polygon"), options = leaflet::layersControlOptions(collapsed = FALSE))
-
-
-    # plot(sf::st_geometry(x@input),
-    #      pch = 21, col = "black", bg = "blue",
-    #      add = TRUE)
-  } else if (inherits(x@input, "SpatRaster")) {
-
-    leaflet::leaflet() |>
-      leaflet::addProviderTiles("CartoDB.Positron") |>
-      leaflet::addPolygons(data = sf::st_transform(x@pol, 4326),
-                           color = "black",
-                           weight = 1, fillColor = "gray", fillOpacity = 0.3,
-                           group = "EOO_polygon") |>
-      leaflet::addRasterImage(x = terra::project(x@input, "EPSG:4326"),
-                              colors = function(x) ifelse(is.na(x), NA, "midnightblue"),
-                              opacity = 0.8,
-                              group = "Input") |>
-      leaflet::addLayersControl(overlayGroups = c("Input", "EOO_polygon"),
-                                options = leaflet::layersControlOptions(collapsed = FALSE))
-
-
-    # terra::plot(x@input, add = TRUE, col = c("gray55", "midnightblue"))
-    # plot(sf::st_geometry(x@pol), add = TRUE)
-  }
-
-  graphics::box()
+  p
 })
 
 
