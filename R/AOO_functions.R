@@ -308,11 +308,11 @@ getAOO.SpatRaster <- function(input_data, cell_size = 10000, names_from = NA, bo
 
   message("Assembling initial grids")
   # Split raster into list of binary rasters
-  binary_rasters <- lapply(sort(unique(terra::values(input_data))), function(v) {
-    binary <- as.numeric(input_data == v)
-    names(binary) <- paste0("value_", v)
-    binary
-  })
+  values <- sort(unique(terra::values(input_data)))
+  binary_rasters <- lapply(values, function(v) {
+    as.numeric(input_data == v)
+  }) |> setNames(paste0(names(input_data), "_value_", values))
+
 
   AOOgrid_list <- lapply(1:length(AOO_grid),
                          function(x) methods::new("AOOgrid",
