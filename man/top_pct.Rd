@@ -21,12 +21,13 @@ helps perform the bottom.1pct.rule when selecting the AOO grid by
 identifying grid positions to keep.
 }
 \references{
-IUCN 2024. Guidelines for the application of IUCN Red List of
-Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
-J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
-E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
-& Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
-\url{https://doi.org/10.2305/CJDF9122}
+IUCN (2024). Guidelines for the application of IUCN Red
+List of Ecosystems Categories and Criteria, Version 2.0. Keith, D.A.,
+Ferrer-Paris, J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray,
+N.J., Nicholson, E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng,
+A.B., Valderrábano, M. & Zager, I. (Eds.). Gland, Switzerland: IUCN.
+ix + 94pp. Available at the following web site:
+\url{https://iucnrle.org/}
 }
 \seealso{
 Other AOO functions: 

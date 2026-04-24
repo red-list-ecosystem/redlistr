@@ -52,7 +52,9 @@ methods::setMethod(
   "summary", "AOOgrid",
   function(object) {
     cat("Class: AOO_grid\n")
+    cat("----------------------------\n")
     cat("Number of grid cells:", object@AOO, "\n")
+    cat("Area of occupied grids", (object@params$cellsize^2 * object@AOO) / 1000000, "km^2\n")
 
     # Show extent and CRS if available
     if (inherits(object@grid, "sf")) {
@@ -64,9 +66,10 @@ methods::setMethod(
 
     # Summarise parameters
     cat("\nfunction call parameters:\n")
-    cat("grid size: ", object@params$gridsize, "\n")
+    cat("grid size: ", object@params$cellsize, "\n")
     cat("jitter: ", object@params$jitter, "\n")
-    cat("n_jitter: ", object@params$n, "\n\n\n")
+    cat("n_jitter: ", object@params$n, "\n")
+    cat("----------------------------\n\n")
 
     invisible(object)
   }
@@ -83,8 +86,8 @@ methods::setMethod(
   function(object) {
     cat("<AOO_grid object>\n")
     cat("  Cells:", object@AOO, "\n")
-    if (!is.null(object@params$grid.size))
-      cat("  Grid size:", object@params$grid.size, "\n")
+    if (!is.null(object@params$cellsize))
+      cat("  Grid size:", object@params$cellsize, "\n")
     cat("  CRS:", sf::st_crs(object@grid)$epsg, "\n")
     cat("  Geometry type:", unique(sf::st_geometry_type(object@grid)), "\n")
   }
@@ -104,25 +107,44 @@ methods::setMethod(
     if (!inherits(x@grid, "sf"))
       stop("Grid must be an sf object to plot.")
 
-    # Base plot
+    # Leaflet plot
     if (!is.null(x@input)) {
       if (inherits(x@input, "sf")) {
-        plot(sf::st_geometry(x@grid), border = "grey30",
-             col = NA,
-             axes = TRUE,                     # adds axes
-             xlab = "Easting (m)",            # sensible axis label for projected CRS
-             ylab = "Northing (m)",            # sensible axis label for projected CRS
-             ...)
-        plot(sf::st_geometry(x@input), col = "darkgreen", add = TRUE, ...)
+        leaflet::leaflet() |>
+          leaflet::addProviderTiles("CartoDB.Positron") |>
+          leaflet::addPolygons(data = sf::st_transform(x@input, 4326), fillColor = "blue", fillOpacity = 0.5, color = "gray30", weight = 1, group = "Input") |>
+          leaflet::addPolygons(data = sf::st_transform(x@grid, 4326), color = "black", weight = 1, fillColor = "none", group = "AOOgrid") |>
+          leaflet::addLayersControl(overlayGroups = c("Input", "AOOgrid"), options = leaflet::layersControlOptions(collapsed = FALSE))
+        # Base Plot
+        # plot(sf::st_geometry(x@grid), border = "grey30",
+        #      col = NA,
+        #      axes = TRUE,                     # adds axes
+        #      xlab = "Easting (m)",            # sensible axis label for projected CRS
+        #      ylab = "Northing (m)",            # sensible axis label for projected CRS
+        #      ...)
+        # plot(sf::st_geometry(x@input), col = "darkgreen", add = TRUE, ...)
       } else if (inherits(x@input, "SpatRaster")) {
-        # TODO FIX THIS
-        unionextent <- terra::union(terra::ext(x@input), sf::st_bbox(x@grid) |> terra::ext())
-        x@input <- terra::extend(x@input, unionextent)
-        x@input <- terra::extend(x@input, 10)
-        #x@input <- terra::extend(x@input, x@params$gridsize/60)
-        terra::plot(x@input, col = c("seashell3", "midnightblue"), range = c(0,1), ...)
-        # Overlay grid
-        plot(sf::st_geometry(x@grid), col = NA, border = "grey30", ..., add = TRUE)
+
+        leaflet::leaflet() |>
+          leaflet::addProviderTiles("CartoDB.Positron") |>
+          leaflet::addRasterImage(x = terra::project(x@input, "EPSG:4326"),
+                                  colors = function(x) ifelse(is.na(x), NA, "darkgreen"),
+                                  opacity = 0.8,
+                                  group = "Input") |>
+          leaflet::addPolygons(data = sf::st_transform(x@grid, 4326),
+                               color = "black",
+                               weight = 1, fillColor = "none", group = "AOOgrid") |>
+          leaflet::addLayersControl(overlayGroups = c("Input", "AOOgrid"),
+                                    options = leaflet::layersControlOptions(collapsed = FALSE))
+
+        # Base Plot
+        # unionextent <- terra::union(terra::ext(x@input), sf::st_bbox(x@grid) |> terra::ext())
+        # x@input <- terra::extend(x@input, unionextent)
+        # x@input <- terra::extend(x@input, 10)
+        # #x@input <- terra::extend(x@input, x@params$cellsize/60)
+        # terra::plot(x@input, col = c("seashell3", "midnightblue"), range = c(0,1), ...)
+        # # Overlay grid
+        # plot(sf::st_geometry(x@grid), col = NA, border = "grey30", ..., add = TRUE)
       }
     }
 
@@ -130,6 +152,30 @@ methods::setMethod(
 
   }
 )
+
+
+#' AOOgrid hist
+#'
+#' hist method for AOOgrid objects
+#'
+#' @param x an AOOgrid object
+#' @export
+
+methods::setMethod(
+  "hist", "AOOgrid",
+  function(x, ...){
+    if (!inherits(x@AOOvals, "integer"))
+      stop("AOOvals must be an integer vector to plot histograms.")
+    if(x@params$n == 1)
+      stop("Grid was not jittered")
+    if(x@params$n > 1)
+      if(diff(range(x@AOOvals)) <= 30){by <- 1}else{by <- 2}
+      breaks <- seq(from = min(x@AOOvals-.5), to = max(x@AOOvals+.5), by = by)
+      hist(x@AOOvals, main = paste("Distribution of cell counts under", x@params$n, "iterations"),
+           xlab = "AOO cell count", ylab = "Frequency",
+           breaks = breaks, col = "dodgerblue4")
+      box()
+  })
 
 
 #' EOO class
@@ -181,15 +227,16 @@ methods::setMethod("summary", "EOO", function(object) {
   cat("Summary of EOO object\n")
   cat("----------------------------\n")
   cat("EOO area: ", format(object@EOO, big.mark = ","), " square kms\n", sep = "")
-  cat("Polygon geometry type(s): ", paste(unique(sf::st_geometry_type(object@pol)), collapse = ", "), "\n", sep = "")
-  cat("Number of polygon features: ", nrow(object@pol), "\n", sep = "")
+  cat("CRS:", sf::st_crs(object@pol)$input, "\n")
   cat("Input data class: ", class(object@input)[1], "\n", sep = "")
 
   if (inherits(object@input, "sf")) {
     cat("Input feature count: ", nrow(object@input), "\n\n", sep = "")
+    cat("----------------------------\n")
   } else if (inherits(object@input, "SpatRaster")) {
     cat("Input raster layers: ", terra::nlyr(object@input), "\n", sep = "")
     cat("Raster dimensions: ", paste(terra::ext(object@input), collapse = " x "), "\n\n", sep = "")
+    cat("----------------------------\n")
   }
   invisible(object)
 })
@@ -221,21 +268,43 @@ methods::setMethod("plot", "EOO", function(x, ...) {
   }
 
   # --- Base plot ---
-  plot(sf::st_geometry(x@pol),
-       border = "gray12", col = scales::alpha("gray30", 0.2),
-       main = "EOO polygon and input data",
-       xlim = bbox_all[c("xmin", "xmax")],
-       ylim = bbox_all[c("ymin", "ymax")],
-       axes = TRUE, ...)
+  # plot(sf::st_geometry(x@pol),
+  #      border = "gray12", col = scales::alpha("gray30", 0.2),
+  #      main = "EOO polygon and input data",
+  #      xlim = bbox_all[c("xmin", "xmax")],
+  #      ylim = bbox_all[c("ymin", "ymax")],
+  #      axes = TRUE, ...)
 
   # --- Overlay input ---
   if (inherits(x@input, "sf")) {
-    plot(sf::st_geometry(x@input),
-         pch = 21, col = "black", bg = "blue",
-         add = TRUE)
+    leaflet::leaflet() |>
+      leaflet::addProviderTiles("CartoDB.Positron") |>
+      leaflet::addPolygons(data = sf::st_transform(x@input, 4326), fillColor = "midnightblue", fillOpacity = 0.5, color = "none", weight = 0, group = "Input") |>
+      leaflet::addPolygons(data = sf::st_transform(x@pol, 4326), color = "black", weight = 1, fillColor = "gray", fillOpacity = 0.3, group = "EOO_polygon") |>
+      leaflet::addLayersControl(overlayGroups = c("Input", "EOO_polygon"), options = leaflet::layersControlOptions(collapsed = FALSE))
+
+
+    # plot(sf::st_geometry(x@input),
+    #      pch = 21, col = "black", bg = "blue",
+    #      add = TRUE)
   } else if (inherits(x@input, "SpatRaster")) {
-    terra::plot(x@input, add = TRUE, col = c("gray55", "midnightblue"))
-    plot(sf::st_geometry(x@pol), add = TRUE)
+
+    leaflet::leaflet() |>
+      leaflet::addProviderTiles("CartoDB.Positron") |>
+      leaflet::addPolygons(data = sf::st_transform(x@pol, 4326),
+                           color = "black",
+                           weight = 1, fillColor = "gray", fillOpacity = 0.3,
+                           group = "EOO_polygon") |>
+      leaflet::addRasterImage(x = terra::project(x@input, "EPSG:4326"),
+                              colors = function(x) ifelse(is.na(x), NA, "midnightblue"),
+                              opacity = 0.8,
+                              group = "Input") |>
+      leaflet::addLayersControl(overlayGroups = c("Input", "EOO_polygon"),
+                                options = leaflet::layersControlOptions(collapsed = FALSE))
+
+
+    # terra::plot(x@input, add = TRUE, col = c("gray55", "midnightblue"))
+    # plot(sf::st_geometry(x@pol), add = TRUE)
   }
 
   graphics::box()
