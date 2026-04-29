@@ -14,6 +14,7 @@ NULL
 #'
 #' A class to represent an AOO grid object
 #'
+#' @slot name the name of the assessment unit
 #' @slot grid an AOO grid as a shapefile
 #' @slot AOO the number of grid squares in grid
 #' @slot params a named vector of input parameters (grid size, jitter, n_jitter)
@@ -99,6 +100,7 @@ methods::setMethod(
 #' as.list method for AOOgrid object
 #'
 #' @param x an AOOgrid object
+#' @param ... additional arguments
 #' @export
 #' @method as.list AOOgrid
 
@@ -133,12 +135,16 @@ as.list.AOOgrid <- function(x, ...) {
 #' plot method for AOOgrid object
 #'
 #' @param x an AOOgrid object
-#' @param y Ignored. Included for consistency with the \code{plot} generic.
-#' @param ... Additional graphical parameters passed to \code{\link[graphics]{plot}}.
+#' @param title plot title, defaults to the assessment unit name.
 #' @export
 methods::setMethod(
   "plot", "AOOgrid",
-  function(x, title = x@name, ...) {
+  function(x, title = x@name) {
+    if (!requireNamespace("leaflet", quietly = TRUE)) {
+      stop("Package 'leaflet' is required for plotting. Please install it.",
+           call. = FALSE)
+    }
+
     if (!inherits(x@grid, "sf"))
       stop("Grid must be an sf object to plot.")
 
@@ -191,6 +197,7 @@ methods::setMethod(
 #' hist method for AOOgrid objects
 #'
 #' @param x an AOOgrid object
+#' @param ... Additional graphical parameters passed to \code{\link[graphics]{hist}}.
 #' @export
 
 methods::setMethod(
@@ -214,6 +221,7 @@ methods::setMethod(
 #'
 #' A class to represent an EOO convex hull object
 #'
+#' @slot name the name of the assessment unit
 #' @slot pol an EOO convex hull polygon
 #' @slot EOO the area of the EOO polygon as a numeric
 #' @slot unit the unit in which the area is provided
@@ -280,6 +288,7 @@ methods::setMethod("summary", "EOO", function(object) {
 #' as.list method for EOO object
 #'
 #' @param x an EOO object
+#' @param ... additional arguments
 #' @export
 #' @method as.list EOO
 
@@ -308,11 +317,15 @@ as.list.EOO <- function(x, ...) {
 #' plot method for EOO object
 #'
 #' @param x an EOO object
-#' @param y Ignored. Included for consistency with the \code{plot} generic.
-#' @param ... Additional graphical parameters passed to \code{\link[graphics]{plot}}.
+#' @param title Plot title, defaults to name of assessment unit.
 #' @importFrom graphics box
 #' @export
 methods::setMethod("plot", "EOO", function(x, title = x@name) {
+  if (!requireNamespace("leaflet", quietly = TRUE)) {
+    stop("Package 'leaflet' is required for plotting. Please install it.",
+         call. = FALSE)
+  }
+
   if (is.null(x@pol) || nrow(x@pol) == 0) {
     stop("No polygon data found in slot 'pol'.")
   }

@@ -31,16 +31,15 @@ Imports:
     methods,
     ggplot2,
     rlang,
-    scales,
     units,
     stringr,
-    mgcv,
-    leaflet
+    mgcv
 Suggests:
     devtools,
     knitr,
     rmarkdown,
     testthat,
+    leaflet
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

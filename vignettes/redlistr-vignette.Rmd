@@ -361,9 +361,9 @@ AOO.grid.keep.all <- getAOO(mangrove.2017, cell_size = 10000,
 AOO.grid.5.pct <- getAOO(mangrove.2017, cell_size = 10000, 
                          bottom_1pct_rule = T, n_jitter = 150, percent = 5)
 par(mfrow = c(1,3))
-plot(AOO.grid.keep.all, main = "Keep all")
-plot(AOO.grid, main = "Remove bottom 1% (default)")
-plot(AOO.grid.5.pct, main = "Remove bottom 5%")
+plot(AOO.grid.keep.all, title = "Keep all")
+plot(AOO.grid, title = "Remove bottom 1% (default)")
+plot(AOO.grid.5.pct, title = "Remove bottom 5%")
 par(mfrow = c(1,1))
 
 

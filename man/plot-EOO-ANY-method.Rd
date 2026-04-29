@@ -10,8 +10,6 @@
 \item{x}{an EOO object}
 
 \item{title}{Plot title, defaults to name of assessment unit.}
-
-\item{...}{Additional graphical parameters passed to \code{\link[graphics]{plot}}.}
 }
 \description{
 plot method for EOO object

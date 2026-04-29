@@ -2,7 +2,8 @@
 #'
 #' `bundle` performs AOO and EOO calculations on an input object and returns the results as a table
 #'
-#' @inheritParams getAOO
+#' @inheritParams getEOO
+#' @param ... Additional graphical parameters passed to getAOO().
 #' @return a data.frame containing AOO and EOO information for all input units as rows.
 #' @author Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family synthesis functions
@@ -32,7 +33,7 @@ bundle.SpatRaster <- function(input_data, ...){
   eootable <- list2table(eoo)
   aootable <- list2table(aoo)
 
-  full_join(aootable, eootable, by = c("name", "input_class"))
+  merge(aootable, eootable, by = c("name", "input_class"))
 }
 
 

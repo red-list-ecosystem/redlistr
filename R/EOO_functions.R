@@ -91,7 +91,7 @@ getEOO.SpatRaster<- function(input_data, names_from = NA){
 values <- sort(unique(terra::values(input_data)))
   binary_rasters <- lapply(values, function(v) {
     as.numeric(input_data == v)
-  }) |> setNames(paste0(names(input_data), "_value_", values))
+  }) |> stats::setNames(paste0(names(input_data), "_value_", values))
 
   EOO.polygon <- makeEOO(input_data) |> lapply(st_as_sf)
   EOO.area <- lapply(EOO.polygon, st_area) |> lapply(units::set_units, "km^2")

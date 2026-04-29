@@ -311,7 +311,7 @@ getAOO.SpatRaster <- function(input_data, cell_size = 10000, names_from = NA, bo
   values <- sort(unique(terra::values(input_data)))
   binary_rasters <- lapply(values, function(v) {
     as.numeric(input_data == v)
-  }) |> setNames(paste0(names(input_data), "_value_", values))
+  }) |> stats::setNames(paste0(names(input_data), "_value_", values))
 
 
   AOOgrid_list <- lapply(1:length(AOO_grid),
