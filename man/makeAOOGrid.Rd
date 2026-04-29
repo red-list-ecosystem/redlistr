@@ -5,29 +5,29 @@
 \title{Create Area of Occupancy (AOO) grid for an ecosystem or species distribution}
 \usage{
 makeAOOGrid(
-  input.data,
-  grid.size = 10000,
+  input_data,
+  cell_size = 10000,
   names_from = NA,
-  bottom.1pct.rule = TRUE,
+  bottom_1pct_rule = TRUE,
   percent = 1,
   jitter = TRUE,
   n_jitter = 35
 )
 }
 \arguments{
-\item{input.data}{Spatial object (sf or SpatRaster) of an ecosystem or species distribution.
+\item{input_data}{Spatial object (sf or SpatRaster) of an ecosystem or species distribution.
 Please use a CRS with units measured in metres.}
 
-\item{grid.size}{A number specifying the width of the desired grid square (in
+\item{cell_size}{A number specifying the width of the desired grid square (in
 same units as your coordinate reference system)}
 
 \item{names_from}{the name of the column containing ecosystem labels}
 
-\item{bottom.1pct.rule}{Logical. If \code{TRUE}, grid cells containing the least
+\item{bottom_1pct_rule}{Logical. If \code{TRUE}, grid cells containing the least
 ecosystem area are dropped up to 1\% of the total distribution.}
 
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
-the \code{bottom.1pct.rule}}
+the \code{bottom_1pct_rule}}
 
 \item{jitter}{logical. Whether grid randomization should be applied to units with low grid counts.}
 
@@ -48,7 +48,7 @@ important for assessing the IUCN Red List of Ecosystems Criteria B.
 \examples{
 m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
 r1 <- terra::rast(m, crs = "EPSG:32755")
-AOO_grid <- makeAOOGrid(r1, grid.size = 3)
+AOO_grid <- makeAOOGrid(r1, cell_size = 3)
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

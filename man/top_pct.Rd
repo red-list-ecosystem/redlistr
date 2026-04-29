@@ -17,7 +17,7 @@ a numeric vector indicating the indeces of the elements to keep.
 \description{
 \code{top_pct} returns the vector positions of the largest elements
 collectively comprising a given percentage more of the vector sum. This function
-helps perform the bottom.1pct.rule when selecting the AOO grid by
+helps perform the bottom_1pct_rule when selecting the AOO grid by
 identifying grid positions to keep.
 }
 \references{
