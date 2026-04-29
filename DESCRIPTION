@@ -32,9 +32,10 @@ Imports:
     ggplot2,
     rlang,
     scales,
-    units, 
-    stringr, 
-    mgcv
+    units,
+    stringr,
+    mgcv,
+    leaflet
 Suggests:
     devtools,
     knitr,
