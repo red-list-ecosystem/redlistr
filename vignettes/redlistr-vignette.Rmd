@@ -300,7 +300,7 @@ grid is used, as a random grid search is unlikely to yield results near
 the IUCN Criteria thresholds.
 
 ```{r Creating AOO grid, fig.width=7, fig.height=7, eval = TRUE, fig.alt='Area of occupancy of 2017 mangrove distribution map'}
-AOO.grid <- getAOO(mangrove.2017, grid.size = 10000)
+AOO.grid <- getAOO(mangrove.2017, cell_size = 10000)
 
 # summary
 summary(AOO.grid)
@@ -334,7 +334,7 @@ jplot(AOO.grid)
 hist(AOO.grid@AOOvals)
 
 # increase the number of iterations, if desired
-AOO.grid <- getAOO(mangrove.2017, grid.size = 10000, n_jitter = 150)
+AOO.grid <- getAOO(mangrove.2017, cell_size = 10000, n_jitter = 150)
 ```
 
 #### One percent rule
@@ -348,7 +348,7 @@ prevents tiny, far-flung fragments of an ecosystem from inflating the
 AOO.
 
 This option is set per default but can be turned off using the argument,
-`bottom.1pct.rule = FALSE`, or the percentage changed using the
+`bottom_1pct_rule = FALSE`, or the percentage changed using the
 `percent` argument. For assessments involving species, for instance,
 this option should be turned off.
 
@@ -356,10 +356,10 @@ Here, we demonstrate the differences between including or not including
 the one percent rule and changing the percent parameter:
 
 ```{r One percent grid, fig.width=14, fig.height=5, eval = TRUE, fig.alt='Testing options of AOO metric for 2017 mangrove distribution map'}
-AOO.grid.keep.all <- getAOO(mangrove.2017, grid.size = 10000, 
-                            bottom.1pct.rule = F, n_jitter = 150)
-AOO.grid.5.pct <- getAOO(mangrove.2017, grid.size = 10000, 
-                         bottom.1pct.rule = T, n_jitter = 150, percent = 5)
+AOO.grid.keep.all <- getAOO(mangrove.2017, cell_size = 10000, 
+                            bottom_1pct_rule = F, n_jitter = 150)
+AOO.grid.5.pct <- getAOO(mangrove.2017, cell_size = 10000, 
+                         bottom_1pct_rule = T, n_jitter = 150, percent = 5)
 par(mfrow = c(1,3))
 plot(AOO.grid.keep.all, main = "Keep all")
 plot(AOO.grid, main = "Remove bottom 1% (default)")
@@ -374,7 +374,7 @@ par(mfrow = c(1,1))
 We have demonstrated in this vignette a typical workflow for assessing
 an example ecosystem under the RLE. The methods outlined here can easily
 be adapted for the Red List of Threatened Species as well, with slight
-adjustments in the parameters (specifically the grid.size parameter for
+adjustments in the parameters (specifically the cell_size parameter for
 `getAOO` or `gridUncertainty`). We hope that with this package, we help
 ensure a consistent implementation for both red lists criteria,
 minimising any misclassification as a result of using different software
