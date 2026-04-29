@@ -7,10 +7,13 @@
 bundle(input_data, names_from = NA, ...)
 }
 \arguments{
-\item{input_data}{Spatial object (sf or SpatRaster) of an ecosystem or species distribution.
+\item{input_data}{Spatial object of an ecosystem or species distribution.
 Please use a CRS with units measured in metres.}
 
-\item{names_from}{the name of the column containing ecosystem labels}
+\item{names_from}{name of the column containing ecosystem names.
+If missing all features will be analysed together. Only needed for vector data.}
+
+\item{...}{Additional graphical parameters passed to getAOO().}
 }
 \value{
 a data.frame containing AOO and EOO information for all input units as rows.

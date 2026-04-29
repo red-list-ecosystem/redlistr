@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{x}{an AOOgrid object}
+
+\item{...}{Additional graphical parameters passed to \code{\link[graphics]{hist}}.}
 }
 \description{
 hist method for AOOgrid objects

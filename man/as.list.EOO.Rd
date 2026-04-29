@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{x}{an EOO object}
+
+\item{...}{additional arguments}
 }
 \description{
 as.list method for EOO object

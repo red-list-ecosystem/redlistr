@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{x}{an AOOgrid object}
+
+\item{...}{additional arguments}
 }
 \description{
 as.list method for AOOgrid object

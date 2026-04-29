@@ -10,6 +10,8 @@ A class to represent an AOO grid object
 \section{Slots}{
 
 \describe{
+\item{\code{name}}{the name of the assessment unit}
+
 \item{\code{grid}}{an AOO grid as a shapefile}
 
 \item{\code{AOO}}{the number of grid squares in grid}

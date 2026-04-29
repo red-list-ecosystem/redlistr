@@ -4,14 +4,12 @@
 \alias{plot,AOOgrid,ANY-method}
 \title{AOOgrid plot}
 \usage{
-\S4method{plot}{AOOgrid,ANY}(x, title = x@name, ...)
+\S4method{plot}{AOOgrid,ANY}(x, title = x@name)
 }
 \arguments{
 \item{x}{an AOOgrid object}
 
-\item{...}{Additional graphical parameters passed to \code{\link[graphics]{plot}}.}
-
-\item{y}{Ignored. Included for consistency with the \code{plot} generic.}
+\item{title}{plot title, defaults to the assessment unit name.}
 }
 \description{
 plot method for AOOgrid object
