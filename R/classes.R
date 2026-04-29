@@ -94,6 +94,40 @@ methods::setMethod(
   }
 )
 
+#' AOOgrid as.list
+#'
+#' as.list method for AOOgrid object
+#'
+#' @param x an AOOgrid object
+#' @export
+#' @method as.list AOOgrid
+
+as.list.AOOgrid <- function(x, ...) {
+
+  # extract CRS safely
+  crs_val <- NA_character_
+  if (!is.null(x@grid)) {
+    crs_obj <- try(sf::st_crs(x@grid), silent = TRUE)
+    if (!inherits(crs_obj, "try-error") && !is.null(crs_obj)) {
+      if(!is.null(crs_obj$input)) crs_val <- crs_obj$input else crs_val <- as.character(crs_obj$epsg)
+    }
+  }
+
+  list(
+    name        = x@name,
+    AOO         = x@AOO,
+    area_km2    = (x@params$cellsize^2 * x@AOO) / 1000000,
+    crs_grid         = crs_val,
+    cellsize    = x@params$cellsize,
+    jitter      = x@params$jitter,
+    n_jitter    = x@params$n,
+    pctrule     = x@pctrule,
+    percent     = x@params$pct,
+    input_class = paste(class(x@input), collapse = ",")
+  )
+}
+
+
 #' AOOgrid plot
 #'
 #' plot method for AOOgrid object
@@ -240,6 +274,34 @@ methods::setMethod("summary", "EOO", function(object) {
   }
   invisible(object)
 })
+
+#' EOO as.list
+#'
+#' as.list method for EOO object
+#'
+#' @param x an EOO object
+#' @export
+#' @method as.list EOO
+
+as.list.EOO <- function(x, ...) {
+
+  # extract CRS safely
+  crs_val <- NA_character_
+  if (!is.null(x@pol)) {
+    crs_obj <- try(sf::st_crs(x@pol), silent = TRUE)
+    if (!inherits(crs_obj, "try-error") && !is.null(crs_obj)) {
+      if(!is.null(crs_obj$input)) crs_val <- crs_obj$input else crs_val <- as.character(crs_obj$epsg)
+    }
+  }
+
+  list(
+    name        = x@name,
+    EOO         = x@EOO,
+    unit        = x@unit,
+    crs_polygon = crs_val,
+    input_class = paste(class(x@input), collapse = ",")
+  )
+}
 
 #' EOO plot
 #'
