@@ -111,7 +111,7 @@ as the ecosystem of interest is multiplied by the area of each pixel,
 giving the area of the ecosystem distribution. The area calculated is
 provided in square kilometres.
 
-```{r Calculate area of rasters}
+```{r Calculate area of rasters, eval = F}
 a.2000 <- getArea(mangrove.2000)
 a.2000
 a.2017 <- getArea(mangrove.2017)
@@ -127,7 +127,7 @@ The `getArea` function is capable of processing rasters with multiple
 ecosystems and layers. For example you can also calculate areas for both
 layers at once by combining them into a raster stack:
 
-```{r Calculate area of multiple rasters}
+```{r Calculate area of multiple rasters, eval = F}
 a <- getArea(c(mangrove.2000, mangrove.2017))
 ```
 
