@@ -275,7 +275,7 @@ summary(best_EOO)
     ## unnamed ecosystem type : EOO object
     ## ----------------------------
     ##  EOO area: 1,566.704 square kms
-    ##  CRS: NA 
+    ##  CRS: EPSG:3112 
     ##  Input data class: sf
     ##  Input feature count: 825
     ## ----------------------------
@@ -299,7 +299,7 @@ projected_points |>
     ## unnamed ecosystem type : EOO object
     ## ----------------------------
     ##  EOO area: 1,414.607 square kms
-    ##  CRS: NA 
+    ##  CRS: EPSG:3112 
     ##  Input data class: sf
     ##  Input feature count: 704
     ## ----------------------------

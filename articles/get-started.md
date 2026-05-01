@@ -60,7 +60,7 @@ summary(ecosystem_EOO)
     ## example_distribution_2000_value_1 : EOO object
     ## ----------------------------
     ##  EOO area: 528.9541 square kms
-    ##  CRS: NA 
+    ##  CRS: WGS 84 / UTM zone 55S 
     ##  Input data class: SpatRaster
     ##  Input raster layers: 1
     ##  Raster dimensions: ext(339000, 372510, 5744990, 5774000)
