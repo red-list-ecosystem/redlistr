@@ -7,12 +7,12 @@ with defined summary and plot functions available.
 ## Usage
 
 ``` r
-getEOO(input.data, names_from = NA)
+getEOO(input_data, names_from = NA)
 ```
 
 ## Arguments
 
-- input.data:
+- input_data:
 
   Spatial object of an ecosystem or species distribution. Please use a
   CRS with units measured in metres.
@@ -25,7 +25,7 @@ getEOO(input.data, names_from = NA)
 ## Value
 
 An object of type EOO or a list of EOO objects that store the EOO
-polygon, its area, and its input.data
+polygon, its area, and its input_data
 
 ## See also
 
@@ -41,7 +41,11 @@ Nicholas Murray <murr.nick@gmail.com>, Calvin Lee
 ## Examples
 
 ``` r
-m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r1 <- terra::rast(m, crs = "EPSG:32755")
-EOO <- getEOO(r1)
+if (requireNamespace("terra", quietly = TRUE)) {
+  ok <- try({
+    m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+     r1 <- terra::rast(m, crs = "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs")
+    EOO <- getEOO(r1)
+  }, silent = TRUE)
+}
 ```

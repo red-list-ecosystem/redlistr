@@ -124,9 +124,10 @@ and functions of the <code>terra</code> package can be found <a href="https://rs
 <div class="section level3">
 <h3 id="alternative-formats">Alternative formats<a class="anchor" aria-label="anchor" href="#alternative-formats"></a>
 </h3>
-<p>See vignette <a href="redlistr-raster-vector.html">Ecosystem
-distribution data in raster and vector format</a> for instruction on how
-to read ecosystem distribution data in other formats.</p>
+<p>Polygon or any shapefile data may be read in using sf::st_read() and
+point data in table format can be read in using read.csv() followed by
+sf::st_as_sf() to convert points into a spatial object. See function
+documentation in the sf package for more detailed instructions.</p>
 </div>
 <div class="section level3">
 <h3 id="plotting-out-data">Plotting out data<a class="anchor" aria-label="anchor" href="#plotting-out-data"></a>
@@ -178,14 +179,9 @@ giving the area of the ecosystem distribution. The area calculated is
 provided in square kilometres.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">a.2000</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getArea.html">getArea</a></span><span class="op">(</span><span class="va">mangrove.2000</span><span class="op">)</span></span>
-<span><span class="va">a.2000</span></span></code></pre></div>
-<pre><code><span><span class="co">##                       layer value     area</span></span>
-<span><span class="co">## 1 example_distribution_2000     1 13.65908</span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">a.2017</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getArea.html">getArea</a></span><span class="op">(</span><span class="va">mangrove.2017</span><span class="op">)</span></span>
+<span><span class="va">a.2000</span></span>
+<span><span class="va">a.2017</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getArea.html">getArea</a></span><span class="op">(</span><span class="va">mangrove.2017</span><span class="op">)</span></span>
 <span><span class="va">a.2017</span></span></code></pre></div>
-<pre><code><span><span class="co">##                       layer value     area</span></span>
-<span><span class="co">## 1 example_distribution_2017     1 12.33667</span></span></code></pre>
 <p>The results: at time 1 (2000), the ecosystem was 13.6590844 km2, and
 at time 2, (2017) the ecosystem was 12.3366736 km2.</p>
 <div class="section level3">
@@ -194,11 +190,8 @@ at time 2, (2017) the ecosystem was 12.3366736 km2.</p>
 <p>The <code>getArea</code> function is capable of processing rasters
 with multiple ecosystems and layers. For example you can also calculate
 areas for both layers at once by combining them into a raster stack:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getArea.html">getArea</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">mangrove.2000</span>, <span class="va">mangrove.2017</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>See vignette <a href="scaling-up-assessments.html">Scaling up Red
-List of Ecosystem assessments</a> for instruction on how to work with
-multiple ecosystem maps.</p>
 </div>
 </div>
 <div class="section level2">
@@ -230,7 +223,7 @@ data frame and polygon inputs, the column name with unique ecosystem
 labels must be included in the function call. If the column name is
 different in the two inputs, both names must be provided in the same
 order as the input datasets.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># input rasters</span></span>
 <span><span class="va">area.change</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAreaChange.html">getAreaChange</a></span><span class="op">(</span><span class="va">mangrove.2000</span>, <span class="va">mangrove.2017</span><span class="op">)</span></span>
 <span></span>
@@ -259,7 +252,7 @@ determine the instantaneous rate of change (<a href="https://www.sciencedirect.c
 2003</a>).</p>
 <p>To estimate the rate of changing using these methods, we use the
 <code>getDeclineStats</code> function.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">decline.stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDeclineStats.html">getDeclineStats</a></span><span class="op">(</span><span class="va">a.2000</span><span class="op">$</span><span class="va">area</span>, <span class="va">a.2017</span><span class="op">$</span><span class="va">area</span>, <span class="fl">2000</span>, <span class="fl">2017</span>, </span>
 <span>                                 methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ARD'</span>, <span class="st">'PRD'</span>, <span class="st">'ARC'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">decline.stats</span></span></code></pre></div>
@@ -271,7 +264,7 @@ refer to the IUCN Red List of Ecosystems guidelines (<a href="https://doi.org/10
 <p>Now, it is possible to extrapolate, using only two estimates of an
 ecosystems’ area, to the full 50 year period required for a Red List of
 Ecosystems assessment.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extrapolated.area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/futureAreaEstimate.html">futureAreaEstimate</a></span><span class="op">(</span><span class="va">a.2000</span><span class="op">$</span><span class="va">area</span>, year.t1 <span class="op">=</span> <span class="fl">2000</span>, </span>
 <span>                                        ARD <span class="op">=</span> <span class="va">decline.stats</span><span class="op">$</span><span class="va">ARD</span>, </span>
 <span>                                        PRD <span class="op">=</span> <span class="va">decline.stats</span><span class="op">$</span><span class="va">PRD</span>, </span>
@@ -280,7 +273,7 @@ Ecosystems assessment.</p>
 <pre><code><span><span class="co">## Warning in futureAreaEstimate(a.2000$area, year.t1 = 2000, ARD = decline.stats$ARD, : 'futureAreaEstimate' is deprecated.</span></span>
 <span><span class="co">## Use 'extrapolateEstimate' instead.</span></span>
 <span><span class="co">## See help("Deprecated") and help("redlistr-deprecated").</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extrapolated.area</span></span></code></pre></div>
 <pre><code><span><span class="co">##   forecast.year A.ARD.t3 A.PRD.t3 A.ARC.t3</span></span>
 <span><span class="co">## 1          2050 9.769641 10.12401 10.12401</span></span></code></pre>
@@ -298,7 +291,7 @@ information.</p>
 <p>If we were to use the Proportional Rate of Decline (PRD) for our
 example assessment, our results here will be suitable for criterion A2b
 (Any 50 year period), and the percent loss of area is:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predicted.percent.loss</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">extrapolated.area</span><span class="op">$</span><span class="va">A.PRD.t3</span> <span class="op">-</span> <span class="va">a.2000</span><span class="op">$</span><span class="va">area</span><span class="op">)</span><span class="op">/</span><span class="va">a.2000</span><span class="op">$</span><span class="va">area</span> <span class="op">*</span> <span class="fl">100</span></span>
 <span><span class="va">predicted.percent.loss</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] -25.88078</span></span></code></pre>
@@ -327,32 +320,25 @@ the guidelines (<a href="https://doi.org/10.2305/CJDF9122" class="external-link"
 </h3>
 <p>For subcriterion B1, we will need to calculate the extent of
 occurrence (EOO) of our data. We begin by creating the minimum convex
-polygon enclosing all occurrences of our focal ecosystem. There are some
-handy summary functions for the EOO object that is returned.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">EOO.polygon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getEOO.html">getEOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">EOO.polygon</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Summary of EOO object</span></span>
-<span><span class="co">## ----------------------------</span></span>
-<span><span class="co">## EOO area: 610.2436 square kms</span></span>
-<span><span class="co">## Polygon geometry type(s): POLYGON</span></span>
-<span><span class="co">## Number of polygon features: 1</span></span>
-<span><span class="co">## Input data class: SpatRaster</span></span>
-<span><span class="co">## Input raster layers: 1</span></span>
-<span><span class="co">## Raster dimensions: ext(339000, 372510, 5744990, 5774000)</span></span></code></pre>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">EOO.polygon</span><span class="op">)</span></span></code></pre></div>
-<p><img src="redlistr-vignette_files/figure-html/Make%20and%20view%20EOO-1.png" class="r-plt" alt="Extent of occurrence of 2017 mangrove distribution map" width="672"></p>
-<p>We can then extract the area of the EOO polygon, if needed.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">EOO.area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAreaEOO.html">getAreaEOO</a></span><span class="op">(</span><span class="va">EOO.polygon</span><span class="op">)</span></span>
+polygon enclosing all occurrences of our focal ecosystem.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">EOO.polygon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getEOO.html">getEOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span><span class="op">)</span></span></code></pre></div>
+<p>There are some handy summary functions for the EOO object that is
+returned. We can also extract the area of the EOO polygon.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#summarise and plot</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">EOO.polygon</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">EOO.polygon</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#area</span></span>
+<span><span class="va">EOO.area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAreaEOO.html">getAreaEOO</a></span><span class="op">(</span><span class="va">EOO.polygon</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#or, alternately, extract the EOO directly from the object. </span></span>
-<span><span class="va">EOO.area</span> <span class="op">&lt;-</span> <span class="va">EOO.polygon</span><span class="op">@</span><span class="va">EOO</span></span></code></pre></div>
-<p>The calculated EOO area for this subset of mangroves in Victoria is
-610.2435583 km2. This result can then be combined with additional
-information required under B1(a-c) to assess the ecosystem under
-subcriteria B1.</p>
+<span><span class="va">EOO.area</span> <span class="op">&lt;-</span> <span class="va">EOO.polygon</span><span class="op">@</span><span class="va">EOO</span></span>
+<span></span>
+<span><span class="va">EOO.area</span></span></code></pre></div>
+<p>This result can then be combined with additional information required
+under B1(a-c) to assess the ecosystem under subcriteria B1.</p>
 </div>
 <div class="section level3">
 <h3 id="subcriterion-b2-calculating-aoo">Subcriterion B2 (calculating AOO)<a class="anchor" aria-label="anchor" href="#subcriterion-b2-calculating-aoo"></a>
@@ -360,63 +346,47 @@ subcriteria B1.</p>
 <p>For subcriterion B2, we will need to calculate the number of 10x10 km
 grid cells occupied by our distribution. The <code><a href="../reference/getAOO.html">getAOO()</a></code>
 function uses a random grid search to find the optimal grid with the
-fewest cells. For ecosystems that are contained in more than 60 grid
+fewest cells. For ecosystems that are contained in more than 100 grid
 cells, the default grid is used, as a random grid search is unlikely to
 yield results near the IUCN Criteria thresholds.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">AOO.grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, grid.size <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Initialising grids</span></span></code></pre>
-<pre><code><span><span class="co">## Assembling initial grids</span></span></code></pre>
-<pre><code><span><span class="co">## Running jitter on units with 100 or fewer cells</span></span></code></pre>
-<pre><code><span><span class="co">## value_1</span></span></code></pre>
-<pre><code><span><span class="co">## jittering n =  35</span></span></code></pre>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">AOO.grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, cell_size <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span></code></pre></div>
+<p>Once more, the output object has some handy summary functions
+defined:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># summary</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">AOO.grid</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Class: AOO_grid</span></span>
-<span><span class="co">## Number of grid cells: 7 </span></span>
-<span><span class="co">## Grid extent:</span></span>
-<span><span class="co">##      xmin      ymin      xmax      ymax </span></span>
-<span><span class="co">##  340007.6 5741562.1  373517.6 5770572.1 </span></span>
-<span><span class="co">## CRS: WGS 84 / UTM zone 55S </span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## function call parameters:</span></span>
-<span><span class="co">## grid size:  10000 </span></span>
-<span><span class="co">## jitter:  TRUE </span></span>
-<span><span class="co">## n_jitter:  35</span></span></code></pre>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># handy plotting function</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">AOO.grid</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># handy plotting function</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">AOO.grid</span><span class="op">)</span></span></code></pre></div>
-<p><img src="redlistr-vignette_files/figure-html/Creating%20AOO%20grid-1.png" class="r-plt" alt="Area of occupancy of 2017 mangrove distribution map" width="672"></p>
-<p>Both the <code>getEOO</code> and <code>getAOO</code> functions work
-on polygons too. See vignette <a href="redlistr-raster-vector.html">Ecosystem distribution data in raster
-and vector format</a> for instruction on how to read ecosystem
-distribution data in other formats.</p>
+<p>Both the <code><a href="../reference/getEOO.html">getEOO()</a></code> and <code><a href="../reference/getAOO.html">getAOO()</a></code> functions
+work on polygons too.</p>
 <p>We can run some diagnostics to ensure we have the best grid. The
 jitter-plot (jplot) shows how the number of cells decreased as the
 random search iterations increased. The plot should fall to the minimum
 number early and stay flat. You can also plot a histogram of the AOO
 values generated with the random grid search iterations, and this should
 look like a bell curve in most cases, unless the number of grid cells is
-very low. If these plots look unconvincing, you can increase the number
-of iterations with the argument <code>n_jitter</code> directly in the
-<code><a href="../reference/getAOO.html">getAOO()</a></code> function.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+very low.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># jplot</span></span>
-<span><span class="fu"><a href="../reference/jplot.html">jplot</a></span><span class="op">(</span><span class="va">AOO.grid</span><span class="op">)</span></span></code></pre></div>
-<p><img src="redlistr-vignette_files/figure-html/Getting%20number%20of%20AOO%20grids-1.png" class="r-plt" alt="histogram of values generated with the jitter function" width="700"></p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># histogram of values generated with each rep</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">AOO.grid</span><span class="op">@</span><span class="va">AOOvals</span><span class="op">)</span></span></code></pre></div>
-<p><img src="redlistr-vignette_files/figure-html/Getting%20number%20of%20AOO%20grids-2.png" class="r-plt" alt="histogram of values generated with the jitter function" width="700"></p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<span><span class="fu"><a href="../reference/jplot.html">jplot</a></span><span class="op">(</span><span class="va">AOO.grid</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># histogram of values generated with each rep</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">AOO.grid</span><span class="op">)</span></span></code></pre></div>
+<p>If these plots look unconvincing, you can increase the number of
+iterations with the argument <code>n_jitter</code> directly in the
+<code><a href="../reference/getAOO.html">getAOO()</a></code> function.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># increase the number of iterations, if desired</span></span>
-<span><span class="va">AOO.grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, grid.size <span class="op">=</span> <span class="fl">10000</span>, n_jitter <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Initialising grids</span></span></code></pre>
-<pre><code><span><span class="co">## Assembling initial grids</span></span></code></pre>
-<pre><code><span><span class="co">## Running jitter on units with 100 or fewer cells</span></span></code></pre>
-<pre><code><span><span class="co">## value_1</span></span></code></pre>
-<pre><code><span><span class="co">## jittering n =  150</span></span></code></pre>
+<span><span class="va">AOO.grid_n150</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, cell_size <span class="op">=</span> <span class="fl">10000</span>, n_jitter <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># You can rerun diagnostics here to check for improvement</span></span>
+<span><span class="co"># jplot</span></span>
+<span><span class="fu"><a href="../reference/jplot.html">jplot</a></span><span class="op">(</span><span class="va">AOO.grid_n150</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># histogram of AOO values generated with iterations</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">AOO.grid_n150</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="one-percent-rule">One percent rule<a class="anchor" aria-label="anchor" href="#one-percent-rule"></a>
 </h4>
@@ -427,35 +397,23 @@ the AOO calculation if their contribution to risk spreading is
 negligible. This prevents tiny, far-flung fragments of an ecosystem from
 inflating the AOO.</p>
 <p>This option is set per default but can be turned off using the
-argument, <code>bottom.1pct.rule = FALSE</code>, or the percentage
+argument, <code>bottom_1pct_rule = FALSE</code>, or the percentage
 changed using the <code>percent</code> argument. For assessments
 involving species, for instance, this option should be turned off.</p>
 <p>Here, we demonstrate the differences between including or not
 including the one percent rule and changing the percent parameter:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">AOO.grid.keep.all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, grid.size <span class="op">=</span> <span class="fl">10000</span>, </span>
-<span>                            bottom.1pct.rule <span class="op">=</span> <span class="cn">F</span>, n_jitter <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Initialising grids</span></span></code></pre>
-<pre><code><span><span class="co">## Assembling initial grids</span></span></code></pre>
-<pre><code><span><span class="co">## Running jitter on units with 100 or fewer cells</span></span></code></pre>
-<pre><code><span><span class="co">## value_1</span></span></code></pre>
-<pre><code><span><span class="co">## jittering n =  150</span></span></code></pre>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">AOO.grid.5.pct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, grid.size <span class="op">=</span> <span class="fl">10000</span>, </span>
-<span>                         bottom.1pct.rule <span class="op">=</span> <span class="cn">T</span>, n_jitter <span class="op">=</span> <span class="fl">150</span>, percent <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Initialising grids</span></span></code></pre>
-<pre><code><span><span class="co">## Assembling initial grids</span></span></code></pre>
-<pre><code><span><span class="co">## Running jitter on units with 100 or fewer cells</span></span></code></pre>
-<pre><code><span><span class="co">## value_1</span></span></code></pre>
-<pre><code><span><span class="co">## jittering n =  150</span></span></code></pre>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">AOO.grid.keep.all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, cell_size <span class="op">=</span> <span class="fl">10000</span>, </span>
+<span>                            bottom_1pct_rule <span class="op">=</span> <span class="cn">F</span>, n_jitter <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span>
+<span><span class="va">AOO.grid.5.pct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, cell_size <span class="op">=</span> <span class="fl">10000</span>, </span>
+<span>                         bottom_1pct_rule <span class="op">=</span> <span class="cn">T</span>, n_jitter <span class="op">=</span> <span class="fl">150</span>, percent <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<p>Let’s compare the results:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">AOO.grid.keep.all</span>, main <span class="op">=</span> <span class="st">"Keep all"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">AOO.grid</span>, main <span class="op">=</span> <span class="st">"Remove bottom 1% (default)"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">AOO.grid.5.pct</span>, main <span class="op">=</span> <span class="st">"Remove bottom 5%"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="redlistr-vignette_files/figure-html/One%20percent%20grid-1.png" class="r-plt" alt="Testing options of AOO metric for 2017 mangrove distribution map" width="1344"></p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">AOO.grid.keep.all</span>, title <span class="op">=</span> <span class="st">"Keep all"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">AOO.grid_n150</span>, title <span class="op">=</span> <span class="st">"Remove bottom 1% (default)"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">AOO.grid.5.pct</span>, title <span class="op">=</span> <span class="st">"Remove bottom 5%"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -465,7 +423,7 @@ including the one percent rule and changing the percent parameter:</p>
 <p>We have demonstrated in this vignette a typical workflow for
 assessing an example ecosystem under the RLE. The methods outlined here
 can easily be adapted for the Red List of Threatened Species as well,
-with slight adjustments in the parameters (specifically the grid.size
+with slight adjustments in the parameters (specifically the cell_size
 parameter for <code>getAOO</code> or <code>gridUncertainty</code>). We
 hope that with this package, we help ensure a consistent implementation
 for both red lists criteria, minimising any misclassification as a

@@ -2,7 +2,7 @@
 
 `top_pct` returns the vector positions of the largest elements
 collectively comprising a given percentage more of the vector sum. This
-function helps perform the bottom.1pct.rule when selecting the AOO grid
+function helps perform the bottom_1pct_rule when selecting the AOO grid
 by identifying grid positions to keep.
 
 ## Usage
@@ -27,12 +27,12 @@ a numeric vector indicating the indeces of the elements to keep.
 
 ## References
 
-IUCN 2024. Guidelines for the application of IUCN Red List of Ecosystems
-Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, J.R.,
-Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
-E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B.,
-Valderrábano, M. & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
-<https://doi.org/10.2305/CJDF9122>
+IUCN (2024). Guidelines for the application of IUCN Red List of
+Ecosystems Categories and Criteria, Version 2.0. Keith, D.A.,
+Ferrer-Paris, J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray,
+N.J., Nicholson, E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng,
+A.B., Valderrábano, M. & Zager, I. (Eds.). Gland, Switzerland: IUCN.
+ix + 94pp. Available at the following web site: <https://iucnrle.org/>
 
 ## See also
 

@@ -4,6 +4,10 @@ A class to represent an EOO convex hull object
 
 ## Slots
 
+- `name`:
+
+  the name of the assessment unit
+
 - `pol`:
 
   an EOO convex hull polygon

@@ -61,10 +61,10 @@ important for assessing the IUCN Red List of Ecosystems Criteria B.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">makeAOOGrid</span><span class="op">(</span></span>
-<span>  <span class="va">input.data</span>,</span>
-<span>  grid.size <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  <span class="va">input_data</span>,</span>
+<span>  cell_size <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  names_from <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  bottom.1pct.rule <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  bottom_1pct_rule <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  percent <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  jitter <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  n_jitter <span class="op">=</span> <span class="fl">35</span></span>
@@ -75,12 +75,12 @@ important for assessing the IUCN Red List of Ecosystems Criteria B.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-input-data">input.data<a class="anchor" aria-label="anchor" href="#arg-input-data"></a></dt>
+<dl><dt id="arg-input-data">input_data<a class="anchor" aria-label="anchor" href="#arg-input-data"></a></dt>
 <dd><p>Spatial object (sf or SpatRaster) of an ecosystem or species distribution.
 Please use a CRS with units measured in metres.</p></dd>
 
 
-<dt id="arg-grid-size">grid.size<a class="anchor" aria-label="anchor" href="#arg-grid-size"></a></dt>
+<dt id="arg-cell-size">cell_size<a class="anchor" aria-label="anchor" href="#arg-cell-size"></a></dt>
 <dd><p>A number specifying the width of the desired grid square (in
 same units as your coordinate reference system)</p></dd>
 
@@ -89,14 +89,14 @@ same units as your coordinate reference system)</p></dd>
 <dd><p>the name of the column containing ecosystem labels</p></dd>
 
 
-<dt id="arg-bottom-pct-rule">bottom.1pct.rule<a class="anchor" aria-label="anchor" href="#arg-bottom-pct-rule"></a></dt>
+<dt id="arg-bottom-pct-rule">bottom_1pct_rule<a class="anchor" aria-label="anchor" href="#arg-bottom-pct-rule"></a></dt>
 <dd><p>Logical. If <code>TRUE</code>, grid cells containing the least
 ecosystem area are dropped up to 1% of the total distribution.</p></dd>
 
 
 <dt id="arg-percent">percent<a class="anchor" aria-label="anchor" href="#arg-percent"></a></dt>
 <dd><p>Numeric. The minimum percent to be applied as a threshold for
-the <code>bottom.1pct.rule</code></p></dd>
+the <code>bottom_1pct_rule</code></p></dd>
 
 
 <dt id="arg-jitter">jitter<a class="anchor" aria-label="anchor" href="#arg-jitter"></a></dt>
@@ -115,12 +115,11 @@ list of these if multiple ecosystems were input.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>IUCN 2024. Guidelines for the application of IUCN Red List of
-Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
-J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
-E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
-&amp; Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
-<a href="https://doi.org/10.2305/CJDF9122" class="external-link">https://doi.org/10.2305/CJDF9122</a></p>
+    <p>Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
+Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+Switzerland: IUCN. ix + 94pp. Available at the following web site:
+<a href="https://iucnrle.org/" class="external-link">https://iucnrle.org/</a></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -138,9 +137,13 @@ E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span>, nrow<span class="op">=</span><span class="fl">25</span>, ncol<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">m</span>, crs <span class="op">=</span> <span class="st">"EPSG:32755"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">AOO_grid</span> <span class="op">&lt;-</span> <span class="fu">makeAOOGrid</span><span class="op">(</span><span class="va">r1</span>, grid.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"terra"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">ok</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span>, nrow<span class="op">=</span><span class="fl">25</span>, ncol<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">m</span>, crs <span class="op">=</span> <span class="st">"+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="va">AOO_grid</span> <span class="op">&lt;-</span> <span class="fu">makeAOOGrid</span><span class="op">(</span><span class="va">r1</span>, cell_size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span>, silent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

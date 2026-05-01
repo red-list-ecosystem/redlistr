@@ -14,6 +14,7 @@ calculation of the spatial metrics. Please ensure that these are already
 installed.
 
 ``` r
+
 library(terra)
 library(redlistr)
 ```
@@ -40,6 +41,7 @@ information about formats and functions of the `terra` package can be
 found [here](https://rspatial.github.io/terra/).
 
 ``` r
+
 mangrove.2000 <- rast(system.file("extdata", "example_distribution_2000.tif", 
                                     package = "redlistr"))
 mangrove.2017 <- rast(system.file("extdata", "example_distribution_2017.tif", 
@@ -48,10 +50,10 @@ mangrove.2017 <- rast(system.file("extdata", "example_distribution_2017.tif",
 
 ### Alternative formats
 
-See vignette [Ecosystem distribution data in raster and vector
-format](http://red-list-ecosystem.github.io/redlistr/articles/redlistr-raster-vector.md)
-for instruction on how to read ecosystem distribution data in other
-formats.
+Polygon or any shapefile data may be read in using sf::st_read() and
+point data in table format can be read in using read.csv() followed by
+sf::st_as_sf() to convert points into a spatial object. See function
+documentation in the sf package for more detailed instructions.
 
 ### Plotting out data
 
@@ -59,6 +61,7 @@ We plot the data to view the two mangrove distributions to get a general
 idea of how the distribution might have changed over time.
 
 ``` r
+
 plot(mangrove.2000, col = "grey30", legend = FALSE, main = "Mangrove Distribution")
 plot(mangrove.2017, add = T, col = "darkorange", legend = FALSE)
 ```
@@ -86,18 +89,21 @@ be measured in metres, and must be consistent between layers you wish to
 compare.
 
 ``` r
+
 is.lonlat(mangrove.2000) 
 ```
 
     ## [1] FALSE
 
 ``` r
+
 is.lonlat(mangrove.2017)
 ```
 
     ## [1] FALSE
 
 ``` r
+
 # If TRUE, they must be transformed to a projected coordinate system
 
 crs(mangrove.2000) == crs(mangrove.2017)
@@ -117,20 +123,12 @@ giving the area of the ecosystem distribution. The area calculated is
 provided in square kilometres.
 
 ``` r
+
 a.2000 <- getArea(mangrove.2000)
 a.2000
-```
-
-    ##                       layer value     area
-    ## 1 example_distribution_2000     1 13.65908
-
-``` r
 a.2017 <- getArea(mangrove.2017)
 a.2017
 ```
-
-    ##                       layer value     area
-    ## 1 example_distribution_2017     1 12.33667
 
 The results: at time 1 (2000), the ecosystem was 13.6590844 km2, and at
 time 2, (2017) the ecosystem was 12.3366736 km2.
@@ -142,12 +140,9 @@ ecosystems and layers. For example you can also calculate areas for both
 layers at once by combining them into a raster stack:
 
 ``` r
+
 a <- getArea(c(mangrove.2000, mangrove.2017))
 ```
-
-See vignette [Scaling up Red List of Ecosystem
-assessments](http://red-list-ecosystem.github.io/redlistr/articles/scaling-up-assessments.md)
-for instruction on how to work with multiple ecosystem maps.
 
 ## 4. Assessing Criterion A
 
@@ -172,7 +167,7 @@ contain multiple ecosystems. It can accept data from `data.frame` such
 as those output by the
 [`getArea()`](http://red-list-ecosystem.github.io/redlistr/reference/getArea.md)
 function, `SpatRaster`, `SpatVector` or `sf` objects with POLYGON
-geometries. Make sure to provide area measure in $km^{2}$ if you are
+geometries. Make sure to provide area measure in $`km^2`$ if you are
 using a data.frame as the input. Note that when providing data frame and
 polygon inputs, the column name with unique ecosystem labels must be
 included in the function call. If the column name is different in the
@@ -180,6 +175,7 @@ two inputs, both names must be provided in the same order as the input
 datasets.
 
 ``` r
+
 # input rasters
 area.change <- getAreaChange(mangrove.2000, mangrove.2017)
 
@@ -216,6 +212,7 @@ To estimate the rate of changing using these methods, we use the
 `getDeclineStats` function.
 
 ``` r
+
 decline.stats <- getDeclineStats(a.2000$area, a.2017$area, 2000, 2017, 
                                  methods = c('ARD', 'PRD', 'ARC'))
 decline.stats
@@ -234,6 +231,7 @@ ecosystems’ area, to the full 50 year period required for a Red List of
 Ecosystems assessment.
 
 ``` r
+
 extrapolated.area <- futureAreaEstimate(a.2000$area, year.t1 = 2000, 
                                         ARD = decline.stats$ARD, 
                                         PRD = decline.stats$PRD, 
@@ -246,6 +244,7 @@ extrapolated.area <- futureAreaEstimate(a.2000$area, year.t1 = 2000,
     ## See help("Deprecated") and help("redlistr-deprecated").
 
 ``` r
+
 extrapolated.area
 ```
 
@@ -270,6 +269,7 @@ assessment, our results here will be suitable for criterion A2b (Any 50
 year period), and the percent loss of area is:
 
 ``` r
+
 predicted.percent.loss <- (extrapolated.area$A.PRD.t3 - a.2000$area)/a.2000$area * 100
 predicted.percent.loss
 ```
@@ -300,43 +300,33 @@ EOO.
 
 For subcriterion B1, we will need to calculate the extent of occurrence
 (EOO) of our data. We begin by creating the minimum convex polygon
-enclosing all occurrences of our focal ecosystem. There are some handy
-summary functions for the EOO object that is returned.
+enclosing all occurrences of our focal ecosystem.
 
 ``` r
+
 EOO.polygon <- getEOO(mangrove.2017)
+```
+
+There are some handy summary functions for the EOO object that is
+returned. We can also extract the area of the EOO polygon.
+
+``` r
+
+#summarise and plot
 summary(EOO.polygon)
-```
-
-    ## Summary of EOO object
-    ## ----------------------------
-    ## EOO area: 610.2436 square kms
-    ## Polygon geometry type(s): POLYGON
-    ## Number of polygon features: 1
-    ## Input data class: SpatRaster
-    ## Input raster layers: 1
-    ## Raster dimensions: ext(339000, 372510, 5744990, 5774000)
-
-``` r
 plot(EOO.polygon)
-```
 
-![Extent of occurrence of 2017 mangrove distribution
-map](redlistr-vignette_files/figure-html/Make%20and%20view%20EOO-1.png)
-
-We can then extract the area of the EOO polygon, if needed.
-
-``` r
+#area
 EOO.area <- getAreaEOO(EOO.polygon)
 
 #or, alternately, extract the EOO directly from the object. 
 EOO.area <- EOO.polygon@EOO
+
+EOO.area
 ```
 
-The calculated EOO area for this subset of mangroves in Victoria is
-610.2435583 km2. This result can then be combined with additional
-information required under B1(a-c) to assess the ecosystem under
-subcriteria B1.
+This result can then be combined with additional information required
+under B1(a-c) to assess the ecosystem under subcriteria B1.
 
 ### Subcriterion B2 (calculating AOO)
 
@@ -344,54 +334,31 @@ For subcriterion B2, we will need to calculate the number of 10x10 km
 grid cells occupied by our distribution. The
 [`getAOO()`](http://red-list-ecosystem.github.io/redlistr/reference/getAOO.md)
 function uses a random grid search to find the optimal grid with the
-fewest cells. For ecosystems that are contained in more than 60 grid
+fewest cells. For ecosystems that are contained in more than 100 grid
 cells, the default grid is used, as a random grid search is unlikely to
 yield results near the IUCN Criteria thresholds.
 
 ``` r
-AOO.grid <- getAOO(mangrove.2017, grid.size = 10000)
+
+AOO.grid <- getAOO(mangrove.2017, cell_size = 10000)
 ```
 
-    ## Initialising grids
-
-    ## Assembling initial grids
-
-    ## Running jitter on units with 100 or fewer cells
-
-    ## value_1
-
-    ## jittering n =  35
+Once more, the output object has some handy summary functions defined:
 
 ``` r
+
 # summary
 summary(AOO.grid)
-```
 
-    ## Class: AOO_grid
-    ## Number of grid cells: 7 
-    ## Grid extent:
-    ##      xmin      ymin      xmax      ymax 
-    ##  340007.6 5741562.1  373517.6 5770572.1 
-    ## CRS: WGS 84 / UTM zone 55S 
-    ## 
-    ## function call parameters:
-    ## grid size:  10000 
-    ## jitter:  TRUE 
-    ## n_jitter:  35
-
-``` r
 # handy plotting function
 plot(AOO.grid)
 ```
 
-![Area of occupancy of 2017 mangrove distribution
-map](redlistr-vignette_files/figure-html/Creating%20AOO%20grid-1.png)
-
-Both the `getEOO` and `getAOO` functions work on polygons too. See
-vignette [Ecosystem distribution data in raster and vector
-format](http://red-list-ecosystem.github.io/redlistr/articles/redlistr-raster-vector.md)
-for instruction on how to read ecosystem distribution data in other
-formats.
+Both the
+[`getEOO()`](http://red-list-ecosystem.github.io/redlistr/reference/getEOO.md)
+and
+[`getAOO()`](http://red-list-ecosystem.github.io/redlistr/reference/getAOO.md)
+functions work on polygons too.
 
 We can run some diagnostics to ensure we have the best grid. The
 jitter-plot (jplot) shows how the number of cells decreased as the
@@ -399,41 +366,34 @@ random search iterations increased. The plot should fall to the minimum
 number early and stay flat. You can also plot a histogram of the AOO
 values generated with the random grid search iterations, and this should
 look like a bell curve in most cases, unless the number of grid cells is
-very low. If these plots look unconvincing, you can increase the number
-of iterations with the argument `n_jitter` directly in the
+very low.
+
+``` r
+
+# jplot
+jplot(AOO.grid)
+
+# histogram of values generated with each rep
+hist(AOO.grid)
+```
+
+If these plots look unconvincing, you can increase the number of
+iterations with the argument `n_jitter` directly in the
 [`getAOO()`](http://red-list-ecosystem.github.io/redlistr/reference/getAOO.md)
 function.
 
 ``` r
-# jplot
-jplot(AOO.grid)
-```
 
-![histogram of values generated with the jitter
-function](redlistr-vignette_files/figure-html/Getting%20number%20of%20AOO%20grids-1.png)
-
-``` r
-# histogram of values generated with each rep
-hist(AOO.grid@AOOvals)
-```
-
-![histogram of values generated with the jitter
-function](redlistr-vignette_files/figure-html/Getting%20number%20of%20AOO%20grids-2.png)
-
-``` r
 # increase the number of iterations, if desired
-AOO.grid <- getAOO(mangrove.2017, grid.size = 10000, n_jitter = 150)
+AOO.grid_n150 <- getAOO(mangrove.2017, cell_size = 10000, n_jitter = 150)
+
+# You can rerun diagnostics here to check for improvement
+# jplot
+jplot(AOO.grid_n150)
+
+# histogram of AOO values generated with iterations
+hist(AOO.grid_n150)
 ```
-
-    ## Initialising grids
-
-    ## Assembling initial grids
-
-    ## Running jitter on units with 100 or fewer cells
-
-    ## value_1
-
-    ## jittering n =  150
 
 #### One percent rule
 
@@ -446,7 +406,7 @@ prevents tiny, far-flung fragments of an ecosystem from inflating the
 AOO.
 
 This option is set per default but can be turned off using the argument,
-`bottom.1pct.rule = FALSE`, or the percentage changed using the
+`bottom_1pct_rule = FALSE`, or the percentage changed using the
 `percent` argument. For assessments involving species, for instance,
 this option should be turned off.
 
@@ -454,46 +414,21 @@ Here, we demonstrate the differences between including or not including
 the one percent rule and changing the percent parameter:
 
 ``` r
-AOO.grid.keep.all <- getAOO(mangrove.2017, grid.size = 10000, 
-                            bottom.1pct.rule = F, n_jitter = 150)
+
+AOO.grid.keep.all <- getAOO(mangrove.2017, cell_size = 10000, 
+                            bottom_1pct_rule = F, n_jitter = 150)
+AOO.grid.5.pct <- getAOO(mangrove.2017, cell_size = 10000, 
+                         bottom_1pct_rule = T, n_jitter = 150, percent = 5)
 ```
 
-    ## Initialising grids
-
-    ## Assembling initial grids
-
-    ## Running jitter on units with 100 or fewer cells
-
-    ## value_1
-
-    ## jittering n =  150
+Let’s compare the results:
 
 ``` r
-AOO.grid.5.pct <- getAOO(mangrove.2017, grid.size = 10000, 
-                         bottom.1pct.rule = T, n_jitter = 150, percent = 5)
-```
 
-    ## Initialising grids
-
-    ## Assembling initial grids
-
-    ## Running jitter on units with 100 or fewer cells
-
-    ## value_1
-
-    ## jittering n =  150
-
-``` r
 par(mfrow = c(1,3))
-plot(AOO.grid.keep.all, main = "Keep all")
-plot(AOO.grid, main = "Remove bottom 1% (default)")
-plot(AOO.grid.5.pct, main = "Remove bottom 5%")
-```
-
-![Testing options of AOO metric for 2017 mangrove distribution
-map](redlistr-vignette_files/figure-html/One%20percent%20grid-1.png)
-
-``` r
+plot(AOO.grid.keep.all, title = "Keep all")
+plot(AOO.grid_n150, title = "Remove bottom 1% (default)")
+plot(AOO.grid.5.pct, title = "Remove bottom 5%")
 par(mfrow = c(1,1))
 ```
 
@@ -502,7 +437,7 @@ par(mfrow = c(1,1))
 We have demonstrated in this vignette a typical workflow for assessing
 an example ecosystem under the RLE. The methods outlined here can easily
 be adapted for the Red List of Threatened Species as well, with slight
-adjustments in the parameters (specifically the grid.size parameter for
+adjustments in the parameters (specifically the cell_size parameter for
 `getAOO` or `gridUncertainty`). We hope that with this package, we help
 ensure a consistent implementation for both red lists criteria,
 minimising any misclassification as a result of using different software

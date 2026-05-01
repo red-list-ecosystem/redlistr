@@ -4,6 +4,10 @@ A class to represent an AOO grid object
 
 ## Slots
 
+- `name`:
+
+  the name of the assessment unit
+
 - `grid`:
 
   an AOO grid as a shapefile

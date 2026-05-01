@@ -9,11 +9,11 @@ Threatened Species](https://www.iucnredlist.org/) (RLTS).
 The package has functions for calculating three metrics that are useful
 for different subcriteria of RLE and RLTS.
 
-| Metrics                    | main `redlistr` function | RLE subcriteria | RLTS subcriteria   |
-|----------------------------|--------------------------|-----------------|--------------------|
-| Declines in distribution   | `getDeclineStats`        | A1, A2, A3      | A1c, A2c, A3c, A4c |
-| Extent of Occurrence (EOO) | `getEOO`                 | B1              | B1                 |
-| Area of Occupancy (AOO)    | `getAOO`                 | B2              | B2, D2             |
+| Metrics | main `redlistr` function | RLE subcriteria | RLTS subcriteria |
+|----|----|----|----|
+| Declines in distribution | `getDeclineStats` | A1, A2, A3 | A1c, A2c, A3c, A4c |
+| Extent of Occurrence (EOO) | `getEOO` | B1 | B1 |
+| Area of Occupancy (AOO) | `getAOO` | B2 | B2, D2 |
 
 ## Input data formats
 
@@ -26,11 +26,11 @@ formats for the input vector and raster data. The spatial data need to
 be read in R using functions from external packages, either `sf` or
 `terra`:
 
-| Data type | Example formats                     | R package                                    | R class    |
-|-----------|-------------------------------------|----------------------------------------------|------------|
-| Vector    | Shapefile, Geopackage, GeoJSON, GDB | [`sf`](https://r-spatial.github.io/sf/)      | `sf`       |
-| Vector    | Shapefile, Geopackage, GeoJSON, GDB | [`terra`](https://rspatial.github.io/terra/) | `SpatVect` |
-| Raster    | GeoTIFF                             | [`terra`](https://rspatial.github.io/terra/) | `SpatRast` |
+| Data type | Example formats | R package | R class |
+|----|----|----|----|
+| Vector | Shapefile, Geopackage, GeoJSON, GDB | [`sf`](https://r-spatial.github.io/sf/) | `sf` |
+| Vector | Shapefile, Geopackage, GeoJSON, GDB | [`terra`](https://rspatial.github.io/terra/) | `SpatVect` |
+| Raster | GeoTIFF | [`terra`](https://rspatial.github.io/terra/) | `SpatRast` |
 
 ## Outputs of the functions
 
@@ -51,19 +51,20 @@ code will create the EOO polygon and print the results of the area in
 square kilometers.
 
 ``` r
+
 ecosystem_map <- rast(raster_file)
 ecosystem_EOO <- getEOO(ecosystem_map)
 summary(ecosystem_EOO)
 ```
 
-    ## Summary of EOO object
+    ## example_distribution_2000_value_1 : EOO object
     ## ----------------------------
-    ## EOO area: 528.9541 square kms
-    ## Polygon geometry type(s): POLYGON
-    ## Number of polygon features: 1
-    ## Input data class: SpatRaster
-    ## Input raster layers: 1
-    ## Raster dimensions: ext(339000, 372510, 5744990, 5774000)
+    ##  EOO area: 528.9541 square kms
+    ##  CRS: NA 
+    ##  Input data class: SpatRaster
+    ##  Input raster layers: 1
+    ##  Raster dimensions: ext(339000, 372510, 5744990, 5774000)
+    ## ----------------------------
 
 Keep in mind that:
 
@@ -85,8 +86,8 @@ assessments for ecosystems and species.
 The examples use different types of input data and focus on different
 subcriteria.
 
-| Example                                                                                                                  | Distribution data                       | Input format                             | Red list subcriteria |
-|--------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|------------------------------------------|----------------------|
-| [Mangroves in Victoria, Australia](http://red-list-ecosystem.github.io/redlistr/articles/articles/redlistr-vignette.md)  | Ecosystem distribution in 2000 and 2017 | Raster: GeoTiff                          | RLE A1, B1 and B2    |
-| [Purple Copper butterfly, Australia](http://red-list-ecosystem.github.io/redlistr/articles/articles/species-vignette.md) | Species occurences                      | Vector (Points) from biodiversity portal | RLTS B1 and B2       |
-| Tropical glaciers, Ecuador (in prep.)                                                                                    | Ecosystem distribution in year 2000     | Vector (Polygons): Geopackage            | RLE B1 and B2        |
+| Example | Distribution data | Input format | Red list subcriteria |
+|----|----|----|----|
+| [Mangroves in Victoria, Australia](http://red-list-ecosystem.github.io/redlistr/articles/articles/redlistr-vignette.md) | Ecosystem distribution in 2000 and 2017 | Raster: GeoTiff | RLE A1, B1 and B2 |
+| [Purple Copper butterfly, Australia](http://red-list-ecosystem.github.io/redlistr/articles/articles/species-vignette.md) | Species occurences | Vector (Points) from biodiversity portal | RLTS B1 and B2 |
+| Tropical glaciers, Ecuador (in prep.) | Ecosystem distribution in year 2000 | Vector (Polygons): Geopackage | RLE B1 and B2 |

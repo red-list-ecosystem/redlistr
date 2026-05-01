@@ -9,12 +9,12 @@ around the centroid.
 ## Usage
 
 ``` r
-makeEOO(input.data, names_from)
+makeEOO(input_data, names_from)
 ```
 
 ## Arguments
 
-- input.data:
+- input_data:
 
   Spatial object of an ecosystem or species distribution. Please use a
   CRS with units measured in metres.
@@ -26,9 +26,9 @@ makeEOO(input.data, names_from)
 
 ## Value
 
-An object of class sf representing the EOO of `input.data`, or a list of
+An object of class sf representing the EOO of `input_data`, or a list of
 sf objects if multiple ecosystems were input. Also inherits its CRS from
-input.data.
+input_data.
 
 ## References
 
@@ -53,7 +53,11 @@ Nicholas Murray <murr.nick@gmail.com>, Calvin Lee
 ## Examples
 
 ``` r
-m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r1 <- terra::rast(m, crs = "EPSG:32755")
-EOO.polygon <- makeEOO(r1)
+if (requireNamespace("terra", quietly = TRUE)) {
+  ok <- try({
+     m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+     r1 <- terra::rast(m, crs = "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs")
+     EOO.polygon <- makeEOO(r1)
+  }, silent = TRUE)
+}
 ```

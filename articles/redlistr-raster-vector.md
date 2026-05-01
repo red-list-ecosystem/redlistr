@@ -19,6 +19,7 @@ functions in packages `terra` and `sf`. Please ensure that these are
 already installed.
 
 ``` r
+
 library(sf)
 library(terra)
 library(redlistr)
@@ -49,6 +50,7 @@ most common formats for raster data, but functions in `terra` package
 should be able to handle many other formats.
 
 ``` r
+
 mangrove.2000 <- rast(system.file("extdata", "example_distribution_2000.tif", 
                                     package = "redlistr"))
 mangrove.2017 <- rast(system.file("extdata", "example_distribution_2017.tif", 
@@ -71,6 +73,7 @@ datasets must be measured in metres, and must be consistent between
 layers you wish to compare.
 
 ``` r
+
 crs(mangrove.2000) 
 ```
 
@@ -88,6 +91,7 @@ simple `plot` function will give us a first preview, and it allows
 superimposing multiple objects in one single plot:
 
 ``` r
+
 plot(mangrove.2000, col = "grey30", legend = FALSE, main = "Mangrove Distribution")
 plot(mangrove.2017, add = T, col = "darkorange", legend = FALSE)
 ```
@@ -111,29 +115,32 @@ giving the area of the ecosystem distribution. The area calculated is
 provided in square kilometres.
 
 ``` r
+
 a.2000 <- getArea(mangrove.2000)
 a.2000
 ```
 
-    ##                       layer value     area
-    ## 1 example_distribution_2000     1 13.65908
+    ##                       layer value    area
+    ## 1 example_distribution_2000     1 13.6557
 
 ``` r
+
 a.2017 <- getArea(mangrove.2017)
 a.2017
 ```
 
-    ##                       layer value     area
-    ## 1 example_distribution_2017     1 12.33667
+    ##                       layer value    area
+    ## 1 example_distribution_2017     1 12.3336
 
 ``` r
+
 # you can also calculate areas for both layers at once by combining them into a raster stack:
 
 a <- getArea(c(mangrove.2000, mangrove.2017))
 ```
 
-The results: at time 1 (2000), the ecosystem was 13.6590844 km2, and at
-time 2, (2017) the ecosystem was 12.3366736 km2.
+The results: at time 1 (2000), the ecosystem was 13.6557 km2, and at
+time 2, (2017) the ecosystem was 12.3336 km2.
 
 ### Rasters with multiple ecosystems or layers
 
@@ -153,6 +160,7 @@ or for smaller rasters, simply filter your output table to the value(s)
 of interest. Here’s an example with a dummy raster.
 
 ``` r
+
 # Load dummy multilayer raster for example
 rstack <- rast(system.file("extdata", "example_raster_stack.tif", 
                                     package = "redlistr"))
@@ -165,27 +173,29 @@ values(r.bin)[values(r.bin) != 1] <- NA
 getArea(r.bin)
 ```
 
-    ##   layer value        area
-    ## 1 time1     1 0.001045442
-    ## 2 time2     1 0.001132977
-    ## 3 time3     1 0.001027537
-    ## 4 time4     1 0.001075284
-    ## 5 time5     1 0.001185697
+    ##   layer value     area
+    ## 1 time1     1 0.001051
+    ## 2 time2     1 0.001139
+    ## 3 time3     1 0.001033
+    ## 4 time4     1 0.001081
+    ## 5 time5     1 0.001192
 
 ``` r
+
 # Alternatively: 
 getArea(rstack) |> 
   dplyr::filter(value == 5)
 ```
 
-    ##   layer value        area
-    ## 1 time1     5 0.001045442
-    ## 2 time2     5 0.001132977
-    ## 3 time3     5 0.001027537
-    ## 4 time4     5 0.001075284
-    ## 5 time5     5 0.001185697
+    ##   layer value     area
+    ## 1 time1     5 0.001051
+    ## 2 time2     5 0.001139
+    ## 3 time3     5 0.001033
+    ## 4 time4     5 0.001081
+    ## 5 time5     5 0.001192
 
 ``` r
+
  # note this alternative is slower for large rasters. 
 ```
 
@@ -195,6 +205,7 @@ function returns a list of `trend` class objects, with one element for
 each ecosystem or raster value in the input data.
 
 ``` r
+
 #input multilayer raster 
 rstack <- rast(system.file("extdata", "example_raster_stack.tif", 
                                     package = "redlistr"))
@@ -206,22 +217,23 @@ Now we can summarise the change for ecosystem 1, this function also
 produces a plot of area over time:
 
 ``` r
+
 summary(area.trend[[1]])
 ```
 
     ## Summary of ecosystem trend
     ## ----------------------------
     ## Net change in area:
-    ##  -2.884665e-05 kms squared
+    ##  -2.9e-05 kms squared
     ## 
     ## Modeled change in area:
-    ##  -3.275366e-05 kms squared
+    ##  -3.292776e-05 kms squared
     ## 
     ## Modeled percent change in area:
-    ##  -4.192726 %
+    ##  -4.192725 %
     ## 
     ## Ecosystem area:
-    ##  0.0007579711 0.0007529976 0.0008524688 0.0007311139 0.0007291245 
+    ##  0.000762 0.000757 0.000857 0.000735 0.000733 
     ## Input data class: SpatRaster
     ## Input raster layers: 5
     ## Raster dimensions: ext(0, 100, 0, 100)
@@ -233,6 +245,7 @@ And we can plot the difference between the two ecosystems over the two
 time points.
 
 ``` r
+
 plot(area.trend[[1]]@diff)
 ```
 
@@ -248,6 +261,7 @@ format you can specify which column contains ecosystem names. If all
 polygons are from one ecosystem, you can leave out this argument.
 
 ``` r
+
 mangrove.2000.poly <- as.polygons(mangrove.2000) |> st_as_sf() 
 #fix crs encoding
 st_crs(mangrove.2000.poly)$wkt <- enc2utf8(st_crs(mangrove.2000.poly)$wkt)
@@ -262,7 +276,7 @@ AOO.poly <- getAOO(mangrove.2000.poly)
 
     ## Running jitter on units with 100 or fewer cells, n = 35
 
-    ## jittering
+    ## jittering  unnamed ecosystem type
 
 ## 4. Working with data in vector format
 
@@ -274,6 +288,7 @@ we can use the
 function.
 
 ``` r
+
 my.shapefile <- st_read('./path/to/folder/shapefile.shp')
 my.KML.file <- st_read('./path/to/folder/kmlfile.kml')
 ```
@@ -293,6 +308,7 @@ empty, for polygon inputs the function will treat all polygons as part
 of a single ecosystem type.
 
 ``` r
+
 # polygon example
 polygons <- st_read(system.file('extdata/', 'example_polygons.shp',
   package = "redlistr"))
@@ -308,6 +324,7 @@ polygons <- st_read(system.file('extdata/', 'example_polygons.shp',
     ## Projected CRS: WGS 84 / UTM zone 56S
 
 ``` r
+
 poly_areas <- getArea(polygons, names_from = "time1")
 ```
 
@@ -324,6 +341,7 @@ the function call. If the column name is different in the two inputs,
 both names must be provided in the same order as the input datasets.
 
 ``` r
+
 # input rasters
 area.change <- getAreaChange(mangrove.2000, mangrove.2017)
 
@@ -347,6 +365,7 @@ polygonsT5 <- st_read(system.file('extdata/', 'example_polygons_t5.shp',
     ## Projected CRS: WGS 84 / UTM zone 56S
 
 ``` r
+
 area.change <- getAreaChange(polygons, polygonsT5, 
   names_from_x = "time1", 
   names_from_y = "time5")

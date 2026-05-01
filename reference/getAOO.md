@@ -10,10 +10,10 @@ important for assessing the IUCN Red List of Ecosystems Criteria B.
 
 ``` r
 getAOO(
-  input.data,
-  grid.size = 10000,
+  input_data,
+  cell_size = 10000,
   names_from = NA,
-  bottom.1pct.rule = TRUE,
+  bottom_1pct_rule = TRUE,
   percent = 1,
   jitter = TRUE,
   n_jitter = 35
@@ -22,12 +22,12 @@ getAOO(
 
 ## Arguments
 
-- input.data:
+- input_data:
 
   Spatial object (sf or SpatRaster) of an ecosystem or species
   distribution. Please use a CRS with units measured in metres.
 
-- grid.size:
+- cell_size:
 
   A number specifying the width of the desired grid square (in same
   units as your coordinate reference system)
@@ -36,7 +36,7 @@ getAOO(
 
   the name of the column containing ecosystem labels
 
-- bottom.1pct.rule:
+- bottom_1pct_rule:
 
   Logical. If `TRUE`, grid cells containing the least ecosystem area are
   dropped up to 1% of the total distribution.
@@ -44,7 +44,7 @@ getAOO(
 - percent:
 
   Numeric. The minimum percent to be applied as a threshold for the
-  `bottom.1pct.rule`
+  `bottom_1pct_rule`
 
 - jitter:
 
@@ -64,12 +64,11 @@ jittered grid with n specified by n_jitter
 
 ## References
 
-IUCN 2024. Guidelines for the application of IUCN Red List of Ecosystems
-Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, J.R.,
-Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
-E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B.,
-Valderrábano, M. & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
-<https://doi.org/10.2305/CJDF9122>
+Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and Rodriguez, J.P.
+(eds.) 2016. Guidelines for the application of IUCN Red List of
+Ecosystems Categories and Criteria, Version 1.0. Gland, Switzerland:
+IUCN. ix + 94pp. Available at the following web site:
+<https://iucnrle.org/>
 
 ## See also
 

@@ -68,6 +68,7 @@ offers for collaborative development.
 You can install the development version from GitHub.
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("red-list-ecosystem/redlistr")
 ```
@@ -76,6 +77,7 @@ An older version of `redlistr` is available on CRAN (v 1.0.4). The plan
 is to release the new version in CRAN during 2026.
 
 ``` r
+
 install.packages("redlistr")
 ```
 

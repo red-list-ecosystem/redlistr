@@ -181,19 +181,19 @@ provided in square kilometres.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">a.2000</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getArea.html">getArea</a></span><span class="op">(</span><span class="va">mangrove.2000</span><span class="op">)</span></span>
 <span><span class="va">a.2000</span></span></code></pre></div>
-<pre><code><span><span class="co">##                       layer value     area</span></span>
-<span><span class="co">## 1 example_distribution_2000     1 13.65908</span></span></code></pre>
+<pre><code><span><span class="co">##                       layer value    area</span></span>
+<span><span class="co">## 1 example_distribution_2000     1 13.6557</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">a.2017</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getArea.html">getArea</a></span><span class="op">(</span><span class="va">mangrove.2017</span><span class="op">)</span></span>
 <span><span class="va">a.2017</span></span></code></pre></div>
-<pre><code><span><span class="co">##                       layer value     area</span></span>
-<span><span class="co">## 1 example_distribution_2017     1 12.33667</span></span></code></pre>
+<pre><code><span><span class="co">##                       layer value    area</span></span>
+<span><span class="co">## 1 example_distribution_2017     1 12.3336</span></span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># you can also calculate areas for both layers at once by combining them into a raster stack:</span></span>
 <span></span>
 <span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getArea.html">getArea</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">mangrove.2000</span>, <span class="va">mangrove.2017</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The results: at time 1 (2000), the ecosystem was 13.6590844 km2, and
-at time 2, (2017) the ecosystem was 12.3366736 km2.</p>
+<p>The results: at time 1 (2000), the ecosystem was 13.6557 km2, and at
+time 2, (2017) the ecosystem was 12.3336 km2.</p>
 </div>
 <div class="section level3">
 <h3 id="rasters-with-multiple-ecosystems-or-layers">Rasters with multiple ecosystems or layers<a class="anchor" aria-label="anchor" href="#rasters-with-multiple-ecosystems-or-layers"></a>
@@ -221,22 +221,22 @@ Here’s an example with a dummy raster.</p>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">r.bin</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">r.bin</span><span class="op">)</span> <span class="op">!=</span> <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span><span class="co"># get area</span></span>
 <span><span class="fu"><a href="../reference/getArea.html">getArea</a></span><span class="op">(</span><span class="va">r.bin</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##   layer value        area</span></span>
-<span><span class="co">## 1 time1     1 0.001045442</span></span>
-<span><span class="co">## 2 time2     1 0.001132977</span></span>
-<span><span class="co">## 3 time3     1 0.001027537</span></span>
-<span><span class="co">## 4 time4     1 0.001075284</span></span>
-<span><span class="co">## 5 time5     1 0.001185697</span></span></code></pre>
+<pre><code><span><span class="co">##   layer value     area</span></span>
+<span><span class="co">## 1 time1     1 0.001051</span></span>
+<span><span class="co">## 2 time2     1 0.001139</span></span>
+<span><span class="co">## 3 time3     1 0.001033</span></span>
+<span><span class="co">## 4 time4     1 0.001081</span></span>
+<span><span class="co">## 5 time5     1 0.001192</span></span></code></pre>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Alternatively: </span></span>
 <span><span class="fu"><a href="../reference/getArea.html">getArea</a></span><span class="op">(</span><span class="va">rstack</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">value</span> <span class="op">==</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##   layer value        area</span></span>
-<span><span class="co">## 1 time1     5 0.001045442</span></span>
-<span><span class="co">## 2 time2     5 0.001132977</span></span>
-<span><span class="co">## 3 time3     5 0.001027537</span></span>
-<span><span class="co">## 4 time4     5 0.001075284</span></span>
-<span><span class="co">## 5 time5     5 0.001185697</span></span></code></pre>
+<pre><code><span><span class="co">##   layer value     area</span></span>
+<span><span class="co">## 1 time1     5 0.001051</span></span>
+<span><span class="co">## 2 time2     5 0.001139</span></span>
+<span><span class="co">## 3 time3     5 0.001033</span></span>
+<span><span class="co">## 4 time4     5 0.001081</span></span>
+<span><span class="co">## 5 time5     5 0.001192</span></span></code></pre>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="co"># note this alternative is slower for large rasters. </span></span></code></pre></div>
 <p>The <code>getAreaTrend</code> function takes one multilayer raster.
@@ -257,16 +257,16 @@ produces a plot of area over time:</p>
 <pre><code><span><span class="co">## Summary of ecosystem trend</span></span>
 <span><span class="co">## ----------------------------</span></span>
 <span><span class="co">## Net change in area:</span></span>
-<span><span class="co">##  -2.884665e-05 kms squared</span></span>
+<span><span class="co">##  -2.9e-05 kms squared</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Modeled change in area:</span></span>
-<span><span class="co">##  -3.275366e-05 kms squared</span></span>
+<span><span class="co">##  -3.292776e-05 kms squared</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Modeled percent change in area:</span></span>
-<span><span class="co">##  -4.192726 %</span></span>
+<span><span class="co">##  -4.192725 %</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Ecosystem area:</span></span>
-<span><span class="co">##  0.0007579711 0.0007529976 0.0008524688 0.0007311139 0.0007291245 </span></span>
+<span><span class="co">##  0.000762 0.000757 0.000857 0.000735 0.000733 </span></span>
 <span><span class="co">## Input data class: SpatRaster</span></span>
 <span><span class="co">## Input raster layers: 5</span></span>
 <span><span class="co">## Raster dimensions: ext(0, 100, 0, 100)</span></span></code></pre>
@@ -297,7 +297,7 @@ one ecosystem, you can leave out this argument.</p>
 <pre><code><span><span class="co">## Initialising grids</span></span></code></pre>
 <pre><code><span><span class="co">## Assembling initial grids</span></span></code></pre>
 <pre><code><span><span class="co">## Running jitter on units with 100 or fewer cells, n = 35</span></span></code></pre>
-<pre><code><span><span class="co">## jittering</span></span></code></pre>
+<pre><code><span><span class="co">## jittering  unnamed ecosystem type</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="working-with-data-in-vector-format">4. Working with data in vector format<a class="anchor" aria-label="anchor" href="#working-with-data-in-vector-format"></a>

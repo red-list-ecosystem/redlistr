@@ -11,6 +11,7 @@ calculations on all `.tif` files within a folder.
 ### Loading packages
 
 ``` r
+
 library(redlistr)
 library(stringr)
 ```
@@ -18,6 +19,7 @@ library(stringr)
 ### Preparing workspace and variables
 
 ``` r
+
 # Example directory
 input_dir <- # Path to folder with tif files
 out_dir <- "C:/Users/Username/Desktop" 
@@ -31,6 +33,7 @@ We also create an empty data frame to store our results in, with each
 row representing one file in the folder.
 
 ``` r
+
 # set up data capture
 results_df <- data.frame (
   # Name of the raster
@@ -55,6 +58,7 @@ We use a for loop to tell `R` to systematically go through each tif file
 within the specified folder.
 
 ``` r
+
 for (i in seq_along(input_list)){
   # Prints out a message showing progress
   message (paste("working on number... ", i, " of ", length(input_list)))
@@ -118,6 +122,7 @@ for large datasets, polygon inputs will typically run much faster.
 ### Loading packages
 
 ``` r
+
 library(redlistr)
 library(stringr)
 ```
@@ -125,6 +130,7 @@ library(stringr)
 ### Preparing workspace and variables
 
 ``` r
+
 # Example directory
 input_rast <- # raster(...)
 out_dir <- "C:/Users/Username/Desktop" 
@@ -139,6 +145,7 @@ We use the default functions on the raster directly, then use
 the resulting list.
 
 ``` r
+
 area.list <- getArea(input_rast)
 EOO.list <- getEOO(input.rast)
 AOO.list <- getAOO(input.rast)

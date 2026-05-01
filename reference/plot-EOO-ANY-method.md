@@ -6,7 +6,7 @@ plot method for EOO object
 
 ``` r
 # S4 method for class 'EOO,ANY'
-plot(x, y, ...)
+plot(x, title = x@name)
 ```
 
 ## Arguments
@@ -15,11 +15,6 @@ plot(x, y, ...)
 
   an EOO object
 
-- y:
+- title:
 
-  Ignored. Included for consistency with the `plot` generic.
-
-- ...:
-
-  Additional graphical parameters passed to
-  [`plot`](https://rdrr.io/r/graphics/plot.default.html).
+  Plot title, defaults to name of assessment unit.

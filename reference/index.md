@@ -6,6 +6,18 @@
   : AOOgrid class
 - [`EOO-class`](http://red-list-ecosystem.github.io/redlistr/reference/EOO-class.md)
   : EOO class
+- [`a.2000`](http://red-list-ecosystem.github.io/redlistr/reference/a.2000.md)
+  : Mangrove distribution data
+- [`a.2017`](http://red-list-ecosystem.github.io/redlistr/reference/a.2017.md)
+  : Mangrove area
+- [`a`](http://red-list-ecosystem.github.io/redlistr/reference/a.md) :
+  Mangrove area combined
+- [`as.list(`*`<AOOgrid>`*`)`](http://red-list-ecosystem.github.io/redlistr/reference/as.list.AOOgrid.md)
+  : AOOgrid as.list
+- [`as.list(`*`<EOO>`*`)`](http://red-list-ecosystem.github.io/redlistr/reference/as.list.EOO.md)
+  : EOO as.list
+- [`bundle()`](http://red-list-ecosystem.github.io/redlistr/reference/bundle.md)
+  : Compute AOO and EOO, return as table
 - [`createGrid()`](http://red-list-ecosystem.github.io/redlistr/reference/createGrid.md)
   : Create empty Area of Occupancy (AOO) Grid.
 - [`extrapolateEstimate()`](http://red-list-ecosystem.github.io/redlistr/reference/extrapolateEstimate.md)
@@ -27,8 +39,12 @@
 - [`getEOO()`](http://red-list-ecosystem.github.io/redlistr/reference/getEOO.md)
   : Calculates area of the created EOO polygon and returns a summary
   object with useful info.
+- [`hist(`*`<AOOgrid>`*`)`](http://red-list-ecosystem.github.io/redlistr/reference/hist-AOOgrid-method.md)
+  : AOOgrid hist
 - [`jplot()`](http://red-list-ecosystem.github.io/redlistr/reference/jplot.md)
   : Make elbow plot to check jitter iterations
+- [`list2table()`](http://red-list-ecosystem.github.io/redlistr/reference/list2table.md)
+  : Summarises a list of EOO or AOOgrid objects in a table
 - [`makeAOOGrid()`](http://red-list-ecosystem.github.io/redlistr/reference/makeAOOGrid.md)
   : Create Area of Occupancy (AOO) grid for an ecosystem or species
   distribution

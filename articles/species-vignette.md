@@ -69,6 +69,7 @@ assessment. We also use functions from the `units` package to calculate
 areas in different units.
 
 ``` r
+
 library(galah)
 library(sf)
 library(mapview)
@@ -87,6 +88,7 @@ and provide basic login information. You will need to replace
 the ALA portal.
 
 ``` r
+
 galah_config(atlas = "Australia",
              username = "<YOUR USER NAME>",
              email = "<YOUR EMAIL>")
@@ -97,6 +99,7 @@ resource. We construct this query using a sequence of function calls
 concatenated by a “pipe” (`|>`):
 
 ``` r
+
 galah_call() |>
         identify("Paralucia spinifera") |>
         group_by(dataResourceName) |>
@@ -106,7 +109,7 @@ galah_call() |>
     ## # A tibble: 10 × 2
     ##    dataResourceName                                  count
     ##    <chr>                                             <int>
-    ##  1 NSW BioNet Atlas                                    923
+    ##  1 NSW BioNet Atlas                                    925
     ##  2 iNaturalist Australia                                54
     ##  3 Butterflies Australia                                27
     ##  4 Museum of Comparative Zoology, Harvard University    17
@@ -122,6 +125,7 @@ construct a query to download records from the *NSW BioNet Atlas* and
 *iNaturalist Australia* and to only include records prior to 2024:
 
 ``` r
+
 selected <- c("NSW BioNet Atlas", "iNaturalist Australia ")
 ala_records <- galah_call() |>
         identify("Paralucia spinifera") |>
@@ -131,11 +135,10 @@ ala_records <- galah_call() |>
         atlas_occurrences()
 ```
 
-    ## --
-
 We want to check that were working with valid presence records:
 
 ``` r
+
 ala_records |> 
     group_by(basisOfRecord, occurrenceStatus) |> 
     summarise(n(), .groups="drop")
@@ -160,6 +163,7 @@ The downloaded dataset has few columns with the basic record
 information:
 
 ``` r
+
 glimpse(ala_records)
 ```
 
@@ -187,6 +191,7 @@ Second, we use the `mutate` and `year` functions to extract the year
 from the date string
 
 ``` r
+
 ala_points <- st_as_sf(ala_records,
     coords = c("decimalLongitude", "decimalLatitude"),
     crs = "EPSG:4326") |>
@@ -208,12 +213,14 @@ interactive interface of `mapview` we can click on suspicious points and
 get the `recordIDs`:
 
 ``` r
+
 mapview(ala_points, zcol = "Year")
 ```
 
 I suspect that these two records are dubious:
 
 ``` r
+
 dubious_records <-  c(
     "7a782f5c-55a5-4863-9644-15e2e3ed79c5",
     "a8f7ab6f-45aa-47bf-a522-a28853ef25e0"
@@ -224,6 +231,7 @@ We can apply the filter function to the spatial dataset in order to get
 a cleaned list of record:
 
 ``` r
+
 cleaned_points <- ala_points |>
     filter(!recordID %in% dubious_records)
 ```
@@ -236,6 +244,7 @@ reference system that allow area calculations.
 We can use the function `st_transform` to reproject the data:
 
 ``` r
+
 projected_points <- 
     st_transform(cleaned_points,
     "EPSG:3112")
@@ -252,22 +261,24 @@ The `getEOO` function will create a convex hull around the presence
 records:
 
 ``` r
+
 best_EOO <- getEOO(projected_points)
 ```
 
 And we can summarise the results using the `summary` function:
 
 ``` r
+
 summary(best_EOO)
 ```
 
-    ## Summary of EOO object
+    ## unnamed ecosystem type : EOO object
     ## ----------------------------
-    ## EOO area: 1,566.704 square kms
-    ## Polygon geometry type(s): POLYGON
-    ## Number of polygon features: 1
-    ## Input data class: sf
-    ## Input feature count: 825
+    ##  EOO area: 1,566.704 square kms
+    ##  CRS: NA 
+    ##  Input data class: sf
+    ##  Input feature count: 825
+    ## ----------------------------
 
 We might want to recalculate EOO using a subset of records. For example,
 this species shows fluctuations in population size and might undergo
@@ -278,19 +289,20 @@ Here we filter the data, recalculate the EOO and call the summary
 function in one chunk of code:
 
 ``` r
+
 projected_points |>
     filter(Year>2010) |>
     getEOO() |>
     summary()
 ```
 
-    ## Summary of EOO object
+    ## unnamed ecosystem type : EOO object
     ## ----------------------------
-    ## EOO area: 1,414.607 square kms
-    ## Polygon geometry type(s): POLYGON
-    ## Number of polygon features: 1
-    ## Input data class: sf
-    ## Input feature count: 704
+    ##  EOO area: 1,414.607 square kms
+    ##  CRS: NA 
+    ##  Input data class: sf
+    ##  Input feature count: 704
+    ## ----------------------------
 
 This example shows that the value of EOO is sensitive to the assumption
 that all historical records represent the current extent of the species.
@@ -298,13 +310,14 @@ By excluding older occurrence records we are trying to account for
 potential local extinctions in the estimate of EOO.
 
 Next we calculate the Area of Occupancy with the function `getAOO`. For
-species assessments we use a grid size of 2000 m and we don’t want to
+species assessments we use a cell size of 2000 m and we don’t want to
 use the 1% rule.
 
 ``` r
+
 simple_AOO <- getAOO(projected_points, 
-    grid.size=2000,
-    bottom.1pct.rule = FALSE,
+    cell_size=2000,
+    bottom_1pct_rule = FALSE,
     jitter = FALSE)
 ```
 
@@ -315,29 +328,34 @@ simple_AOO <- getAOO(projected_points,
 The `summary` function provides the results in number of grid cells:
 
 ``` r
+
 summary(simple_AOO)
 ```
 
-    ## Class: AOO_grid
-    ## Number of grid cells: 43 
-    ## Grid extent:
+    ## unnamed ecosystem type : AOO_grid
+    ## ----------------------------
+    ##  Number of grid cells: 43 
+    ##  Area of occupied grids 172 km^2
+    ##  CRS: GDA94 / Geoscience Australia Lambert 
+    ##  Grid extent:
     ##     xmin     ymin     xmax     ymax 
     ##  1432266 -3903713  1492458 -3844983 
-    ## CRS: GDA94 / Geoscience Australia Lambert 
     ## 
     ## function call parameters:
-    ## grid size:  2000 
-    ## jitter:  FALSE 
-    ## n_jitter:
+    ##  grid size:  2000 
+    ##  jitter:  FALSE 
+    ##  n_jitter:  
+    ## ----------------------------
 
 The value of the AOO is known to change depending on the placing of the
 grid. We can use an option called `jitter` to recalculate the AOO
 multiple times and summarise the range of potential values of AOO.
 
 ``` r
+
 best_AOO <- getAOO(projected_points, 
-    grid.size=2000,
-    bottom.1pct.rule = FALSE,
+    cell_size=2000,
+    bottom_1pct_rule = FALSE,
     jitter = TRUE,
     n_jitter = 99
     )
@@ -349,14 +367,15 @@ best_AOO <- getAOO(projected_points,
 
     ## Running jitter on units with 100 or fewer cells, n = 99
 
-    ## jittering
+    ## jittering  unnamed ecosystem type
 
 We can use this code to calculate the result in area of occupancy by
 multiplying the number of cells with their area in square km.
 
 ``` r
-gridsize <- set_units(best_AOO@params$gridsize,'m')^2 |> set_units('km2')
-AOOvals <- best_AOO@AOOvals * gridsize
+
+cellsize <- set_units(best_AOO@params$cellsize,'m')^2 |> set_units('km2')
+AOOvals <- best_AOO@AOOvals * cellsize
 summary(AOOvals)
 ```
 
@@ -364,7 +383,7 @@ summary(AOOvals)
     ##     152     164     168     168     172     196
 
 With the use of the jitter option, we get values between 148 and 188
-${km}^{2}$.
+$`\mathrm{km}^2`$.
 
 Similarly to the EOO, we might want to recalculate the AOO using subsets
 of the data. But we will leave this as an excercise for the reader.
@@ -374,6 +393,7 @@ to verify that they are all consistent. We use again the interactive
 functions in the `mapview` package:
 
 ``` r
+
 mapview(projected_points, hide=TRUE) +
 mapview(best_AOO@grid) +
 mapview(best_EOO@pol)
@@ -388,25 +408,25 @@ prone to abrupt changes.
 
 These criteria have different quantitative thresholds for each category:
 
-| Category              | Extent of occurrence (EOO) | Area of occupancy (AOO) | Other Conditions                                                                                    |
-|-----------------------|----------------------------|-------------------------|-----------------------------------------------------------------------------------------------------|
-| Vulnerable            | \<20,000 ${km}^{2}$        | \< 2,000 ${km}^{2}$     | at least 2 of: a) fragmented or \<= 10 locations, B) continuing decline, or c) extreme fluctuations |
-| Endangered            | \<5,000 ${km}^{2}$         | \< 500 ${km}^{2}$       | at least 2 of: a) fragmented or \<= 5 locations, B) continuing decline, or c) extreme fluctuations  |
-| Critically Endangered | \<100 ${km}^{2}$           | \< 10 ${km}^{2}$        | at least 2 of: a) fragmented or one locations, B) continuing decline, or c) extreme fluctuations    |
+| Category | Extent of occurrence (EOO) | Area of occupancy (AOO) | Other Conditions |
+|----|----|----|----|
+| Vulnerable | \<20,000 $`\mathrm{km}^2`$ | \< 2,000 $`\mathrm{km}^2`$ | at least 2 of: a) fragmented or \<= 10 locations, B) continuing decline, or c) extreme fluctuations |
+| Endangered | \<5,000 $`\mathrm{km}^2`$ | \< 500 $`\mathrm{km}^2`$ | at least 2 of: a) fragmented or \<= 5 locations, B) continuing decline, or c) extreme fluctuations |
+| Critically Endangered | \<100 $`\mathrm{km}^2`$ | \< 10 $`\mathrm{km}^2`$ | at least 2 of: a) fragmented or one locations, B) continuing decline, or c) extreme fluctuations |
 
-Our calculation found that the EOO is above 100 ${km}^{2}$ but below
-5,000 ${km}^{2}$. From the previous assessment we also know that the
-species meets the condition of a severely fragmented distribution, and
-there is evidence of inferred declines in area, extent and/or quality of
-habitat, and extreme fluctuations in the number of mature individuals.
-The outcome would be a category of Endangered.
+Our calculation found that the EOO is above 100 $`\mathrm{km}^2`$ but
+below 5,000 $`\mathrm{km}^2`$. From the previous assessment we also know
+that the species meets the condition of a severely fragmented
+distribution, and there is evidence of inferred declines in area, extent
+and/or quality of habitat, and extreme fluctuations in the number of
+mature individuals. The outcome would be a category of Endangered.
 
-Similarly, our calculation resulted in an AOO above 10 ${km}^{2}$ but
-below 500 ${km}^{2}$. From the previous assessment we also know that the
-species meets the condition of a severely fragmented distribution, and
-there is evidence of inferred declines in area, extent and/or quality of
-habitat, and extreme fluctuations in the number of mature individuals.
-The outcome would be a category of Endangered.
+Similarly, our calculation resulted in an AOO above 10 $`\mathrm{km}^2`$
+but below 500 $`\mathrm{km}^2`$. From the previous assessment we also
+know that the species meets the condition of a severely fragmented
+distribution, and there is evidence of inferred declines in area, extent
+and/or quality of habitat, and extreme fluctuations in the number of
+mature individuals. The outcome would be a category of Endangered.
 
 ## Conclusions
 
@@ -414,13 +434,14 @@ We will compare the outputs of this assessment with the existing
 assessment for this species:
 
 The values of AOO reported in the conservation assessment of the species
-was 152 — 176 ${km}^{2}$ and the extent of occurrence (EOO) is 1,693 —
-1,823 ${km}^{2}$. The AOO was based on 2 x 2 km grid cells, and the EOO
-is based on a minimum convex polygon enclosing all mapped occurrences of
-the species. AOO and EOO and were calculated using ArcGIS software and
-based on cleaned spatial datasets from the same dataset considered here.
-AOO and EOO were provided as a range to accommodate the uncertainty
-around several sites at which local extinction has been documented.
+was 152 — 176 $`\mathrm{km}^2`$ and the extent of occurrence (EOO) is
+1,693 — 1,823 $`\mathrm{km}^2`$. The AOO was based on 2 x 2 km grid
+cells, and the EOO is based on a minimum convex polygon enclosing all
+mapped occurrences of the species. AOO and EOO and were calculated using
+ArcGIS software and based on cleaned spatial datasets from the same
+dataset considered here. AOO and EOO were provided as a range to
+accommodate the uncertainty around several sites at which local
+extinction has been documented.
 
 Differences between the published assessment and our calculations are
 expected. We tried to use the same data sources and clean the data
@@ -428,7 +449,7 @@ following similar principles, but we did not use the exact same dataset,
 and we did not consult experts in the steps of data preparation, so we
 might be using a different subset of the available data.
 
-Our results estimated a wider range of AOO values (152 — 196 ${km}^{2}$)
-but slightly lower EOO values (1,414 — 1,566 ${km}^{2}$). These
-differences are well within the thresholds of the category, so they
-wouldn’t affect the outcome of the assessment.
+Our results estimated a wider range of AOO values (152 — 196
+$`\mathrm{km}^2`$) but slightly lower EOO values (1,414 — 1,566
+$`\mathrm{km}^2`$). These differences are well within the thresholds of
+the category, so they wouldn’t affect the outcome of the assessment.
