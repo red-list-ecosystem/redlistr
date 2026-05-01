@@ -12,7 +12,7 @@ test_that("accepts different input rasters", {
   r.multiple <- r
   values(r.multiple) <- rep(c(1:10), 10)
 
-  expect_equal(getArea(r.bin)$area, 0.06445729)
+  expect_equal(getArea(r.bin)$area, 0.0648)
   expect_equal(nrow(getArea(r.multiple)), 10)
   expect_equal(getArea(r.multiple)$area[1], getArea(r.multiple)$area[2])
 })

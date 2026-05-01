@@ -8,7 +8,7 @@ test_that("accepts different format", {
   pts = data.frame(pts)
   sp_points <- st_as_sf(pts, coords = c("X1", "X2"), crs = 32755)
 
-  expect_equal(getAOO(sp_points, 1)@AOO, 5)
+  expect_equal(getAOO(sp_points, 1, bottom_1pct_rule = FALSE)@AOO, 5)
 
   #sf POLYGONS
   poly <- list(
