@@ -23,13 +23,6 @@ the layer number.
 \description{
 \code{getArea} reports the area of ecosystem units provided as spatial data
 }
-\examples{
-if (requireNamespace("terra", quietly = TRUE)) {
-m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r1 <- terra::rast(m, crs = "EPSG:32755")
-a.r1 <- getArea(r1) # area of all non-NA cells in r1
-}
-}
 \seealso{
 Other Change functions: 
 \code{\link{getAreaChange}()},
