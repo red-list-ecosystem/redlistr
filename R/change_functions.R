@@ -13,9 +13,11 @@
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family Change functions
 #' @examples
+#' if (requireNamespace("terra", quietly = TRUE)) {
 #' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
 #' r1 <- terra::rast(m, crs = "EPSG:32755")
 #' a.r1 <- getArea(r1) # area of all non-NA cells in r1
+#' }
 #' @export
 
 getArea <- function(x, names_from = NA, ...){
@@ -111,13 +113,17 @@ getArea.sf <- function(x, names_from = NA, ...) {
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family Change functions
 #' @examples
-#' m1 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-#' r1 <- terra::rast(m1, crs = "EPSG:32755")
+#' if (requireNamespace("terra", quietly = TRUE)) {
+#'   m1 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#'   r1 <- terra::rast(m1)
+#'   terra::crs(r1) <- "EPSG:32755"
 #'
-#' m2 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-#' r2 <- terra::rast(m2, crs = "EPSG:32755")
-#' a.dif <- getAreaChange(r1, r2) # distribution rasters
+#'   m2 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#'   r2 <- terra::rast(m2)
+#'   terra::crs(r2) <- "EPSG:32755"
 #'
+#'   a.dif <- getAreaChange(r1, r2)
+#' }
 #' @export
 
 getAreaChange <- function(x, y, names_from_x = NA, names_from_y = NA){
@@ -435,11 +441,11 @@ fit_spline <- function(df){
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family Change functions
-#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
-#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
-#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
-#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
-#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
 #'   <https://doi.org/10.2305/CJDF9122>
 #'   Puyravaud, J.-P. 2003. Standardizing the calculation of the
 #'   annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
@@ -494,11 +500,11 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family change_functions
-#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
-#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
-#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
-#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
-#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
 #'   <https://doi.org/10.2305/CJDF9122>
 #' @export
 
@@ -529,11 +535,11 @@ futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = 
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family change_functions
-#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
-#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
-#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
-#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
-#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
 #'   <https://doi.org/10.2305/CJDF9122>
 #' @examples
 #' a.r1 <- 23.55
@@ -584,11 +590,11 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
 #'  }
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
 #' @family change_functions
-#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
-#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
-#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
-#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
-#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
 #'   <https://doi.org/10.2305/CJDF9122>
 #' @examples
 #' a.r1 <- 23.55
