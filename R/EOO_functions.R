@@ -35,10 +35,10 @@ makeEOO <- function(input_data, names_from) UseMethod("makeEOO", input_data)
 #' @method makeEOO SpatRaster
 #' @export
 makeEOO.SpatRaster <- function(input_data, names_from = NA){
-  EOO.points <- as.points(input_data)
-  input.split <- split(EOO.points, names(EOO.points))
-  EOO.buffer <- lapply(input.split, buffer, width = min(res(input_data)) / 2)
-  EOO.polygon <- lapply(EOO.buffer, hull)
+  EOO.points <- terra::as.points(input_data)
+  input.split <- terra::split(EOO.points, names(EOO.points))
+  EOO.buffer <- lapply(input.split, buffer, width = min(terra::res(input_data)) / 2)
+  EOO.polygon <- lapply(EOO.buffer, terra::hull)
 
   return(EOO.polygon)
 }
@@ -47,16 +47,16 @@ makeEOO.SpatRaster <- function(input_data, names_from = NA){
 #' @export
 makeEOO.sf <- function(input_data, names_from = NA){
   # deal with any invalid geometries early.
-  if(any(!st_is_valid(input_data))){
-    input_data <- st_make_valid(input_data)
+  if(any(!sf::st_is_valid(input_data))){
+    input_data <- sf::st_make_valid(input_data)
   }
 
   names_from <- dplyr::coalesce(names_from, "ecosystem_name")
   if (!any(colnames(input_data) %in% names_from)) {
     input_data <- input_data |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")
   }
- input.split <- split(input_data, st_drop_geometry(input_data[names_from]))
- EOO.polygon <- input.split |> lapply(st_union) |> lapply(st_convex_hull) |> lapply(st_sf)
+ input.split <- split(input_data, sf::st_drop_geometry(input_data[names_from]))
+ EOO.polygon <- input.split |> lapply(sf::st_union) |> lapply(sf::st_convex_hull) |> lapply(sf::st_sf)
 return(EOO.polygon)
 }
 
@@ -98,15 +98,15 @@ getEOO <- function(input_data, names_from = NA) UseMethod("getEOO", input_data)
 
 #' @method getEOO SpatRaster
 #' @export
-getEOO.SpatRaster<- function(input_data, names_from = NA){
+getEOO.SpatRaster <- function(input_data, names_from = NA){
 
 values <- sort(unique(terra::values(input_data)))
   binary_rasters <- lapply(values, function(v) {
     as.numeric(input_data == v)
   }) |> stats::setNames(paste0(names(input_data), "_value_", values))
 
-  EOO.polygon <- makeEOO(input_data) |> lapply(st_as_sf)
-  EOO.area <- lapply(EOO.polygon, st_area) |> lapply(units::set_units, "km^2")
+  EOO.polygon <- makeEOO(input_data) |> lapply(sf::st_as_sf)
+  EOO.area <- lapply(EOO.polygon, sf::st_area) |> lapply(units::set_units, "km^2")
 
   EOO_list <- lapply(1:length(binary_rasters),
                          function(x) new("EOO",
@@ -124,18 +124,18 @@ values <- sort(unique(terra::values(input_data)))
 getEOO.sf <- function(input_data, names_from = NA){
 
   # deal with any invalid geometries early.
-  if(any(!st_is_valid(input_data))){
-    input_data <- st_make_valid(input_data)
+  if(any(!sf::st_is_valid(input_data))){
+    input_data <- sf::st_make_valid(input_data)
   }
 
   names_from <- dplyr::coalesce(names_from, "ecosystem_name")
   if (!any(colnames(input_data) %in% names_from)) {                 # check for ecosystem names
     input_data <- input_data |> dplyr::mutate(ecosystem_name = "unnamed ecosystem type")  #put new name label if not present
   }
-  input_split <- input_data |> split(st_drop_geometry(input_data[names_from]))
+  input_split <- input_data |> split(sf::st_drop_geometry(input_data[names_from]))
 
   EOO.polygon <- makeEOO(input_data, names_from)
-  EOO.area <- lapply(EOO.polygon, st_area) |> lapply(units::set_units, "km^2")
+  EOO.area <- lapply(EOO.polygon, sf::st_area) |> lapply(units::set_units, "km^2")
 
   EOO_list <- lapply(1:length(input_split),
                      function(x) new("EOO",
@@ -152,7 +152,7 @@ getEOO.sf <- function(input_data, names_from = NA){
 #' @method getEOO SpatVector
 #' @export
 getEOO.SpatVector <- function(input_data, names_from = NA){
-  input_data <- st_sf(input_data)
+  input_data <- sf::st_sf(input_data)
   return(getEOO.sf(input_data, names_from))
 }
 

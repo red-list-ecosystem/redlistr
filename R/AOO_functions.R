@@ -102,9 +102,9 @@ makeAOOGrid <- function(input_data, cell_size = 10000, names_from = NA, bottom_1
 makeAOOGrid.SpatRaster <-
   function(input_data, cell_size, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
 
-    if (terra::is.lonlat(input_data)) { # check CRS
-      stop("AOO cannot be calculated in a geographic coordinate reference system. Use terra::project() to change to a planar CRS.")
-    }  # check CRS
+    # if (terra::is.lonlat(input_data)) { # check CRS
+    #   stop("AOO cannot be calculated in a geographic coordinate reference system. Use terra::project() to change to a planar CRS.")
+    # }  # check CRS
 
 
     grid <- createGrid(input_data, cell_size)
@@ -349,7 +349,7 @@ getAOO.SpatRaster <- function(input_data, cell_size = 10000, names_from = NA, bo
 
 #' @method getAOO sf
 #' @export
-getAOO.sf <-  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35){
+getAOO.sf <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35){
   # deal with any invalid geometries early.
   if(any(!st_is_valid(input_data))){
     input_data <- st_make_valid(input_data)
