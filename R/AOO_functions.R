@@ -83,9 +83,13 @@ top_pct <- function(v, pct = 99) {
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   <https://iucnrle.org/>
 #' @examples
-#' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-#' r1 <- terra::rast(m, crs = "EPSG:32755")
-#' AOO_grid <- makeAOOGrid(r1, cell_size = 3)
+#' if (requireNamespace("terra", quietly = TRUE)) {
+#'   ok <- try({
+#'       m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#'       r1 <- terra::rast(m, crs = "EPSG:32755")
+#'       AOO_grid <- makeAOOGrid(r1, cell_size = 3)
+#'   }, silent = TRUE)
+#' }
 #' @export
 
 

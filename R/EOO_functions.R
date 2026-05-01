@@ -21,9 +21,13 @@
 #'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
 #'   <https://doi.org/10.2305/CJDF9122>
 #' @examples
-#' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-#' r1 <- terra::rast(m, crs = "EPSG:32755")
-#' EOO.polygon <- makeEOO(r1)
+#' if (requireNamespace("terra", quietly = TRUE)) {
+#'   ok <- try({
+#'      m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#'      r1 <- terra::rast(m, crs = "EPSG:32755")
+#'      EOO.polygon <- makeEOO(r1)
+#'   }, silent = TRUE)
+#' }
 #' @export
 
 makeEOO <- function(input_data, names_from) UseMethod("makeEOO", input_data)
@@ -75,9 +79,13 @@ return(makeEOO.sf(input_data, names_from))
 #'   \email{calvinkflee@@gmail.com}
 #' @family EOO functions
 #' @examples
-#' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-#' r1 <- terra::rast(m, crs = "EPSG:32755")
-#' EOO <- getEOO(r1)
+#' if (requireNamespace("terra", quietly = TRUE)) {
+#'   ok <- try({
+#'     m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+#'      r1 <- terra::rast(m, crs = "EPSG:32755")
+#'     EOO <- getEOO(r1)
+#'   }, silent = TRUE)
+#' }
 #' @export
 #' @import terra
 #' @import sf

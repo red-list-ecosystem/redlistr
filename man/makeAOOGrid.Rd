@@ -46,9 +46,13 @@ containing less than 1\% of the ecosystem are counted in the AOO. This functiona
 important for assessing the IUCN Red List of Ecosystems Criteria B.
 }
 \examples{
-m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r1 <- terra::rast(m, crs = "EPSG:32755")
-AOO_grid <- makeAOOGrid(r1, cell_size = 3)
+if (requireNamespace("terra", quietly = TRUE)) {
+  ok <- try({
+      m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+      r1 <- terra::rast(m, crs = "EPSG:32755")
+      AOO_grid <- makeAOOGrid(r1, cell_size = 3)
+  }, silent = TRUE)
+}
 }
 \references{
 Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and

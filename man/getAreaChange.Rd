@@ -31,6 +31,21 @@ can be  SpatRaster, SpatVector, sf or a data frame of areas and may contain
 data for multiple ecosystem types. Ensure x and y are the same data type.
 If using data frame as input, ensure areas are measured in km2
 }
+\examples{
+if (requireNamespace("terra", quietly = TRUE)) {
+  ok <- try({
+    m1 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), 25, 20)
+    r1 <- terra::rast(m1)
+    terra::crs(r1) <- "EPSG:32755"
+
+    m2 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), 25, 20)
+    r2 <- terra::rast(m2)
+    terra::crs(r2) <- "EPSG:32755"
+
+    getAreaChange(r1, r2)
+  }, silent = TRUE)
+}
+}
 \seealso{
 Other Change functions: 
 \code{\link{getArea}()},

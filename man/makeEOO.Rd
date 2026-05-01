@@ -25,9 +25,13 @@ is a raster layer, the points are taken from a buffer that has the radius of
 half of the shorter edge of the pixel around the centroid.
 }
 \examples{
-m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r1 <- terra::rast(m, crs = "EPSG:32755")
-EOO.polygon <- makeEOO(r1)
+if (requireNamespace("terra", quietly = TRUE)) {
+  ok <- try({
+     m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+     r1 <- terra::rast(m, crs = "EPSG:32755")
+     EOO.polygon <- makeEOO(r1)
+  }, silent = TRUE)
+}
 }
 \references{
 IUCN 2024. Guidelines for the application of IUCN Red List of

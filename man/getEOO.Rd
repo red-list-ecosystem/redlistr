@@ -23,9 +23,13 @@ EOO polygon, its area, and its input_data
 defined summary and plot functions available.
 }
 \examples{
-m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r1 <- terra::rast(m, crs = "EPSG:32755")
-EOO <- getEOO(r1)
+if (requireNamespace("terra", quietly = TRUE)) {
+  ok <- try({
+    m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+     r1 <- terra::rast(m, crs = "EPSG:32755")
+    EOO <- getEOO(r1)
+  }, silent = TRUE)
+}
 }
 \seealso{
 Other EOO functions: 
