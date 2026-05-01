@@ -5,29 +5,29 @@
 \title{Create Area of Occupancy (AOO) grid for an ecosystem or species distribution}
 \usage{
 makeAOOGrid(
-  input.data,
-  grid.size = 10000,
+  input_data,
+  cell_size = 10000,
   names_from = NA,
-  bottom.1pct.rule = TRUE,
+  bottom_1pct_rule = TRUE,
   percent = 1,
   jitter = TRUE,
   n_jitter = 35
 )
 }
 \arguments{
-\item{input.data}{Spatial object (sf or SpatRaster) of an ecosystem or species distribution.
+\item{input_data}{Spatial object (sf or SpatRaster) of an ecosystem or species distribution.
 Please use a CRS with units measured in metres.}
 
-\item{grid.size}{A number specifying the width of the desired grid square (in
+\item{cell_size}{A number specifying the width of the desired grid square (in
 same units as your coordinate reference system)}
 
 \item{names_from}{the name of the column containing ecosystem labels}
 
-\item{bottom.1pct.rule}{Logical. If \code{TRUE}, grid cells containing the least
+\item{bottom_1pct_rule}{Logical. If \code{TRUE}, grid cells containing the least
 ecosystem area are dropped up to 1\% of the total distribution.}
 
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
-the \code{bottom.1pct.rule}}
+the \code{bottom_1pct_rule}}
 
 \item{jitter}{logical. Whether grid randomization should be applied to units with low grid counts.}
 
@@ -46,17 +46,20 @@ containing less than 1\% of the ecosystem are counted in the AOO. This functiona
 important for assessing the IUCN Red List of Ecosystems Criteria B.
 }
 \examples{
-m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r1 <- terra::rast(m, crs = "EPSG:32755")
-AOO_grid <- makeAOOGrid(r1, grid.size = 3)
+if (requireNamespace("terra", quietly = TRUE)) {
+  ok <- try({
+      m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+      r1 <- terra::rast(m, crs = "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs")
+      AOO_grid <- makeAOOGrid(r1, cell_size = 3)
+  }, silent = TRUE)
+}
 }
 \references{
-IUCN 2024. Guidelines for the application of IUCN Red List of
-Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
-J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
-E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
-& Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
-\url{https://doi.org/10.2305/CJDF9122}
+Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
+Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+Switzerland: IUCN. ix + 94pp. Available at the following web site:
+\url{https://iucnrle.org/}
 }
 \seealso{
 Other AOO functions: 

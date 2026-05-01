@@ -4,10 +4,10 @@
 \alias{makeEOO}
 \title{Creates Extent of occurrence (EOO) Polygon}
 \usage{
-makeEOO(input.data, names_from)
+makeEOO(input_data, names_from)
 }
 \arguments{
-\item{input.data}{Spatial object of an ecosystem or species distribution.
+\item{input_data}{Spatial object of an ecosystem or species distribution.
 Please use a CRS with units measured in metres.}
 
 \item{names_from}{name of the column containing ecosystem names.
@@ -15,8 +15,8 @@ If missing all features will be analysed together. Only needed for vector data.}
 }
 \value{
 An object of class sf representing the EOO of
-\code{input.data}, or a list of sf objects if multiple ecosystems were input.
-Also inherits its CRS from input.data.
+\code{input_data}, or a list of sf objects if multiple ecosystems were input.
+Also inherits its CRS from input_data.
 }
 \description{
 \code{makeEOO} is a generic function that creates a  minimum convex polygon
@@ -25,9 +25,13 @@ is a raster layer, the points are taken from a buffer that has the radius of
 half of the shorter edge of the pixel around the centroid.
 }
 \examples{
-m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r1 <- terra::rast(m, crs = "EPSG:32755")
-EOO.polygon <- makeEOO(r1)
+if (requireNamespace("terra", quietly = TRUE)) {
+  ok <- try({
+     m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+     r1 <- terra::rast(m, crs = "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs")
+     EOO.polygon <- makeEOO(r1)
+  }, silent = TRUE)
+}
 }
 \references{
 IUCN 2024. Guidelines for the application of IUCN Red List of

@@ -1,4 +1,5 @@
 test_that("accepts different format", {
+
   set.seed(1)
 
   # sf POINTS
@@ -7,7 +8,7 @@ test_that("accepts different format", {
   pts = data.frame(pts)
   sp_points <- st_as_sf(pts, coords = c("X1", "X2"), crs = 32755)
 
-  expect_equal(getAOO(sp_points, 1)@AOO, 5)
+  expect_equal(getAOO(sp_points, 1, bottom_1pct_rule = FALSE)@AOO, 5)
 
   #sf POLYGONS
   poly <- list(
@@ -20,7 +21,7 @@ test_that("accepts different format", {
   expect_equal(getAOO(poly_sf, 1, jitter = F)@AOO, 21)
 
   #Raster
-  r <- rast(nrows=10, ncols=10, crs = "epsg:32755")
+  r <- rast(nrows=10, ncols=10, crs = "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs")
   values(r) <- 1
 
 

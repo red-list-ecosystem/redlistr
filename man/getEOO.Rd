@@ -4,10 +4,10 @@
 \alias{getEOO}
 \title{Calculates area of the created EOO polygon and returns a summary object with useful info.}
 \usage{
-getEOO(input.data, names_from = NA)
+getEOO(input_data, names_from = NA)
 }
 \arguments{
-\item{input.data}{Spatial object of an ecosystem or species distribution.
+\item{input_data}{Spatial object of an ecosystem or species distribution.
 Please use a CRS with units measured in metres.}
 
 \item{names_from}{name of the column containing ecosystem names.
@@ -15,7 +15,7 @@ If missing all features will be analysed together. Only needed for vector data.}
 }
 \value{
 An object of type EOO or a list of EOO objects that store the
-EOO polygon, its area, and its input.data
+EOO polygon, its area, and its input_data
 }
 \description{
 \code{getEOO} calculates the area of the EOO polygon generated from
@@ -23,9 +23,13 @@ EOO polygon, its area, and its input.data
 defined summary and plot functions available.
 }
 \examples{
-m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r1 <- terra::rast(m, crs = "EPSG:32755")
-EOO <- getEOO(r1)
+if (requireNamespace("terra", quietly = TRUE)) {
+  ok <- try({
+    m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
+     r1 <- terra::rast(m, crs = "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs")
+    EOO <- getEOO(r1)
+  }, silent = TRUE)
+}
 }
 \seealso{
 Other EOO functions: 

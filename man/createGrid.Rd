@@ -4,18 +4,18 @@
 \alias{createGrid}
 \title{Create empty Area of Occupancy (AOO) Grid.}
 \usage{
-createGrid(input.data, grid.size = 10000)
+createGrid(input_data, cell_size = 10000)
 }
 \arguments{
-\item{input.data}{Spatial object (sf or SpatRaster) of an ecosystem or species distribution.
+\item{input_data}{Spatial object (sf or SpatRaster) of an ecosystem or species distribution.
 Please use a CRS with units measured in metres.}
 
-\item{grid.size}{A number specifying the width of the desired grid square (in
+\item{cell_size}{A number specifying the width of the desired grid square (in
 same units as your coordinate reference system)}
 }
 \value{
-A regular grid raster with extent \code{input.data} expanded by two
-cells in each direction and grid size \code{grid.size}. Each grid square has a
+A regular grid raster with extent \code{input_data} expanded by two
+cells in each direction and grid size \code{cell_size}. Each grid square has a
 unique raster value that serves as its identification number.
 }
 \description{
@@ -23,12 +23,11 @@ unique raster value that serves as its identification number.
 compute AOO.
 }
 \references{
-IUCN 2024. Guidelines for the application of IUCN Red List of
-Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
-J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
-E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
-& Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
-\url{https://doi.org/10.2305/CJDF9122}
+Bland, L.M., Keith, D.A., Miller, R.M., Murray, N.J. and
+Rodriguez, J.P. (eds.) 2016. Guidelines for the application of IUCN Red
+List of Ecosystems Categories and Criteria, Version 1.0. Gland,
+Switzerland: IUCN. ix + 94pp. Available at the following web site:
+\url{https://iucnrle.org/}
 }
 \seealso{
 Other AOO functions: 

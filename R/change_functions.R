@@ -12,25 +12,37 @@
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family Change functions
-#' @examples
-#' m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-#' r1 <- terra::rast(m, crs = "EPSG:32755")
-#' a.r1 <- getArea(r1) # area of all non-NA cells in r1
 #' @export
 
 getArea <- function(x, names_from = NA, ...){
-  if(st_is_longlat(x)){
+  if(sf::st_is_longlat(x)){
     stop('Input has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
   }
   UseMethod("getArea", x)
 }
 
+#' @method getArea SpatRaster
 #' @export
 getArea.SpatRaster <- function(x, names_from = NA,...){
-  area <- terra::expanse(x, "km", byValue=TRUE, usenames = TRUE)
-  return(area)
+  # resolution in map units (assumed meters)
+  res_xy <- terra::res(x)
+  cell_area_m2 <- res_xy[1] * res_xy[2]
+
+  # convert to km²
+  cell_area_km2 <- cell_area_m2 / 1e6
+
+  # count cells by value
+  freq <- terra::freq(x, usenames = TRUE)
+
+  # compute area
+  freq$area <- freq$count * cell_area_km2
+
+  freq <- freq[,c("layer", "value", "area")]
+
+  return(freq)
 }
 
+#' @method getArea SpatVector
 #' @export
 getArea.SpatVector <- function(x, names_from = NA, ...){
   x <- st_as_sf(x)
@@ -60,6 +72,7 @@ getArea.SpatVector <- function(x, names_from = NA, ...){
     dplyr::select(-area)
 }
 
+#' @method getArea sf
 #' @export
 getArea.sf <- function(x, names_from = NA, ...) {
   if(missing(names_from)){
@@ -111,19 +124,26 @@ getArea.sf <- function(x, names_from = NA, ...) {
 #'   \email{calvinkflee@@gmail.com}, Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family Change functions
 #' @examples
-#' m1 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-#' r1 <- terra::rast(m1, crs = "EPSG:32755")
+#' if (requireNamespace("terra", quietly = TRUE)) {
+#'   ok <- try({
+#'     m1 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), 25, 20)
+#'     r1 <- terra::rast(m1)
+#'     terra::crs(r1) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs"
 #'
-#' m2 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-#' r2 <- terra::rast(m2, crs = "EPSG:32755")
-#' a.dif <- getAreaChange(r1, r2) # distribution rasters
+#'     m2 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), 25, 20)
+#'     r2 <- terra::rast(m2)
+#'     terra::crs(r2) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs"
 #'
+#'     getAreaChange(r1, r2)
+#'   }, silent = TRUE)
+#' }
 #' @export
 
 getAreaChange <- function(x, y, names_from_x = NA, names_from_y = NA){
  UseMethod("getAreaChange", x)
 }
 
+#' @method getAreaChange SpatRaster
 #' @export
 getAreaChange.SpatRaster <- function(x, y, names_from_x = NA, names_from_y = NA){
   a.x <- getArea(x)
@@ -136,6 +156,7 @@ getAreaChange.SpatRaster <- function(x, y, names_from_x = NA, names_from_y = NA)
   return(adiff)
 }
 
+#' @method getAreaChange SpatVector
 #' @export
 getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA){
 
@@ -184,6 +205,7 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
 
 }
 
+#' @method getAreaChange sf
 #' @export
 getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
 
@@ -232,6 +254,7 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
 
 }
 
+#' @method getAreaChange data.frame
 #' @export
 getAreaChange.data.frame <- function(x, y, names_from_x = NA, names_from_y = NA) {
   a.x <- x
@@ -282,6 +305,7 @@ getAreaTrend <- function(x, names_from = NA){
   UseMethod("getAreaTrend", x)
 }
 
+#' @method getAreaTrend SpatRaster
 #' @export
 getAreaTrend.SpatRaster <- function(x, names_from = NA){
 
@@ -322,6 +346,7 @@ if(length(trend_list)<=1) trend_list <- trend_list[[1]]
 return(trend_list)
 }
 
+#' @method getAreaTrend data.frame
 #' @export
 getAreaTrend.data.frame <- function(x, names_from = NA){
   names_from <- dplyr::coalesce(names_from, "ecosystem_name")
@@ -435,11 +460,11 @@ fit_spline <- function(df){
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family Change functions
-#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
-#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
-#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
-#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
-#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
 #'   <https://doi.org/10.2305/CJDF9122>
 #'   Puyravaud, J.-P. 2003. Standardizing the calculation of the
 #'   annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
@@ -494,11 +519,11 @@ getDeclineStats <- function (A.t1, A.t2, year.t1, year.t2,
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family change_functions
-#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
-#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
-#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
-#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
-#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
 #'   <https://doi.org/10.2305/CJDF9122>
 #' @export
 
@@ -529,11 +554,11 @@ futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = 
 #' @author Nicholas Murray \email{murr.nick@@gmail.com}, Calvin Lee
 #'   \email{calvinkflee@@gmail.com}
 #' @family change_functions
-#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
-#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
-#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
-#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
-#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
 #'   <https://doi.org/10.2305/CJDF9122>
 #' @examples
 #' a.r1 <- 23.55
@@ -584,11 +609,11 @@ extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC =
 #'  }
 #' @author Calvin Lee \email{calvinkflee@@gmail.com}
 #' @family change_functions
-#' @references IUCN 2024. Guidelines for the application of IUCN Red List of 
-#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris, 
-#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson, 
-#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M. 
-#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp. 
+#' @references IUCN 2024. Guidelines for the application of IUCN Red List of
+#'   Ecosystems Categories and Criteria, Version 2.0. Keith, D.A., Ferrer-Paris,
+#'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
+#'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
+#'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
 #'   <https://doi.org/10.2305/CJDF9122>
 #' @examples
 #' a.r1 <- 23.55

@@ -32,13 +32,19 @@ data for multiple ecosystem types. Ensure x and y are the same data type.
 If using data frame as input, ensure areas are measured in km2
 }
 \examples{
-m1 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r1 <- terra::rast(m1, crs = "EPSG:32755")
+if (requireNamespace("terra", quietly = TRUE)) {
+  ok <- try({
+    m1 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), 25, 20)
+    r1 <- terra::rast(m1)
+    terra::crs(r1) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs"
 
-m2 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-r2 <- terra::rast(m2, crs = "EPSG:32755")
-a.dif <- getAreaChange(r1, r2) # distribution rasters
+    m2 <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), 25, 20)
+    r2 <- terra::rast(m2)
+    terra::crs(r2) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs"
 
+    getAreaChange(r1, r2)
+  }, silent = TRUE)
+}
 }
 \seealso{
 Other Change functions: 

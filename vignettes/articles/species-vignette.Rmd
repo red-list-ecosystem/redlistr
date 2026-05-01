@@ -198,12 +198,12 @@ projected_points |>
 
 This example shows that the value of EOO is sensitive to the assumption that all historical records represent the current extent of the species. By excluding older occurrence records we are trying to account for potential local extinctions in the estimate of EOO.
 
-Next we calculate the Area of Occupancy with the function `getAOO`. For species assessments we use a grid size of 2000 m and we don't want to use the 1% rule. 
+Next we calculate the Area of Occupancy with the function `getAOO`. For species assessments we use a cell size of 2000 m and we don't want to use the 1% rule. 
 
 ```{r default AOO}
 simple_AOO <- getAOO(projected_points, 
-    grid.size=2000,
-    bottom.1pct.rule = FALSE,
+    cell_size=2000,
+    bottom_1pct_rule = FALSE,
     jitter = FALSE)
 ```
 
@@ -215,8 +215,8 @@ summary(simple_AOO)
 The value of the AOO is known to change depending on the placing of the grid. We can use an option called `jitter` to recalculate the AOO multiple times and summarise the range of potential values of AOO.
 ```{r find best AOO}
 best_AOO <- getAOO(projected_points, 
-    grid.size=2000,
-    bottom.1pct.rule = FALSE,
+    cell_size=2000,
+    bottom_1pct_rule = FALSE,
     jitter = TRUE,
     n_jitter = 99
     )
@@ -224,8 +224,8 @@ best_AOO <- getAOO(projected_points,
 
 We can use this code to calculate the result in area of occupancy by multiplying the number of cells with their area in square km. 
 ```{r range of values AOO}
-gridsize <- set_units(best_AOO@params$gridsize,'m')^2 |> set_units('km2')
-AOOvals <- best_AOO@AOOvals * gridsize
+cellsize <- set_units(best_AOO@params$cellsize,'m')^2 |> set_units('km2')
+AOOvals <- best_AOO@AOOvals * cellsize
 summary(AOOvals)
 
 ```

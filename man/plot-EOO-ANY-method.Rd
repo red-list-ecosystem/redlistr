@@ -4,14 +4,12 @@
 \alias{plot,EOO,ANY-method}
 \title{EOO plot}
 \usage{
-\S4method{plot}{EOO,ANY}(x, y, ...)
+\S4method{plot}{EOO,ANY}(x, title = x@name)
 }
 \arguments{
 \item{x}{an EOO object}
 
-\item{y}{Ignored. Included for consistency with the \code{plot} generic.}
-
-\item{...}{Additional graphical parameters passed to \code{\link[graphics]{plot}}.}
+\item{title}{Plot title, defaults to name of assessment unit.}
 }
 \description{
 plot method for EOO object

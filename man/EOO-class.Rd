@@ -10,6 +10,8 @@ A class to represent an EOO convex hull object
 \section{Slots}{
 
 \describe{
+\item{\code{name}}{the name of the assessment unit}
+
 \item{\code{pol}}{an EOO convex hull polygon}
 
 \item{\code{EOO}}{the area of the EOO polygon as a numeric}
