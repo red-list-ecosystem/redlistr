@@ -262,26 +262,31 @@ EOO.
 
 For subcriterion B1, we will need to calculate the extent of occurrence
 (EOO) of our data. We begin by creating the minimum convex polygon
-enclosing all occurrences of our focal ecosystem. There are some handy
-summary functions for the EOO object that is returned.
+enclosing all occurrences of our focal ecosystem. 
 
-```{r Make and view EOO, fig.width=7, fig.height=7, fig.alt='Extent of occurrence of 2017 mangrove distribution map'}
+```{r Make EOO, eval = F}
 EOO.polygon <- getEOO(mangrove.2017)
-summary(EOO.polygon)
-plot(EOO.polygon)
 ```
 
-We can then extract the area of the EOO polygon, if needed.
+There are some handy summary functions for the EOO object that is returned. We can also extract the area of the EOO polygon. 
 
-```{r Calculating EOO area, eval = TRUE}
+```{r View EOO, fig.width=7, fig.height=7, eval = F}
+
+#summarise and plot
+summary(EOO.polygon)
+plot(EOO.polygon)
+
+#area
 EOO.area <- getAreaEOO(EOO.polygon)
 
 #or, alternately, extract the EOO directly from the object. 
 EOO.area <- EOO.polygon@EOO
+
+EOO.area
 ```
 
-The calculated EOO area for this subset of mangroves in Victoria is
-`r EOO.area` km2. This result can then be combined with additional
+
+This result can then be combined with additional
 information required under B1(a-c) to assess the ecosystem under
 subcriteria B1.
 
@@ -290,25 +295,26 @@ subcriteria B1.
 For subcriterion B2, we will need to calculate the number of 10x10 km
 grid cells occupied by our distribution. The `getAOO()` function uses a
 random grid search to find the optimal grid with the fewest cells. For
-ecosystems that are contained in more than 60 grid cells, the default
+ecosystems that are contained in more than 100 grid cells, the default
 grid is used, as a random grid search is unlikely to yield results near
 the IUCN Criteria thresholds.
 
-```{r Creating AOO grid, fig.width=7, fig.height=7, eval = TRUE, fig.alt='Area of occupancy of 2017 mangrove distribution map'}
+```{r Creating AOO grid, eval = F}
 AOO.grid <- getAOO(mangrove.2017, cell_size = 10000)
 
+```
+
+Once more, the output object has some handy summary functions defined:
+
+```{r view and summarise AOO, eval = F, fig.width=7, fig.height=7}
 # summary
 summary(AOO.grid)
 
 # handy plotting function
 plot(AOO.grid)
-
 ```
 
-Both the `getEOO` and `getAOO` functions work on polygons too. See
-vignette [Ecosystem distribution data in raster and vector
-format](redlistr-raster-vector.html) for instruction on how to read
-ecosystem distribution data in other formats.
+Both the `getEOO()` and `getAOO()` functions work on polygons too. 
 
 We can run some diagnostics to ensure we have the best grid. The
 jitter-plot (jplot) shows how the number of cells decreased as the
@@ -316,21 +322,34 @@ random search iterations increased. The plot should fall to the minimum
 number early and stay flat. You can also plot a histogram of the AOO
 values generated with the random grid search iterations, and this should
 look like a bell curve in most cases, unless the number of grid cells is
-very low. If these plots look unconvincing, you can increase the number
-of iterations with the argument `n_jitter` directly in the `getAOO()`
-function.
+very low. 
 
-```{r Getting number of AOO grids, eval = TRUE, fig.alt='histogram of values generated with the jitter function'}
+```{r Getting number of AOO grids, eval = FALSE, fig.alt='histogram of values generated with the jitter function'}
 
 # jplot
 jplot(AOO.grid)
 
 # histogram of values generated with each rep
-hist(AOO.grid@AOOvals)
+hist(AOO.grid)
 
-# increase the number of iterations, if desired
-AOO.grid <- getAOO(mangrove.2017, cell_size = 10000, n_jitter = 150)
 ```
+
+If these plots look unconvincing, you can increase the number
+of iterations with the argument `n_jitter` directly in the `getAOO()`
+function.
+
+```{r increase iterations, eval = F}
+# increase the number of iterations, if desired
+AOO.grid_n150 <- getAOO(mangrove.2017, cell_size = 10000, n_jitter = 150)
+
+# You can rerun diagnostics here to check for improvement
+# jplot
+jplot(AOO.grid_n150)
+
+# histogram of AOO values generated with iterations
+hist(AOO.grid_n150)
+```
+
 
 #### One percent rule
 
@@ -350,19 +369,26 @@ this option should be turned off.
 Here, we demonstrate the differences between including or not including
 the one percent rule and changing the percent parameter:
 
-```{r One percent grid, fig.width=14, fig.height=5, eval = TRUE, fig.alt='Testing options of AOO metric for 2017 mangrove distribution map'}
+```{r One percent grid, eval = F}
 AOO.grid.keep.all <- getAOO(mangrove.2017, cell_size = 10000, 
                             bottom_1pct_rule = F, n_jitter = 150)
 AOO.grid.5.pct <- getAOO(mangrove.2017, cell_size = 10000, 
                          bottom_1pct_rule = T, n_jitter = 150, percent = 5)
+
+```
+
+
+Let's compare the results:
+
+```{r View percent rule results, fig.width=14, fig.height=5, eval = TRUE, fig.alt='Testing options of AOO metric for 2017 mangrove distribution map', eval = F}
 par(mfrow = c(1,3))
 plot(AOO.grid.keep.all, title = "Keep all")
-plot(AOO.grid, title = "Remove bottom 1% (default)")
+plot(AOO.grid_n150, title = "Remove bottom 1% (default)")
 plot(AOO.grid.5.pct, title = "Remove bottom 5%")
 par(mfrow = c(1,1))
 
-
 ```
+
 
 ## 5. Final words
 
