@@ -31,10 +31,12 @@ getArea.SpatRaster <- function(x, names_from = NA,...){
   cell_area_km2 <- cell_area_m2 / 1e6
 
   # count cells by value
-  freq <- terra::freq(x, useNA = "no")
+  freq <- terra::freq(x, usenames = TRUE)
 
   # compute area
   freq$area <- freq$count * cell_area_km2
+
+  freq <- freq[,c("layer", "value", "area")]
 
   return(freq)
 }
