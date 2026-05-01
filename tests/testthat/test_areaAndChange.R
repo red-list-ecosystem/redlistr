@@ -6,7 +6,7 @@ test_that("input cannot be in lonlat crs",{
 test_that("accepts different input rasters", {
   # Dummy rasters for testing
   r <- rast(nrows=10, ncols=10)
-  crs(r) <- "epsg:32755"
+  crs(r) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs"
   r.bin <- r
   values(r.bin) <- 1
   r.multiple <- r
@@ -20,7 +20,7 @@ test_that("accepts different input rasters", {
 test_that("output is a single value", {
   # Dummy raster
   r <- rast(nrows=10, ncols=10)
-  crs(r) <- "epsg:32755"
+  crs(r) <- "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs"
   values(r) <- rep(c(1, NA), 50)
 
   expect_equal(nrow(getArea(r)), 1)

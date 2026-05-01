@@ -49,7 +49,7 @@ important for assessing the IUCN Red List of Ecosystems Criteria B.
 if (requireNamespace("terra", quietly = TRUE)) {
   ok <- try({
       m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-      r1 <- terra::rast(m, crs = "EPSG:32755")
+      r1 <- terra::rast(m, crs = "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs")
       AOO_grid <- makeAOOGrid(r1, cell_size = 3)
   }, silent = TRUE)
 }

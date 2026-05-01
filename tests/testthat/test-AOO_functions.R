@@ -1,6 +1,4 @@
 test_that("accepts different format", {
-  skip_if_not_installed("terra")
-  skip_if(Sys.getenv("CI") == "true")  # optional
 
   set.seed(1)
 
@@ -23,7 +21,7 @@ test_that("accepts different format", {
   expect_equal(getAOO(poly_sf, 1, jitter = F)@AOO, 21)
 
   #Raster
-  r <- rast(nrows=10, ncols=10, crs = "epsg:32755")
+  r <- rast(nrows=10, ncols=10, crs = "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs")
   values(r) <- 1
 
 

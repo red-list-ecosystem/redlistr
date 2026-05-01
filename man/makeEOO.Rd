@@ -28,7 +28,7 @@ half of the shorter edge of the pixel around the centroid.
 if (requireNamespace("terra", quietly = TRUE)) {
   ok <- try({
      m <- matrix(sample(1:4, 500, replace = TRUE, prob = c(4,1,1,6)), nrow=25, ncol=20)
-     r1 <- terra::rast(m, crs = "EPSG:32755")
+     r1 <- terra::rast(m, crs = "+proj=utm +zone=55 +south +datum=WGS84 +units=m +no_defs")
      EOO.polygon <- makeEOO(r1)
   }, silent = TRUE)
 }
