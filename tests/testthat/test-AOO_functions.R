@@ -1,4 +1,7 @@
 test_that("accepts different format", {
+  skip_if_not_installed("terra")
+  skip_if(Sys.getenv("CI") == "true")  # optional
+
   set.seed(1)
 
   # sf POINTS
