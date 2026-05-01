@@ -60,9 +60,7 @@ mangrove.2017 <- rast(system.file("extdata", "example_distribution_2017.tif",
 
 ### Alternative formats
 
-See vignette [Ecosystem distribution data in raster and vector
-format](redlistr-raster-vector.html) for instruction on how to read
-ecosystem distribution data in other formats.
+Polygon or any shapefile data may be read in using sf::st_read() and point data in table format can be read in using read.csv() followed by sf::st_as_sf() to convert points into a spatial object. See function documentation in the sf package for more detailed instructions.
 
 ### Plotting out data
 
@@ -131,9 +129,6 @@ layers at once by combining them into a raster stack:
 a <- getArea(c(mangrove.2000, mangrove.2017))
 ```
 
-See vignette [Scaling up Red List of Ecosystem
-assessments](scaling-up-assessments.html) for instruction on how to work
-with multiple ecosystem maps.
 
 ## 4. Assessing Criterion A
 
