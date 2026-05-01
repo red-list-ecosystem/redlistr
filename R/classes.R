@@ -60,8 +60,15 @@ methods::setMethod(
     cat(" Area of occupied grids", (object@params$cellsize^2 * object@AOO) / 1000000, "km^2\n")
 
     # Show extent and CRS if available
+    crs_val <- try(sf::st_crs(object@grid), silent = TRUE)
+    if (!inherits(crs_val, "try-error") && !is.null(crs_val)) {
+      crs_val <- crs_val$input
+    } else {
+      crs_val <- NA
+    }
+
     if (inherits(object@grid, "sf")) {
-      cat(" CRS:", sf::st_crs(object@grid)$input, "\n")
+      cat(" CRS:", crs_val, "\n")
       bbox <- sf::st_bbox(object@grid)
       cat(" Grid extent:\n")
       print(bbox)
@@ -87,11 +94,19 @@ methods::setMethod(
 methods::setMethod(
   "show", "AOOgrid",
   function(object) {
+
+    crs_val <- try(sf::st_crs(object@grid), silent = TRUE)
+    if (!inherits(crs_val, "try-error") && !is.null(crs_val)) {
+      crs_val <- crs_val$input
+    } else {
+      crs_val <- NA
+    }
+
     cat("<AOO_grid object>\n")
     cat("  Cells:", object@AOO, "\n")
     if (!is.null(object@params$cellsize))
       cat("  Cell size:", object@params$cellsize, "\n")
-    cat("  CRS:", sf::st_crs(object@grid)$epsg, "\n")
+    cat("  CRS:", crs_val, "\n")
   }
 )
 
@@ -152,7 +167,7 @@ methods::setMethod(
     if (!is.null(x@input)) {
       p <- leaflet::leaflet() |>
         leaflet::addProviderTiles("CartoDB.Positron") |>
-        leaflet::addPolygons(data = sf::st_transform(x@grid, 4326), color = "black", weight = 1, fillColor = "none", group = "AOOgrid") |>
+        leaflet::addPolygons(data = safe_transform(x@grid, 4326), color = "black", weight = 1, fillColor = "none", group = "AOOgrid") |>
          leaflet::addControl(
           html = paste("<div style='background:white; padding:8px; font-weight:bold;'>
               ", title, "</div>"),
@@ -170,17 +185,17 @@ methods::setMethod(
       if (inherits(x@input, "sf")) {
         if(any(st_geometry_type(x@input) |> unique() |> as.character() %in% c("POLYGON", "MULTIPOLYGON"))){
           p <- p |>
-            leaflet::addPolygons(data = sf::st_transform(x@input, 4326), fillColor = "darkgreen", fillOpacity = 0.85, color = "gray30", weight = 1, group = "Input")
+            leaflet::addPolygons(data = safe_transform(x@input, 4326), fillColor = "darkgreen", fillOpacity = 0.85, color = "gray30", weight = 1, group = "Input")
 
         }
         if(any(st_geometry_type(x@input) |> unique() |> as.character() %in% c("POINT", "MULTIPOINT"))){
           p <- p |>
-            leaflet::addCircleMarkers(data = sf::st_transform(x@input, 4326), radius = 3, color = "darkgreen", weight = 0, group = "Input")
+            leaflet::addCircleMarkers(data = safe_transform(x@input, 4326), radius = 3, color = "darkgreen", weight = 0, group = "Input")
         }
 
       } else if (inherits(x@input, "SpatRaster")) {
         p <- p |>
-          leaflet::addRasterImage(x = terra::project(x@input, "EPSG:4326"),
+          leaflet::addRasterImage(x = safe_project(x@input, "EPSG:4326"),
                                   colors = function(x) ifelse(is.na(x), NA, "darkgreen"),
                                   opacity = 0.85,
                                   group = "Input")
@@ -253,9 +268,16 @@ methods::setClass(
 #' @param object an EOO object
 #' @export
 methods::setMethod("show", "EOO", function(object) {
+  crs_val <- try(sf::st_crs(object@grid), silent = TRUE)
+  if (!inherits(crs_val, "try-error") && !is.null(crs_val)) {
+    crs_val <- crs_val$input
+  } else {
+    crs_val <- NA
+  }
+
   cat("Class 'EOO'\n")
   cat("  EOO area:", format(object@EOO, big.mark = ","), object@unit , "\n", sep = " ")
-  cat("  CRS:", sf::st_crs(object@pol)$input, "\n")
+  cat("  CRS:", crs_val, "\n")
   cat("  Input object class: ", class(object@input)[1], "\n", sep = "")
 })
 
@@ -266,10 +288,18 @@ methods::setMethod("show", "EOO", function(object) {
 #' @param object an EOO object
 #' @export
 methods::setMethod("summary", "EOO", function(object) {
+
+  crs_val <- try(sf::st_crs(object@grid), silent = TRUE)
+  if (!inherits(crs_val, "try-error") && !is.null(crs_val)) {
+    crs_val <- crs_val$input
+  } else {
+    crs_val <- NA
+  }
+
   cat(object@name, ": EOO object\n")
   cat("----------------------------\n")
   cat(" EOO area: ", format(object@EOO, big.mark = ","), " square kms\n", sep = "")
-  cat(" CRS:", sf::st_crs(object@pol)$input, "\n")
+  cat(" CRS:", crs_val, "\n")
   cat(" Input data class: ", class(object@input)[1], "\n", sep = "")
 
   if (inherits(object@input, "sf")) {
@@ -336,7 +366,7 @@ methods::setMethod("plot", "EOO", function(x, title = x@name) {
   # --- Leaflet plot ---
   p <-  leaflet::leaflet() |>
     leaflet::addProviderTiles("CartoDB.Positron") |>
-    leaflet::addPolygons(data = sf::st_transform(x@pol, 4326),
+    leaflet::addPolygons(data = safe_transform(x@pol, 4326),
                          color = "black",
                          weight = 1, fillColor = "gray", fillOpacity = 0.2,
                          group = "EOO_polygon") |>
@@ -356,14 +386,14 @@ methods::setMethod("plot", "EOO", function(x, title = x@name) {
 
   if (inherits(x@input, "sf")) {
     if(any(st_geometry_type(x@input) |> unique() |> as.character() %in% c("POLYGON", "MULTIPOLYGON"))){
-      p <- p |> leaflet::addPolygons(data = sf::st_transform(x@input, 4326), fillColor = "darkgreen", fillOpacity = 0.85, color = "none", weight = 0, group = "Input")
+      p <- p |> leaflet::addPolygons(data = safe_transform(x@input, 4326), fillColor = "darkgreen", fillOpacity = 0.85, color = "none", weight = 0, group = "Input")
     }
     if(any(st_geometry_type(x@input) |> unique() |> as.character() %in% c("POINT", "MULTIPOINT"))){
-      p <- p |> leaflet::addCircleMarkers(data = sf::st_transform(x@input, 4326), radius = 3, color = "darkgreen", weight = 0, group = "Input")
+      p <- p |> leaflet::addCircleMarkers(data = safe_transform(x@input, 4326), radius = 3, color = "darkgreen", weight = 0, group = "Input")
       }
 
   } else if (inherits(x@input, "SpatRaster")) {
-    p <- p |> leaflet::addRasterImage(x = terra::project(x@input, "EPSG:4326"),
+    p <- p |> leaflet::addRasterImage(x = safe_project(x@input, "EPSG:4326"),
                                       colors = function(x) ifelse(is.na(x), NA, "darkgreen"),
                                       opacity = 0.85,
                                       group = "Input")
