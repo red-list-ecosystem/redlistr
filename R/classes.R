@@ -268,7 +268,7 @@ methods::setClass(
 #' @param object an EOO object
 #' @export
 methods::setMethod("show", "EOO", function(object) {
-  crs_val <- try(sf::st_crs(object@grid), silent = TRUE)
+  crs_val <- try(sf::st_crs(object@pol), silent = TRUE)
   if (!inherits(crs_val, "try-error") && !is.null(crs_val)) {
     crs_val <- crs_val$input
   } else {
@@ -289,7 +289,7 @@ methods::setMethod("show", "EOO", function(object) {
 #' @export
 methods::setMethod("summary", "EOO", function(object) {
 
-  crs_val <- try(sf::st_crs(object@grid), silent = TRUE)
+  crs_val <- try(sf::st_crs(object@pol), silent = TRUE)
   if (!inherits(crs_val, "try-error") && !is.null(crs_val)) {
     crs_val <- crs_val$input
   } else {
