@@ -15,12 +15,13 @@
 #' @export
 
 getArea <- function(x, names_from = NA, ...){
-  if(st_is_longlat(x)){
+  if(sf::st_is_longlat(x)){
     stop('Input has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
   }
   UseMethod("getArea", x)
 }
 
+#' @method getArea SpatRaster
 #' @export
 getArea.SpatRaster <- function(x, names_from = NA,...){
   # resolution in map units (assumed meters)
@@ -41,6 +42,7 @@ getArea.SpatRaster <- function(x, names_from = NA,...){
   return(freq)
 }
 
+#' @method getArea SpatVector
 #' @export
 getArea.SpatVector <- function(x, names_from = NA, ...){
   x <- st_as_sf(x)
@@ -70,6 +72,7 @@ getArea.SpatVector <- function(x, names_from = NA, ...){
     dplyr::select(-area)
 }
 
+#' @method getArea sf
 #' @export
 getArea.sf <- function(x, names_from = NA, ...) {
   if(missing(names_from)){
@@ -140,6 +143,7 @@ getAreaChange <- function(x, y, names_from_x = NA, names_from_y = NA){
  UseMethod("getAreaChange", x)
 }
 
+#' @method getAreaChange SpatRaster
 #' @export
 getAreaChange.SpatRaster <- function(x, y, names_from_x = NA, names_from_y = NA){
   a.x <- getArea(x)
@@ -152,6 +156,7 @@ getAreaChange.SpatRaster <- function(x, y, names_from_x = NA, names_from_y = NA)
   return(adiff)
 }
 
+#' @method getAreaChange SpatVector
 #' @export
 getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA){
 
@@ -200,6 +205,7 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
 
 }
 
+#' @method getAreaChange sf
 #' @export
 getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
 
@@ -248,6 +254,7 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
 
 }
 
+#' @method getAreaChange data.frame
 #' @export
 getAreaChange.data.frame <- function(x, y, names_from_x = NA, names_from_y = NA) {
   a.x <- x
@@ -298,6 +305,7 @@ getAreaTrend <- function(x, names_from = NA){
   UseMethod("getAreaTrend", x)
 }
 
+#' @method getAreaTrend SpatRaster
 #' @export
 getAreaTrend.SpatRaster <- function(x, names_from = NA){
 
@@ -338,6 +346,7 @@ if(length(trend_list)<=1) trend_list <- trend_list[[1]]
 return(trend_list)
 }
 
+#' @method getAreaTrend data.frame
 #' @export
 getAreaTrend.data.frame <- function(x, names_from = NA){
   names_from <- dplyr::coalesce(names_from, "ecosystem_name")

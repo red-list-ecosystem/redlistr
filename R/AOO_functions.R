@@ -20,7 +20,7 @@
 #'   <https://iucnrle.org/>
 
 createGrid <- function(input_data, cell_size = 10000){
-  grid <- terra::rast(ext(input_data), res = cell_size, crs = crs(input_data))
+  grid <- terra::rast(terra::ext(input_data), res = cell_size, crs = terra::crs(input_data))
   grid.expanded <- terra::extend(grid, c(2,2)) # grow the grid by 2 each way
   grid.expanded[] <- 1:(ncell(grid.expanded))  # number the cells
   return (grid.expanded)
@@ -97,11 +97,12 @@ makeAOOGrid <- function(input_data, cell_size = 10000, names_from = NA, bottom_1
   UseMethod("makeAOOGrid", input_data)
 }
 
+#' @method makeAOOGrid SpatRaster
 #' @export
 makeAOOGrid.SpatRaster <-
   function(input_data, cell_size, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
 
-    if (is.lonlat(input_data)) { # check CRS
+    if (terra::is.lonlat(input_data)) { # check CRS
       stop("AOO cannot be calculated in a geographic coordinate reference system. Use terra::project() to change to a planar CRS.")
     }  # check CRS
 
@@ -143,15 +144,16 @@ makeAOOGrid.SpatRaster <-
    return(AOO_grid)
   }
 
+#' @method makeAOOGrid sf
 #' @export
 makeAOOGrid.sf <-
   function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
     # deal with any invalid geometries early.
-    if(any(!st_is_valid(input_data))){
-      input_data <- st_make_valid(input_data)
+    if(any(!sf::st_is_valid(input_data))){
+      input_data <- sf::st_make_valid(input_data)
     }
     # check CRS
-    if (st_is_longlat(input_data)) { # check CRS
+    if (sf::st_is_longlat(input_data)) { # check CRS
       stop("AOO cannot be calculated in a geographic coordinate reference system. Use st_transform() to change to a planar CRS.")
     }
 
@@ -249,6 +251,7 @@ makeAOOGrid.sf <-
      }  ## case where there are unusual geometries in the input data.
   }
 
+#' @method makeAOOGrid AOOgrid
 #' @export
 makeAOOGrid.AOOgrid <-
   function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35){
@@ -303,7 +306,7 @@ getAOO <-  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_
 }
 
 
-#'
+#' @method getAOO SpatRaster
 #' @export
 getAOO.SpatRaster <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
 
@@ -344,6 +347,7 @@ getAOO.SpatRaster <- function(input_data, cell_size = 10000, names_from = NA, bo
   }
 }
 
+#' @method getAOO sf
 #' @export
 getAOO.sf <-  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35){
   # deal with any invalid geometries early.

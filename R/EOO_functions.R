@@ -32,6 +32,7 @@
 
 makeEOO <- function(input_data, names_from) UseMethod("makeEOO", input_data)
 
+#' @method makeEOO SpatRaster
 #' @export
 makeEOO.SpatRaster <- function(input_data, names_from = NA){
   EOO.points <- as.points(input_data)
@@ -42,6 +43,7 @@ makeEOO.SpatRaster <- function(input_data, names_from = NA){
   return(EOO.polygon)
 }
 
+#' @method makeEOO sf
 #' @export
 makeEOO.sf <- function(input_data, names_from = NA){
   # deal with any invalid geometries early.
@@ -58,6 +60,7 @@ makeEOO.sf <- function(input_data, names_from = NA){
 return(EOO.polygon)
 }
 
+#' @method makeEOO SpatVector
 #' @export
 makeEOO.SpatVector <- function(input_data, names_from = NA){
 input_data <- st_sf(input_data)
@@ -93,6 +96,7 @@ return(makeEOO.sf(input_data, names_from))
 
 getEOO <- function(input_data, names_from = NA) UseMethod("getEOO", input_data)
 
+#' @method getEOO SpatRaster
 #' @export
 getEOO.SpatRaster<- function(input_data, names_from = NA){
 
@@ -115,6 +119,7 @@ values <- sort(unique(terra::values(input_data)))
   if(length(EOO_list) == 1) return(EOO_list[[1]]) else return(EOO_list)
 }
 
+#' @method getEOO sf
 #' @export
 getEOO.sf <- function(input_data, names_from = NA){
 
@@ -144,6 +149,7 @@ getEOO.sf <- function(input_data, names_from = NA){
   if(length(EOO_list) == 1) return(EOO_list[[1]]) else return(EOO_list)
 }
 
+#' @method getEOO SpatVector
 #' @export
 getEOO.SpatVector <- function(input_data, names_from = NA){
   input_data <- st_sf(input_data)

@@ -9,11 +9,11 @@
 #' @family synthesis functions
 #' @export
 
-
 bundle <-  function(input_data, names_from = NA, ...) {
   UseMethod("bundle", input_data)
 }
 
+#' @method bundle sf
 #' @export
 bundle.sf <-  function(input_data, names_from = NA, ...){
   eoo <- getEOO(input_data, names_from = names_from)
@@ -25,6 +25,7 @@ bundle.sf <-  function(input_data, names_from = NA, ...){
   merge(aootable, eootable, by = c("name", "input_class"))
 }
 
+#' @method bundle SpatRaster
 #' @export
 bundle.SpatRaster <- function(input_data, ...){
   eoo <- getEOO(input_data)
