@@ -23,8 +23,20 @@ getArea <- function(x, names_from = NA, ...){
 
 #' @export
 getArea.SpatRaster <- function(x, names_from = NA,...){
-  area <- terra::expanse(x, "km", byValue=TRUE, usenames = TRUE)
-  return(area)
+  # resolution in map units (assumed meters)
+  res_xy <- terra::res(x)
+  cell_area_m2 <- res_xy[1] * res_xy[2]
+
+  # convert to km²
+  cell_area_km2 <- cell_area_m2 / 1e6
+
+  # count cells by value
+  freq <- terra::freq(x, useNA = "no")
+
+  # compute area
+  freq$area <- freq$count * cell_area_km2
+
+  return(freq)
 }
 
 #' @export
