@@ -69,7 +69,9 @@ top_pct <- function(v, pct = 99) {
 #' ecosystem area are dropped up to 1% of the total distribution.
 #' @param percent Numeric. The minimum percent to be applied as a threshold for
 #'   the `bottom_1pct_rule`
-#' @param jitter logical. Whether grid randomization should be applied to units with low grid counts.
+#' @param jitter Integer. 0 = do not jitter, 1 = force jitter, another number
+#' indicates conditional jitter, the number of AOO cells under which to jitter,
+#' and over which not to jitter the grid.
 #' @param n_jitter the number of grids to test for ecosystems near
 #' the AOO thresholds. Ignored if jitter = FALSE.
 #' @return A shapefile of grid cells occupied by an ecosystem or species, or a
@@ -93,14 +95,14 @@ top_pct <- function(v, pct = 99) {
 #' @export
 
 
-makeAOOGrid <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
+makeAOOGrid <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = 150, n_jitter = 35) {
   UseMethod("makeAOOGrid", input_data)
 }
 
 #' @method makeAOOGrid SpatRaster
 #' @export
 makeAOOGrid.SpatRaster <-
-  function(input_data, cell_size, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
+  function(input_data, cell_size, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = 150, n_jitter = 35) {
 
     # if (terra::is.lonlat(input_data)) { # check CRS
     #   stop("AOO cannot be calculated in a geographic coordinate reference system. Use terra::project() to change to a planar CRS.")
@@ -109,7 +111,7 @@ makeAOOGrid.SpatRaster <-
 
     grid <- createGrid(input_data, cell_size)
 
-    if(jitter){
+    if(jitter>0){
       dx <- stats::runif(1, -1, 1) * cell_size/2
       dy <- stats::runif(1, -1, 1) * cell_size/2
 
@@ -147,7 +149,7 @@ makeAOOGrid.SpatRaster <-
 #' @method makeAOOGrid sf
 #' @export
 makeAOOGrid.sf <-
-  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
+  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = 150, n_jitter = 35) {
     # deal with any invalid geometries early.
     if(any(!sf::st_is_valid(input_data))){
       input_data <- sf::st_make_valid(input_data)
@@ -167,7 +169,7 @@ makeAOOGrid.sf <-
 
     # create assessment grid
     grid <- createGrid(input_data, cell_size)
-    if(jitter){
+    if(jitter>0){
       dx <- stats::runif(1, -1, 1) * cell_size/2
       dy <- stats::runif(1, -1, 1) * cell_size/2
 
@@ -254,7 +256,7 @@ makeAOOGrid.sf <-
 #' @method makeAOOGrid AOOgrid
 #' @export
 makeAOOGrid.AOOgrid <-
-  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35){
+  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = 150, n_jitter = 35){
 
     # flag NA values for computation purposes
    if (inherits(input_data@input, "SpatRaster")){
@@ -274,7 +276,7 @@ makeAOOGrid.AOOgrid <-
        name = input_data@name,
        grid = best_grid,
        AOO = nrow(best_grid),
-       params = list(cellsize = cell_size, jitter = jitter, pct = percent, n = n_jitter),
+       params = list(cellsize = cell_size, jitter = ifelse(jitter>= 1, TRUE, FALSE), pct = percent, n = n_jitter),
        pctrule = bottom_1pct_rule,
        input = input_data@input,
        AOOvals = AOO_vals)
@@ -301,14 +303,14 @@ makeAOOGrid.AOOgrid <-
 #'   Switzerland: IUCN. ix + 94pp. Available at the following web site:
 #'   <https://iucnrle.org/>
 #' @export
-getAOO <-  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
+getAOO <-  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = 150, n_jitter = 35) {
   UseMethod("getAOO", input_data)
 }
 
 
 #' @method getAOO SpatRaster
 #' @export
-getAOO.SpatRaster <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35) {
+getAOO.SpatRaster <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = 150, n_jitter = 35) {
 
   message("Initialising grids")
   AOO_grid <- makeAOOGrid(input_data, cell_size, bottom_1pct_rule, percent, jitter)
@@ -326,30 +328,42 @@ getAOO.SpatRaster <- function(input_data, cell_size = 10000, names_from = NA, bo
                                          name = names(binary_rasters)[[x]],
                                          grid = AOO_grid[[x]],
                                          AOO = nrow(AOO_grid[[x]]),
-                                         params = list(cellsize = cell_size, jitter = jitter, pct = percent),
+                                         params = list(cellsize = cell_size, jitter = ifelse(jitter >= 1, TRUE, FALSE), pct = percent),
                                          pctrule = bottom_1pct_rule,
                                          input = binary_rasters[[x]])) |>
     stats::setNames(paste0("value_", sort(unique(terra::values(input_data)))))
 
-  # run grid jitter on units with AOO near a threshold
-  if(jitter){
-    message("Running jitter on units with 100 or fewer cells")
+  # run grid jitter according to jitter argument
+  if(jitter > 1){
+    message(paste("Running jitter on units with ", jitter, " or fewer cells"))
     AOOgrid_list <- lapply(seq_along(AOOgrid_list),
                            function(x) {
-                             if(AOOgrid_list[[x]]@AOO <= 100 & AOOgrid_list[[x]]@AOO > 2) {
+                             if(AOOgrid_list[[x]]@AOO <= jitter & AOOgrid_list[[x]]@AOO >= 2) {
+                                 message(names(AOOgrid_list)[[x]])
+                                 message(paste("jittering n = ", n_jitter))
+                               return(makeAOOGrid(AOOgrid_list[[x]], n_jitter = n_jitter, cell_size = cell_size, bottom_1pct_rule = bottom_1pct_rule, percent = percent, jitter = jitter))
+                               } else {
+                                 AOOgrid_list[[x]]@params$jitter <- FALSE
+                                 return(AOOgrid_list[[x]])}})
+  } else if (jitter == 1) {
+    message("Running jitter on all units")
+    AOOgrid_list <- lapply(seq_along(AOOgrid_list),
+                           function(x) {
                                message(names(AOOgrid_list)[[x]])
                                message(paste("jittering n = ", n_jitter))
                                return(makeAOOGrid(AOOgrid_list[[x]], n_jitter = n_jitter, cell_size = cell_size, bottom_1pct_rule = bottom_1pct_rule, percent = percent, jitter = jitter))
-                               } else { return(AOOgrid_list[[x]])}})
-    AOOgrid_list <- stats::setNames(AOOgrid_list, names(AOO_grid))
+  })
 
-    if(length(AOOgrid_list) == 1) return(AOOgrid_list[[1]]) else return(AOOgrid_list)
+
   }
+
+  AOOgrid_list <- stats::setNames(AOOgrid_list, names(AOO_grid))
+  if(length(AOOgrid_list) == 1) return(AOOgrid_list[[1]]) else return(AOOgrid_list)
 }
 
 #' @method getAOO sf
 #' @export
-getAOO.sf <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = TRUE, n_jitter = 35){
+getAOO.sf <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = 150, n_jitter = 35){
   # deal with any invalid geometries early.
   if(any(!st_is_valid(input_data))){
     input_data <- st_make_valid(input_data)
@@ -370,21 +384,31 @@ getAOO.sf <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pc
                                          name = names(input_split)[[x]],
                                          grid = AOO_grid[[x]],
                                          AOO = nrow(AOO_grid[[x]]),
-                                         params = list(cellsize = cell_size, jitter = jitter, pct = percent),
+                                         params = list(cellsize = cell_size, jitter = ifelse(jitter >= 1, TRUE, FALSE), pct = percent),
                                          pctrule = bottom_1pct_rule,
                                          input = input_split[[x]]))
 
 
-  # run grid jitter on units with AOO near a threshold
-  if(jitter){
-    message(paste("Running jitter on units with 100 or fewer cells, n =", n_jitter))
-    AOOgrid_list <- lapply(1:length(AOOgrid_list),
-                           function(x){
-                             if(AOOgrid_list[[x]]@AOO <= 100 & AOOgrid_list[[x]]@AOO > 2) {
-                               message(paste("jittering ", AOOgrid_list[[x]]@name))
-                               return(makeAOOGrid(AOOgrid_list[[x]], names_from = names_from, cell_size = cell_size, bottom_1pct_rule = bottom_1pct_rule, jitter = jitter, percent = percent, n_jitter = n_jitter))
-                               } else {return(AOOgrid_list[[x]])}
-                           }  )
+ # run grid jitter according to jitter argument
+  if(jitter > 1){
+    message(paste("Running jitter on units with ", jitter, " or fewer cells"))
+    AOOgrid_list <- lapply(seq_along(AOOgrid_list),
+                           function(x) {
+                             if(AOOgrid_list[[x]]@AOO <= jitter & AOOgrid_list[[x]]@AOO >= 2) {
+                               message(names(AOOgrid_list)[[x]])
+                               message(paste("jittering n = ", n_jitter))
+                               return(makeAOOGrid(AOOgrid_list[[x]], n_jitter = n_jitter, cell_size = cell_size, bottom_1pct_rule = bottom_1pct_rule, percent = percent, jitter = jitter))
+                             } else {
+                               AOOgrid_list[[x]]@params$jitter <- FALSE
+                               return(AOOgrid_list[[x]])}})
+  } else if (jitter == 1) {
+    message("Running jitter on all units")
+    AOOgrid_list <- lapply(seq_along(AOOgrid_list),
+                           function(x) {
+                             message(names(AOOgrid_list)[[x]])
+                             message(paste("jittering n = ", n_jitter))
+                             return(makeAOOGrid(AOOgrid_list[[x]], n_jitter = n_jitter, cell_size = cell_size, bottom_1pct_rule = bottom_1pct_rule, percent = percent, jitter = jitter))
+                           })
   }
 
   names(AOOgrid_list) <- names(input_split)
