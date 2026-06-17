@@ -109,7 +109,7 @@ galah_call() |>
     ## # A tibble: 10 × 2
     ##    dataResourceName                                  count
     ##    <chr>                                             <int>
-    ##  1 NSW BioNet Atlas                                    925
+    ##  1 NSW BioNet Atlas                                    957
     ##  2 iNaturalist Australia                                54
     ##  3 Butterflies Australia                                27
     ##  4 Museum of Comparative Zoology, Harvard University    17
@@ -365,9 +365,11 @@ best_AOO <- getAOO(projected_points,
 
     ## Assembling initial grids
 
-    ## Running jitter on units with 100 or fewer cells, n = 99
+    ## Running jitter on all units
 
-    ## jittering  unnamed ecosystem type
+    ## 
+
+    ## jittering n =  99
 
 We can use this code to calculate the result in area of occupancy by
 multiplying the number of cells with their area in square km.

@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Calculating spatial metrics for IUCN RLTS assessments">
 </head>
@@ -180,7 +180,7 @@ concatenated by a “pipe” (<code>|&gt;</code>):</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 10 × 2</span></span></span>
 <span><span class="co">##    dataResourceName                                  count</span></span>
 <span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> NSW BioNet Atlas                                    925</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> NSW BioNet Atlas                                    957</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 2</span> iNaturalist Australia                                54</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 3</span> Butterflies Australia                                27</span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 4</span> Museum of Comparative Zoology, Harvard University    17</span></span>
@@ -371,11 +371,12 @@ AOO.</p>
 <span>    <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Initialising grids</span></span></code></pre>
 <pre><code><span><span class="co">## Assembling initial grids</span></span></code></pre>
-<pre><code><span><span class="co">## Running jitter on units with 100 or fewer cells, n = 99</span></span></code></pre>
-<pre><code><span><span class="co">## jittering  unnamed ecosystem type</span></span></code></pre>
+<pre><code><span><span class="co">## Running jitter on all units</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## jittering n =  99</span></span></code></pre>
 <p>We can use this code to calculate the result in area of occupancy by
 multiplying the number of cells with their area in square km.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cellsize</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="va">best_AOO</span><span class="op">@</span><span class="va">params</span><span class="op">$</span><span class="va">cellsize</span>,<span class="st">'m'</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="st">'km2'</span><span class="op">)</span></span>
 <span><span class="va">AOOvals</span> <span class="op">&lt;-</span> <span class="va">best_AOO</span><span class="op">@</span><span class="va">AOOvals</span> <span class="op">*</span> <span class="va">cellsize</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">AOOvals</span><span class="op">)</span></span></code></pre></div>
@@ -389,7 +390,7 @@ reader.</p>
 <p>Finally, we can now visualise the results together with the input
 data to verify that they are all consistent. We use again the
 interactive functions in the <code>mapview</code> package:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/mapview/reference/mapView.html" class="external-link">mapview</a></span><span class="op">(</span><span class="va">projected_points</span>, hide<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/mapview/reference/mapView.html" class="external-link">mapview</a></span><span class="op">(</span><span class="va">best_AOO</span><span class="op">@</span><span class="va">grid</span><span class="op">)</span> <span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/mapview/reference/mapView.html" class="external-link">mapview</a></span><span class="op">(</span><span class="va">best_EOO</span><span class="op">@</span><span class="va">pol</span><span class="op">)</span></span></code></pre></div>

@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Working with raster and vector data">
 </head>
@@ -296,8 +296,9 @@ one ecosystem, you can leave out this argument.</p>
 <span><span class="va">AOO.poly</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2000.poly</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Initialising grids</span></span></code></pre>
 <pre><code><span><span class="co">## Assembling initial grids</span></span></code></pre>
-<pre><code><span><span class="co">## Running jitter on units with 100 or fewer cells, n = 35</span></span></code></pre>
-<pre><code><span><span class="co">## jittering  unnamed ecosystem type</span></span></code></pre>
+<pre><code><span><span class="co">## Running jitter on units with  150  or fewer cells</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## jittering n =  35</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="working-with-data-in-vector-format">4. Working with data in vector format<a class="anchor" aria-label="anchor" href="#working-with-data-in-vector-format"></a>
@@ -307,7 +308,7 @@ one ecosystem, you can leave out this argument.</p>
 </h3>
 <p>To import data from a shapefile (.shp) or other common vector
 formats, we can use the <code><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">sf::st_read</a></code> function.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my.shapefile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="st">'./path/to/folder/shapefile.shp'</span><span class="op">)</span></span>
 <span><span class="va">my.KML.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="st">'./path/to/folder/kmlfile.kml'</span><span class="op">)</span></span></code></pre></div>
 <p>Once these files are imported, they can then be converted into raster
@@ -322,7 +323,7 @@ accept vector format directly.</p>
 the column containing ecosystem labels into the names_from argument. If
 left empty, for polygon inputs the function will treat all polygons as
 part of a single ecosystem type.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># polygon example</span></span>
 <span><span class="va">polygons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'extdata/'</span>, <span class="st">'example_polygons.shp'</span>,</span>
 <span>  package <span class="op">=</span> <span class="st">"redlistr"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -334,7 +335,7 @@ part of a single ecosystem type.</p>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: 0 ymin: 0 xmax: 100 ymax: 100</span></span>
 <span><span class="co">## Projected CRS: WGS 84 / UTM zone 56S</span></span></code></pre>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poly_areas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getArea.html">getArea</a></span><span class="op">(</span><span class="va">polygons</span>, names_from <span class="op">=</span> <span class="st">"time1"</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>getAreaChange</code> function takes two inputs in the same
 format. It calculates the difference in area between two datasets, which
@@ -347,7 +348,7 @@ data.frame as the input. Note that when providing data frame and polygon
 inputs, the column name with unique ecosystem labels must be included in
 the function call. If the column name is different in the two inputs,
 both names must be provided in the same order as the input datasets.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># input rasters</span></span>
 <span><span class="va">area.change</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAreaChange.html">getAreaChange</a></span><span class="op">(</span><span class="va">mangrove.2000</span>, <span class="va">mangrove.2017</span><span class="op">)</span></span>
 <span></span>
@@ -367,7 +368,7 @@ both names must be provided in the same order as the input datasets.</p>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: 0 ymin: 0 xmax: 100 ymax: 100</span></span>
 <span><span class="co">## Projected CRS: WGS 84 / UTM zone 56S</span></span></code></pre>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">area.change</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAreaChange.html">getAreaChange</a></span><span class="op">(</span><span class="va">polygons</span>, <span class="va">polygonsT5</span>, </span>
 <span>  names_from_x <span class="op">=</span> <span class="st">"time1"</span>, </span>
 <span>  names_from_y <span class="op">=</span> <span class="st">"time5"</span><span class="op">)</span></span></code></pre></div>

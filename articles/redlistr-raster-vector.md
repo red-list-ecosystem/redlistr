@@ -274,9 +274,11 @@ AOO.poly <- getAOO(mangrove.2000.poly)
 
     ## Assembling initial grids
 
-    ## Running jitter on units with 100 or fewer cells, n = 35
+    ## Running jitter on units with  150  or fewer cells
 
-    ## jittering  unnamed ecosystem type
+    ## 
+
+    ## jittering n =  35
 
 ## 4. Working with data in vector format
 
