@@ -685,7 +685,7 @@ declineForecast <- function(x, y, names_from_x = NA, names_from_y = NA, t1, year
                                            ARC = decline_stats$ARC,
                                            nYears = forecast_year - t1)|>
   #convert extrapolated areas to forecasted percent declines.
-          mutate(change = forecast.area-area_change$area.x,
+          dplyr::mutate(change = forecast.area-area_change$area.x,
                  pct.change = 100*change/area_change$area.x)
   out <- decline.stats[,2:4] |> t() |> merge(extrapolated_area, by = 0)
   colnames(out)[1] <- "method"
