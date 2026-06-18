@@ -571,25 +571,29 @@ futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = 
 
 extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){
   y.t3 <- year.t1+nYears
-  out <- data.frame(forecast.year = y.t3)
+  #out <- data.frame(forecast.year = y.t3)
+  out <- numeric()
   if(!is.na(ARD)){
     A.ARD.t3 <- A.t1 - (ARD*nYears)
     if(A.ARD.t3 < 0) A.ARD.t3 = 0
-    out <- cbind(out, A.ARD.t3 = A.ARD.t3)
+    out <- c(out, A.ARD.t3 = A.ARD.t3)
   }
   if(!is.na(PRD)){
     A.PRD.t3 <- A.t1 * (1 -(PRD/100))^nYears
     if(A.PRD.t3 < 0) A.PRD.t3 = 0
-    out <- cbind(out, A.PRD.t3 = A.PRD.t3)
+    out <- c(out, A.PRD.t3 = A.PRD.t3)
   }
   if(!is.na(ARC)){
     A.ARC.t3 <- A.t1 * exp(ARC/100*nYears)
     if(A.ARC.t3 < 0) A.ARC.t3 = 0
-    out <- cbind(out, A.ARC.t3 = A.ARC.t3)
+    out <- c(out, A.ARC.t3 = A.ARC.t3)
   }
   if(all(c(is.na(PRD), is.na(ARD), is.na(ARC)))){
     stop("Please input at least one of 'ARD', 'PRD', or 'ARC'.")
   }
+
+  out <- data.frame(forecast.year = y.t3,forecast.area = out)
+  rownames(out) <- substr(rownames(out), 3, 5)
   return(out)
 }
 
@@ -654,4 +658,37 @@ sequentialExtrapolate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC
   out_df <- data.frame(years = years, ARD = ARD_seq,
                        PRD = PRD_seq, ARC = ARC_seq)
   return(out_df)
+}
+
+
+#' Decline forecasts
+#'
+#' `declineForecast` calculates rates of change from two inputs and extrapolates the
+#' rate of change to a desired future time interval.
+#'
+#' @inheritParams getAreaChange
+#' @param t1 numeric year of earliest dataset, corresponding to x
+#' @param year_diff numeric year difference bewteen x and y inputs
+#' @param forecast_year the desired year to which to forecast (or hindcast) change.
+#'
+#' @family change_functions
+#'
+#' @export
+
+declineForecast <- function(x, y, names_from_x = NA, names_from_y = NA, t1, year_diff, forecast_year=t1+50){
+  area_change <- getAreaChange(x, y, names_from_x, names_from_y)
+  decline_stats <- getDeclineStats(area_change$area.x, area_change$area.y, t1, t1+year_diff,
+                  methods = c('ARD', 'PRD', 'ARC'))
+  extrapolated_area <- extrapolateEstimate(area_change$area.x, year.t1 = t1,
+                                           ARD = decline_stats$ARD,
+                                           PRD = decline_stats$PRD,
+                                           ARC = decline_stats$ARC,
+                                           nYears = forecast_year - t1)|>
+  #convert extrapolated areas to forecasted percent declines.
+          mutate(change = forecast.area-area_change$area.x,
+                 pct.change = 100*change/area_change$area.x)
+  out <- decline.stats[,2:4] |> t() |> merge(extrapolated_area, by = 0)
+  colnames(out)[1] <- "method"
+  colnames(out)[2] <- "rate"
+  return(out)
 }
