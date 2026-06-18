@@ -275,9 +275,11 @@ Ecosystems assessment.</p>
 <span><span class="co">## See help("Deprecated") and help("redlistr-deprecated").</span></span></code></pre>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extrapolated.area</span></span></code></pre></div>
-<pre><code><span><span class="co">##   forecast.year A.ARD.t3 A.PRD.t3 A.ARC.t3</span></span>
-<span><span class="co">## 1          2050 9.769641 10.12401 10.12401</span></span></code></pre>
-<p>50 years from our first estimate is the year 2050.</p>
+<pre><code><span><span class="co">##     forecast.year forecast.area</span></span>
+<span><span class="co">## ARD          2050      9.769641</span></span>
+<span><span class="co">## PRD          2050     10.124007</span></span>
+<span><span class="co">## ARC          2050     10.124007</span></span></code></pre>
+<p>50 years from our first estimate is the year 2050, 2050, 2050.</p>
 <p>As we included all three methods of calculating rate of decline
 currently included in the package, the results produced shows three
 estimated areas under the various decline scenarios. It is important to
@@ -294,7 +296,7 @@ example assessment, our results here will be suitable for criterion A2b
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predicted.percent.loss</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">extrapolated.area</span><span class="op">$</span><span class="va">A.PRD.t3</span> <span class="op">-</span> <span class="va">a.2000</span><span class="op">$</span><span class="va">area</span><span class="op">)</span><span class="op">/</span><span class="va">a.2000</span><span class="op">$</span><span class="va">area</span> <span class="op">*</span> <span class="fl">100</span></span>
 <span><span class="va">predicted.percent.loss</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] -25.88078</span></span></code></pre>
+<pre><code><span><span class="co">## numeric(0)</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">

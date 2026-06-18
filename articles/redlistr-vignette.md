@@ -248,10 +248,12 @@ extrapolated.area <- futureAreaEstimate(a.2000$area, year.t1 = 2000,
 extrapolated.area
 ```
 
-    ##   forecast.year A.ARD.t3 A.PRD.t3 A.ARC.t3
-    ## 1          2050 9.769641 10.12401 10.12401
+    ##     forecast.year forecast.area
+    ## ARD          2050      9.769641
+    ## PRD          2050     10.124007
+    ## ARC          2050     10.124007
 
-50 years from our first estimate is the year 2050.
+50 years from our first estimate is the year 2050, 2050, 2050.
 
 As we included all three methods of calculating rate of decline
 currently included in the package, the results produced shows three
@@ -274,7 +276,7 @@ predicted.percent.loss <- (extrapolated.area$A.PRD.t3 - a.2000$area)/a.2000$area
 predicted.percent.loss
 ```
 
-    ## [1] -25.88078
+    ## numeric(0)
 
 ## 4. Assessing Criterion B (distribution size)
 
