@@ -142,7 +142,6 @@ makeAOOGrid.SpatRaster <-
     }
 
     AOO_grid <- lapply(AOO_grid, st_as_sf)
-
    return(AOO_grid)
   }
 
@@ -313,7 +312,7 @@ getAOO <-  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_
 getAOO.SpatRaster <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = 150, n_jitter = 35) {
 
   message("Initialising grids")
-  AOO_grid <- makeAOOGrid(input_data, cell_size, bottom_1pct_rule, percent, jitter)
+  AOO_grid <- makeAOOGrid(input_data = input_data, cell_size = cell_size, bottom_1pct_rule = bottom_1pct_rule, percent = percent, jitter = jitter)
 
   message("Assembling initial grids")
   # Split raster into list of binary rasters
@@ -370,7 +369,7 @@ getAOO.sf <- function(input_data, cell_size = 10000, names_from = NA, bottom_1pc
   }
 
   message("Initialising grids")
-  AOO_grid <- makeAOOGrid(input_data, cell_size, names_from, bottom_1pct_rule, percent, jitter)
+  AOO_grid <- makeAOOGrid(input_data = input_data, cell_size = cell_size, names_from = names_from, bottom_1pct_rule = bottom_1pct_rule, percent = percent, jitter = jitter)
 
   message("Assembling initial grids")
   names_from <- dplyr::coalesce(names_from, "ecosystem_name")
