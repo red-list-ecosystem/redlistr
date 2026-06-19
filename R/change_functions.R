@@ -671,8 +671,10 @@ sequentialExtrapolate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC
 #' @param year_diff numeric year difference bewteen x and y inputs
 #' @param forecast_year the desired year to which to forecast (or hindcast) change.
 #'
-#' @family change_functions
-#'
+#' @return returns a list of two elements: a table of areas and change in areas and
+#' a table of forecasts including decline rate, forecast area, and forecast percent decline.
+#' @author Aniko B. Toth \email{anikobtoth@@gmail.com}
+#' @family Change functions
 #' @export
 
 declineForecast <- function(x, y, names_from_x = NA, names_from_y = NA, t1, year_diff, forecast_year=t1+50){
@@ -685,10 +687,10 @@ declineForecast <- function(x, y, names_from_x = NA, names_from_y = NA, t1, year
                                            ARC = decline_stats$ARC,
                                            nYears = forecast_year - t1)|>
   #convert extrapolated areas to forecasted percent declines.
-          dplyr::mutate(change = forecast.area-area_change$area.x,
-                 pct.change = 100*change/area_change$area.x)
-  out <- decline.stats[,2:4] |> t() |> merge(extrapolated_area, by = 0)
+          dplyr::mutate(area.change = .data$forecast.area-area_change$area.x,
+                 pct.change = 100*.data$area.change/area_change$area.x)
+  out <- decline_stats[,2:4] |> t() |> merge(extrapolated_area, by = 0)
   colnames(out)[1] <- "method"
   colnames(out)[2] <- "rate"
-  return(out)
+  return(list(calibration_data = area_change, forecast = out))
 }

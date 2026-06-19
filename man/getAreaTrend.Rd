@@ -23,6 +23,7 @@ is a list can be used to easily visualise trends for one ecosystem at a time.
 }
 \seealso{
 Other Change functions: 
+\code{\link{declineForecast}()},
 \code{\link{getArea}()},
 \code{\link{getAreaChange}()},
 \code{\link{getDeclineStats}()}

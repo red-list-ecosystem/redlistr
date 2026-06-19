@@ -48,6 +48,7 @@ if (requireNamespace("terra", quietly = TRUE)) {
 }
 \seealso{
 Other Change functions: 
+\code{\link{declineForecast}()},
 \code{\link{getArea}()},
 \code{\link{getAreaTrend}()},
 \code{\link{getDeclineStats}()}

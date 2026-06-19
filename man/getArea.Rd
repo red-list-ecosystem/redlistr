@@ -25,6 +25,7 @@ the layer number.
 }
 \seealso{
 Other Change functions: 
+\code{\link{declineForecast}()},
 \code{\link{getAreaChange}()},
 \code{\link{getAreaTrend}()},
 \code{\link{getDeclineStats}()}

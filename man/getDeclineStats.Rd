@@ -52,6 +52,7 @@ annual rate of deforestation. Forest Ecology and Management, 177, 593-596.
 }
 \seealso{
 Other Change functions: 
+\code{\link{declineForecast}()},
 \code{\link{getArea}()},
 \code{\link{getAreaChange}()},
 \code{\link{getAreaTrend}()}

@@ -10,7 +10,7 @@ getAOO(
   names_from = NA,
   bottom_1pct_rule = TRUE,
   percent = 1,
-  jitter = TRUE,
+  jitter = 150,
   n_jitter = 35
 )
 }
@@ -29,7 +29,9 @@ ecosystem area are dropped up to 1\% of the total distribution.}
 \item{percent}{Numeric. The minimum percent to be applied as a threshold for
 the \code{bottom_1pct_rule}}
 
-\item{jitter}{logical. Whether grid randomization should be applied to units with low grid counts.}
+\item{jitter}{Integer. 0 = do not jitter, 1 = force jitter, another number
+indicates conditional jitter, the number of AOO cells under which to jitter,
+and over which not to jitter the grid.}
 
 \item{n_jitter}{the number of grids to test for ecosystems near
 the AOO thresholds. Ignored if jitter = FALSE.}
