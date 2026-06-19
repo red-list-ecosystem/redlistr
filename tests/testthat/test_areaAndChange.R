@@ -66,7 +66,7 @@ test_that("extrapolated estimates are correct", {
                                               ARD = dummy.decline.df$ARD,
                                               PRD = dummy.decline.df$PRD,
                                               ARC = dummy.decline.df$ARC)
-  expect_equal(dummy_extrapolate_df$A.ARD.t3, A.t2)
-  expect_equal(dummy_extrapolate_df$A.PRD.t3, A.t2)
-  expect_equal(dummy_extrapolate_df$A.ARC.t3, A.t2)
+  expect_equal(dummy_extrapolate_df$forecast.area[1], A.t2)
+  expect_equal(dummy_extrapolate_df$forecast.area[2], A.t2)
+  expect_equal(dummy_extrapolate_df$forecast.area[3], A.t2)
 })
