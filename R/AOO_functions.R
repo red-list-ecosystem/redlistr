@@ -102,7 +102,7 @@ makeAOOGrid <- function(input_data, cell_size = 10000, names_from = NA, bottom_1
 #' @method makeAOOGrid SpatRaster
 #' @export
 makeAOOGrid.SpatRaster <-
-  function(input_data, cell_size, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = 150, n_jitter = 35) {
+  function(input_data, cell_size = 10000, names_from = NA, bottom_1pct_rule = TRUE, percent = 1, jitter = 150, n_jitter = 35) {
 
     # if (terra::is.lonlat(input_data)) { # check CRS
     #   stop("AOO cannot be calculated in a geographic coordinate reference system. Use terra::project() to change to a planar CRS.")
