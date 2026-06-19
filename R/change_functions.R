@@ -678,9 +678,12 @@ sequentialExtrapolate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC
 #' @export
 
 declineForecast <- function(x, y, names_from_x = NA, names_from_y = NA, t1, year_diff, forecast_year=t1+50){
-  area_change <- getAreaChange(x, y, names_from_x, names_from_y)
-  decline_stats <- getDeclineStats(area_change$area.x, area_change$area.y, t1, t1+year_diff,
-                  methods = c('ARD', 'PRD', 'ARC'))
+  area_change <- getAreaChange(x=x, y=y, names_from_x = !!rlang::sym(names_from_x))
+  decline_stats <- getDeclineStats(A.t1 = area_change$area.x,
+                                   A.t2 = area_change$area.y,
+                                   year.t1 = t1,
+                                   year.t2 = t1+year_diff,
+                                   methods = c('ARD', 'PRD', 'ARC'))
   extrapolated_area <- extrapolateEstimate(area_change$area.x, year.t1 = t1,
                                            ARD = decline_stats$ARD,
                                            PRD = decline_stats$PRD,
