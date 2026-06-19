@@ -66,7 +66,7 @@ important for assessing the IUCN Red List of Ecosystems Criteria B.</p>
 <span>  names_from <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  bottom_1pct_rule <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  percent <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  jitter <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  jitter <span class="op">=</span> <span class="fl">150</span>,</span>
 <span>  n_jitter <span class="op">=</span> <span class="fl">35</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -100,7 +100,9 @@ the <code>bottom_1pct_rule</code></p></dd>
 
 
 <dt id="arg-jitter">jitter<a class="anchor" aria-label="anchor" href="#arg-jitter"></a></dt>
-<dd><p>logical. Whether grid randomization should be applied to units with low grid counts.</p></dd>
+<dd><p>Integer. 0 = do not jitter, 1 = force jitter, another number
+indicates conditional jitter, the number of AOO cells under which to jitter,
+and over which not to jitter the grid.</p></dd>
 
 
 <dt id="arg-n-jitter">n_jitter<a class="anchor" aria-label="anchor" href="#arg-n-jitter"></a></dt>

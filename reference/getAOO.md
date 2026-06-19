@@ -15,7 +15,7 @@ getAOO(
   names_from = NA,
   bottom_1pct_rule = TRUE,
   percent = 1,
-  jitter = TRUE,
+  jitter = 150,
   n_jitter = 35
 )
 ```
@@ -48,8 +48,9 @@ getAOO(
 
 - jitter:
 
-  logical. Whether grid randomization should be applied to units with
-  low grid counts.
+  Integer. 0 = do not jitter, 1 = force jitter, another number indicates
+  conditional jitter, the number of AOO cells under which to jitter, and
+  over which not to jitter the grid.
 
 - n_jitter:
 

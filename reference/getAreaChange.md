@@ -43,6 +43,7 @@ in area of the two inputs in km2
 ## See also
 
 Other Change functions:
+[`declineForecast()`](http://red-list-ecosystem.github.io/redlistr/reference/declineForecast.md),
 [`getArea()`](http://red-list-ecosystem.github.io/redlistr/reference/getArea.md),
 [`getAreaTrend()`](http://red-list-ecosystem.github.io/redlistr/reference/getAreaTrend.md),
 [`getDeclineStats()`](http://red-list-ecosystem.github.io/redlistr/reference/getDeclineStats.md)

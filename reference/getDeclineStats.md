@@ -60,6 +60,7 @@ Management, 177, 593-596.
 ## See also
 
 Other Change functions:
+[`declineForecast()`](http://red-list-ecosystem.github.io/redlistr/reference/declineForecast.md),
 [`getArea()`](http://red-list-ecosystem.github.io/redlistr/reference/getArea.md),
 [`getAreaChange()`](http://red-list-ecosystem.github.io/redlistr/reference/getAreaChange.md),
 [`getAreaTrend()`](http://red-list-ecosystem.github.io/redlistr/reference/getAreaTrend.md)

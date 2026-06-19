@@ -20,6 +20,8 @@
   : Compute AOO and EOO, return as table
 - [`createGrid()`](http://red-list-ecosystem.github.io/redlistr/reference/createGrid.md)
   : Create empty Area of Occupancy (AOO) Grid.
+- [`declineForecast()`](http://red-list-ecosystem.github.io/redlistr/reference/declineForecast.md)
+  : Decline forecasts
 - [`extrapolateEstimate()`](http://red-list-ecosystem.github.io/redlistr/reference/extrapolateEstimate.md)
   : Extrapolate Estimate
 - [`futureAreaEstimate()`](http://red-list-ecosystem.github.io/redlistr/reference/futureAreaEstimate.md)

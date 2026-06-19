@@ -33,6 +33,7 @@ contains the layer number.
 ## See also
 
 Other Change functions:
+[`declineForecast()`](http://red-list-ecosystem.github.io/redlistr/reference/declineForecast.md),
 [`getAreaChange()`](http://red-list-ecosystem.github.io/redlistr/reference/getAreaChange.md),
 [`getAreaTrend()`](http://red-list-ecosystem.github.io/redlistr/reference/getAreaTrend.md),
 [`getDeclineStats()`](http://red-list-ecosystem.github.io/redlistr/reference/getDeclineStats.md)
