@@ -3,6 +3,7 @@
 S3method(as.list,AOOgrid)
 S3method(as.list,EOO)
 S3method(bundle,SpatRaster)
+S3method(bundle,list)
 S3method(bundle,sf)
 S3method(getAOO,SpatRaster)
 S3method(getAOO,sf)

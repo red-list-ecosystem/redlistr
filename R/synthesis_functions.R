@@ -27,9 +27,9 @@ bundle.sf <-  function(input_data, names_from = NA, ...){
 
 #' @method bundle SpatRaster
 #' @export
-bundle.SpatRaster <- function(input_data, ...){
+bundle.SpatRaster <- function(input_data, names_from = NA, ...){
   eoo <- getEOO(input_data)
-  aoo <- getAOO(input_data)
+  aoo <- getAOO(input_data, ...)
 
   eootable <- list2table(eoo)
   aootable <- list2table(aoo)
@@ -37,6 +37,11 @@ bundle.SpatRaster <- function(input_data, ...){
   merge(aootable, eootable, by = c("name", "input_class"))
 }
 
+#' @method bundle list of spatial objects
+#' @export
+bundle.list <- function(input_data, names_from = NA, ...){
+  lapply(input_data, bundle, ...) |> dplyr::bind_rows()
+}
 
 #' Summarises a list of EOO or AOOgrid objects in a table
 #'
