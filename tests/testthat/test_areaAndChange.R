@@ -35,7 +35,7 @@ test_that("accepts sf POLYGONS", {
   my_polygon = st_polygon(list(cbind(c(x1,x1,x2,x2,x1),c(y1,y2,y2,y1,y1))))
   my_polygons = st_sf(ID = "A", crs = 32755, geometry = st_sfc(my_polygon))
 
-  expect_equal(getArea(my_polygons)$area_km2, 1)
+  expect_equal(getArea(my_polygons)$area, 1)
 })
 
 context("Change functions")
