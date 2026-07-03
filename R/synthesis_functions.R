@@ -37,7 +37,7 @@ bundle.SpatRaster <- function(input_data, names_from = NA, ...){
   merge(aootable, eootable, by = c("name", "input_class"))
 }
 
-#' @method bundle list of spatial objects
+#' @method bundle list
 #' @export
 bundle.list <- function(input_data, names_from = NA, ...){
   lapply(input_data, bundle, ...) |> dplyr::bind_rows()

@@ -54,8 +54,7 @@ getArea.SpatVector <- function(x, names_from = NA, ...){
         sf::st_drop_geometry() |>
         as.data.frame() |>
         dplyr::mutate(ecosystem_name = "unnamed ecosystem") |>
-        dplyr::mutate(area_km2 = as.numeric(area)) |>
-        dplyr::select(-area)
+        dplyr::mutate(area = as.numeric(area))
     )
   }
 
@@ -68,8 +67,7 @@ getArea.SpatVector <- function(x, names_from = NA, ...){
     dplyr::summarise(geometry = st_union(.data$geometry))|>
     dplyr::mutate(area = sf::st_area(.data$geometry) |> units::set_units("km^2")) |>
     sf::st_drop_geometry() |>
-    as.data.frame() |> dplyr::mutate(area_km2 = as.numeric(area)) |>
-    dplyr::select(-area)
+    as.data.frame() |> dplyr::mutate(area = as.numeric(area))
 }
 
 #' @method getArea sf
@@ -83,8 +81,7 @@ getArea.sf <- function(x, names_from = NA, ...) {
       sf::st_drop_geometry() |>
       as.data.frame() |>
       dplyr::mutate(ecosystem_name = "unnamed ecosystem") |>
-      dplyr::mutate(area_km2 = as.numeric(area)) |>
-      dplyr::select(-area)
+      dplyr::mutate(area = as.numeric(area))
     )
   }
 
@@ -96,8 +93,7 @@ getArea.sf <- function(x, names_from = NA, ...) {
     dplyr::summarise(geometry = sf::st_union(.data$geometry))|>
     dplyr::mutate(area = sf::st_area(.data$geometry) |> units::set_units("km^2")) |>
     sf::st_drop_geometry() |>
-    as.data.frame() |> dplyr::mutate(area_km2 = as.numeric(area)) |>
-    dplyr::select(-area)
+    as.data.frame() |> dplyr::mutate(area = as.numeric(area))
 }
 
 
@@ -166,8 +162,8 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
       a.y <- getArea(y)
       return(
         dplyr::full_join(a.x, a.y, by = "ecosystem_name") |>
-        dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
-                      percent_diff = .data$area_diff/ .data$area_km2.x*100)
+        dplyr::mutate(area_diff =  .data$area.y -  .data$area.x,
+                      percent_diff = .data$area_diff/ .data$area.x*100)
       )
     }else{
       nfy <- rlang::ensym(names_from_y)
@@ -175,8 +171,8 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
       a.y <- getArea(y, names_from = {{names_from_y}})
       return(
         dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
-        dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
-                      percent_diff = .data$area_diff/ .data$area_km2.x*100)
+        dplyr::mutate(area_diff =  .data$area.y -  .data$area.x,
+                      percent_diff = .data$area_diff/ .data$area.x*100)
       )
     }
   }else if(missing(names_from_y)){
@@ -186,8 +182,8 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
     a.y <- getArea(y, names_from = {{names_from_x}})
     return(
       dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
-      dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
-                    percent_diff = .data$area_diff/ .data$area_km2.x*100)
+      dplyr::mutate(area_diff =  .data$area.y -  .data$area.x,
+                    percent_diff = .data$area_diff/ .data$area.x*100)
       )
   }else{
 
@@ -198,8 +194,8 @@ getAreaChange.SpatVector <- function(x, y, names_from_x = NA, names_from_y = NA)
   a.y <- getArea(y, names_from = {{names_from_y}})
   return(
     dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
-    dplyr::mutate(area_diff =  .data$area_km2.y - .data$area_km2.x,
-                  percent_diff = .data$area_diff/ .data$area_km2.x*100)
+    dplyr::mutate(area_diff =  .data$area.y - .data$area.x,
+                  percent_diff = .data$area_diff/ .data$area.x*100)
   )
   }
 
@@ -215,8 +211,8 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
       a.y <- getArea(y)
       return(
         dplyr::full_join(a.x, a.y, by = "ecosystem_name") |>
-          dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
-                        percent_diff = .data$area_diff/ .data$area_km2.x*100)
+          dplyr::mutate(area_diff =  .data$area.y -  .data$area.x,
+                        percent_diff = .data$area_diff/ .data$area.x*100)
       )
     }else{
       nfy <- rlang::ensym(names_from_y)
@@ -224,8 +220,8 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
       a.y <- y |> getArea(names_from = {{names_from_y}})
       return(
         dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy)) |>
-          dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
-                        percent_diff = .data$area_diff/ .data$area_km2.x*100)
+          dplyr::mutate(area_diff =  .data$area.y -  .data$area.x,
+                        percent_diff = .data$area_diff/ .data$area.x*100)
       )
     }
   }else if(missing(names_from_y)){
@@ -235,8 +231,8 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
     a.y <- y |> getArea(names_from = {{names_from_x}})
     return(
       dplyr::full_join(a.x, a.y, by = rlang::as_string(nfx)) |>
-        dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
-                      percent_diff = .data$area_diff/ .data$area_km2.x*100)
+        dplyr::mutate(area_diff =  .data$area.y -  .data$area.x,
+                      percent_diff = .data$area_diff/ .data$area.x*100)
     )
   }else{
 
@@ -247,8 +243,8 @@ getAreaChange.sf <- function(x, y, names_from_x = NA, names_from_y = NA) {
     a.y <- y |> getArea(names_from = {{names_from_y}})
     return(
       dplyr::full_join(a.x, a.y, by = rlang::as_string(nfy) |> stats::setNames(rlang::as_string(nfx))) |>
-        dplyr::mutate(area_diff =  .data$area_km2.y -  .data$area_km2.x,
-                      percent_diff = .data$area_diff/ .data$area_km2.x*100)
+        dplyr::mutate(area_diff =  .data$area.y -  .data$area.x,
+                      percent_diff = .data$area_diff/ .data$area.x*100)
     )
   }
 
@@ -571,7 +567,6 @@ futureAreaEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = 
 
 extrapolateEstimate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC = NA){
   y.t3 <- year.t1+nYears
-  #out <- data.frame(forecast.year = y.t3)
   out <- numeric()
   if(!is.na(ARD)){
     A.ARD.t3 <- A.t1 - (ARD*nYears)
@@ -678,22 +673,29 @@ sequentialExtrapolate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC
 #' @export
 
 declineForecast <- function(x, y, names_from_x = NA, names_from_y = NA, t1, year_diff, forecast_year=t1+50){
-  area_change <- getAreaChange(x=x, y=y, names_from_x = !!rlang::sym(names_from_x))
+  area_change <- getAreaChange(x=x, y=y, names_from_x = !!rlang::sym(names_from_x), names_from_y = !!rlang::sym(names_from_y))
   decline_stats <- getDeclineStats(A.t1 = area_change$area.x,
                                    A.t2 = area_change$area.y,
                                    year.t1 = t1,
                                    year.t2 = t1+year_diff,
                                    methods = c('ARD', 'PRD', 'ARC'))
-  extrapolated_area <- extrapolateEstimate(area_change$area.x, year.t1 = t1,
-                                           ARD = decline_stats$ARD,
-                                           PRD = decline_stats$PRD,
-                                           ARC = decline_stats$ARC,
-                                           nYears = forecast_year - t1)|>
-  #convert extrapolated areas to forecasted percent declines.
-          dplyr::mutate(area.change = .data$forecast.area-area_change$area.x,
-                 pct.change = 100*.data$area.change/area_change$area.x)
-  out <- decline_stats[,2:4] |> t() |> merge(extrapolated_area, by = 0)
-  colnames(out)[1] <- "method"
-  colnames(out)[2] <- "rate"
-  return(list(calibration_data = area_change, forecast = out))
+
+  # forecasts--one row per ecosystem type
+  out <- list()
+  out2 <- list()
+  for(i in 1:nrow(decline_stats)){
+    extrapolated_area <- extrapolateEstimate(area_change$area.x[i], year.t1 = t1,
+                                             ARD = decline_stats$ARD[i],
+                                             PRD = decline_stats$PRD[i],
+                                             ARC = decline_stats$ARC[i],
+                                             nYears = forecast_year - t1)|>
+      #convert extrapolated areas to forecasted percent declines.
+      dplyr::mutate(area.change = .data$forecast.area-area_change$area.x[i],
+                    pct.change = 100*.data$area.change/area_change$area.x[i])
+    out[[i]] <- decline_stats[i,2:4] |> t() |> merge(extrapolated_area, by = 0)
+    colnames(out[[i]])[1] <- "method"
+    colnames(out[[i]])[2] <- "rate"
+  }
+
+  return(list(area_change, dplyr::bind_rows(out, .id = "value")))
 }
