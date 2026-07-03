@@ -50,10 +50,13 @@ mangrove.2017 <- rast(system.file("extdata", "example_distribution_2017.tif",
 
 ### Alternative formats
 
-Polygon or any shapefile data may be read in using sf::st_read() and
-point data in table format can be read in using read.csv() followed by
-sf::st_as_sf() to convert points into a spatial object. See function
-documentation in the sf package for more detailed instructions.
+Polygon or any shapefile data may be read in using
+[`sf::st_read()`](https://r-spatial.github.io/sf/reference/st_read.html)
+and point data in table format can be read in using
+[`read.csv()`](https://rdrr.io/r/utils/read.table.html) followed by
+[`sf::st_as_sf()`](https://r-spatial.github.io/sf/reference/st_as_sf.html)
+to convert points into a spatial object. See function documentation in
+the sf package for more detailed instructions.
 
 ### Plotting out data
 
@@ -71,13 +74,6 @@ maps](redlistr-vignette_files/figure-html/Plotting%20the%20two%20rasters-1.png)
 
 We can see that there has been some change in mangrove cover, although
 the losses appear to be relatively minor.
-
-At this stage it is important to check that the data are georectified
-(in the right location on Earth). This can be achieved by simply
-plotting the map and checking the coordinates. Otherwise, check the
-distribution maps against satellite images, perhaps by using packages
-such as `ggmap`, `plotgooglemaps`, `googleVis` etc. It is also important
-to check that the data are suitable for the task at hand.
 
 ## 3. Basic information for the data
 
@@ -208,75 +204,45 @@ The annual rate of change (ARC) uses a compound interest law to
 determine the instantaneous rate of change ([Puyravaud
 2003](https://www.sciencedirect.com/science/article/pii/S0378112702003353)).
 
-To estimate the rate of changing using these methods, we use the
-`getDeclineStats` function.
+To calculate the rate of change using these methods and obtain
+forecasted estimates of change in area using extrapolation, we use the
+[`declineForecast()`](http://red-list-ecosystem.github.io/redlistr/reference/declineForecast.md)
+function.
 
 ``` r
 
-decline.stats <- getDeclineStats(a.2000$area, a.2017$area, 2000, 2017, 
-                                 methods = c('ARD', 'PRD', 'ARC'))
-decline.stats
+decline <- declineForecast(mangrove.2000,   # ecosystem at time 1
+                           mangrove.2017,   # ecosystem at time 2
+                           t1 = 2000,       # year of time 1
+                           year_diff = 17,  # difference between time 1 and time 2 in years
+                           forecast_year = 2050)  # year of desired forecast, defaults to t1+50
+decline
 ```
 
-    ##   absolute.loss        ARD       PRD        ARC
-    ## 1      1.322411 0.07778887 0.5972003 -0.5989906
+    ## [[1]]
+    ##   value  area.x  area.y area_diff percent_diff
+    ## 1     1 13.6557 12.3336   -1.3221    -9.681671
+    ## 
+    ## [[2]]
+    ##   value method        rate forecast.year forecast.area area.change pct.change
+    ## 1     1    ARC -0.59899866          2050     10.121458   -3.534242  -25.88108
+    ## 2     1    ARD  0.07777059          2050      9.767171   -3.888529  -28.47550
+    ## 3     1    PRD  0.59720824          2050     10.121458   -3.534242  -25.88108
 
 Each method represent a different shape of decline. For further
 information about the choice of each of these methods to extrapolate
 refer to the IUCN Red List of Ecosystems guidelines ([IUCN
 2024](https://doi.org/10.2305/CJDF9122)).
 
-Now, it is possible to extrapolate, using only two estimates of an
-ecosystems’ area, to the full 50 year period required for a Red List of
-Ecosystems assessment.
-
-``` r
-
-extrapolated.area <- futureAreaEstimate(a.2000$area, year.t1 = 2000, 
-                                        ARD = decline.stats$ARD, 
-                                        PRD = decline.stats$PRD, 
-                                        ARC = decline.stats$ARC, 
-                                        nYears = 50)
-```
-
-    ## Warning in futureAreaEstimate(a.2000$area, year.t1 = 2000, ARD = decline.stats$ARD, : 'futureAreaEstimate' is deprecated.
-    ## Use 'extrapolateEstimate' instead.
-    ## See help("Deprecated") and help("redlistr-deprecated").
-
-``` r
-
-extrapolated.area
-```
-
-    ##     forecast.year forecast.area
-    ## ARD          2050      9.769641
-    ## PRD          2050     10.124007
-    ## ARC          2050     10.124007
-
-50 years from our first estimate is the year 2050, 2050, 2050.
-
-As we included all three methods of calculating rate of decline
-currently included in the package, the results produced shows three
-estimated areas under the various decline scenarios. It is important to
-note that this relatively simple exercise is founded on assumptions that
+The results produced shows three estimated areas and estimated percent
+declines under the three estimation methods. It is important to note
+that this relatively simple exercise is founded on assumptions that
 should be fully understood before submitting your ecosystem assessment
 to the IUCN Red List of Ecosystems Committee for Scientific Standards.
 Furthermore, the guidelines suggest using area estimates from more than
 two time points to estimate change, and providing a measure of
 uncertainty if possible. Please see the guidelines ([IUCN
 2024](https://doi.org/10.2305/CJDF9122)) for more information.
-
-If we were to use the Proportional Rate of Decline (PRD) for our example
-assessment, our results here will be suitable for criterion A2b (Any 50
-year period), and the percent loss of area is:
-
-``` r
-
-predicted.percent.loss <- (extrapolated.area$A.PRD.t3 - a.2000$area)/a.2000$area * 100
-predicted.percent.loss
-```
-
-    ## numeric(0)
 
 ## 4. Assessing Criterion B (distribution size)
 
@@ -320,10 +286,6 @@ plot(EOO.polygon)
 
 #area
 EOO.area <- getAreaEOO(EOO.polygon)
-
-#or, alternately, extract the EOO directly from the object. 
-EOO.area <- EOO.polygon@EOO
-
 EOO.area
 ```
 
@@ -333,12 +295,7 @@ under B1(a-c) to assess the ecosystem under subcriteria B1.
 ### Subcriterion B2 (calculating AOO)
 
 For subcriterion B2, we will need to calculate the number of 10x10 km
-grid cells occupied by our distribution. The
-[`getAOO()`](http://red-list-ecosystem.github.io/redlistr/reference/getAOO.md)
-function uses a random grid search to find the optimal grid with the
-fewest cells. For ecosystems that are contained in more than 100 grid
-cells, the default grid is used, as a random grid search is unlikely to
-yield results near the IUCN Criteria thresholds.
+grid cells occupied by our distribution.
 
 ``` r
 
@@ -360,15 +317,25 @@ Both the
 [`getEOO()`](http://red-list-ecosystem.github.io/redlistr/reference/getEOO.md)
 and
 [`getAOO()`](http://red-list-ecosystem.github.io/redlistr/reference/getAOO.md)
-functions work on polygons too.
+functions work on points and polygons too.
+
+#### Random grid search
+
+The
+[`getAOO()`](http://red-list-ecosystem.github.io/redlistr/reference/getAOO.md)
+function uses a random grid search (“jitter”) to find the optimal grid
+with the fewest cells. By default, the random grid search is omitted for
+ecosystems that are contained in more than 150 grid cells, because it is
+unlikely to yield results near the IUCN Criteria thresholds. However
+this option can be adjusted using the `jitter` argument (see below).
 
 We can run some diagnostics to ensure we have the best grid. The
-jitter-plot (jplot) shows how the number of cells decreased as the
-random search iterations increased. The plot should fall to the minimum
-number early and stay flat. You can also plot a histogram of the AOO
-values generated with the random grid search iterations, and this should
-look like a bell curve in most cases, unless the number of grid cells is
-very low.
+jitter-plot (jplot) shows how the minimum number of cells decreased as
+the random search iterations increased. The plot should fall to the
+minimum number early and stay flat. You can also plot a histogram of the
+AOO values generated with the random grid search iterations, and this
+should look like a bell curve in most cases, unless the number of grid
+cells is very low.
 
 ``` r
 
@@ -390,12 +357,16 @@ function.
 AOO.grid_n150 <- getAOO(mangrove.2017, cell_size = 10000, n_jitter = 150)
 
 # You can rerun diagnostics here to check for improvement
-# jplot
 jplot(AOO.grid_n150)
-
-# histogram of AOO values generated with iterations
 hist(AOO.grid_n150)
 ```
+
+You can also change the `jitter` argument to set the AOO threshold under
+which the grid is jittered. For a fast approximation, turn off jitter
+(jitter = 0); to find a slower but more accurate solution, turn it on
+(jitter = 1) and to save time on larger datasets that are not near any
+threshold while maintaining accuracy for smaller datasets, set a custom
+threshold for the random grid search (defaults to jitter = 150).
 
 #### One percent rule
 
@@ -440,7 +411,6 @@ We have demonstrated in this vignette a typical workflow for assessing
 an example ecosystem under the RLE. The methods outlined here can easily
 be adapted for the Red List of Threatened Species as well, with slight
 adjustments in the parameters (specifically the cell_size parameter for
-`getAOO` or `gridUncertainty`). We hope that with this package, we help
-ensure a consistent implementation for both red lists criteria,
-minimising any misclassification as a result of using different software
-and methods.
+`getAOO`). We hope that with this package, we help ensure a consistent
+implementation for both red lists criteria, minimising any
+misclassification as a result of using different software and methods.

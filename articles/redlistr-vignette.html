@@ -124,10 +124,11 @@ and functions of the <code>terra</code> package can be found <a href="https://rs
 <div class="section level3">
 <h3 id="alternative-formats">Alternative formats<a class="anchor" aria-label="anchor" href="#alternative-formats"></a>
 </h3>
-<p>Polygon or any shapefile data may be read in using sf::st_read() and
-point data in table format can be read in using read.csv() followed by
-sf::st_as_sf() to convert points into a spatial object. See function
-documentation in the sf package for more detailed instructions.</p>
+<p>Polygon or any shapefile data may be read in using
+<code><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">sf::st_read()</a></code> and point data in table format can be read in
+using <code><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv()</a></code> followed by <code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">sf::st_as_sf()</a></code> to
+convert points into a spatial object. See function documentation in the
+sf package for more detailed instructions.</p>
 </div>
 <div class="section level3">
 <h3 id="plotting-out-data">Plotting out data<a class="anchor" aria-label="anchor" href="#plotting-out-data"></a>
@@ -140,13 +141,6 @@ general idea of how the distribution might have changed over time.</p>
 <p><img src="redlistr-vignette_files/figure-html/Plotting%20the%20two%20rasters-1.png" class="r-plt" alt="Overlay of two mangrove distribution maps" width="672"></p>
 <p>We can see that there has been some change in mangrove cover,
 although the losses appear to be relatively minor.</p>
-<p>At this stage it is important to check that the data are georectified
-(in the right location on Earth). This can be achieved by simply
-plotting the map and checking the coordinates. Otherwise, check the
-distribution maps against satellite images, perhaps by using packages
-such as <code>ggmap</code>, <code>plotgooglemaps</code>,
-<code>googleVis</code> etc. It is also important to check that the data
-are suitable for the task at hand.</p>
 </div>
 </div>
 <div class="section level2">
@@ -250,39 +244,30 @@ full 50 year timeframe required in an assessment.</p>
 <p>The annual rate of change (ARC) uses a compound interest law to
 determine the instantaneous rate of change (<a href="https://www.sciencedirect.com/science/article/pii/S0378112702003353" class="external-link">Puyravaud
 2003</a>).</p>
-<p>To estimate the rate of changing using these methods, we use the
-<code>getDeclineStats</code> function.</p>
+<p>To calculate the rate of change using these methods and obtain
+forecasted estimates of change in area using extrapolation, we use the
+<code><a href="../reference/declineForecast.html">declineForecast()</a></code> function.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">decline.stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDeclineStats.html">getDeclineStats</a></span><span class="op">(</span><span class="va">a.2000</span><span class="op">$</span><span class="va">area</span>, <span class="va">a.2017</span><span class="op">$</span><span class="va">area</span>, <span class="fl">2000</span>, <span class="fl">2017</span>, </span>
-<span>                                 methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ARD'</span>, <span class="st">'PRD'</span>, <span class="st">'ARC'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">decline.stats</span></span></code></pre></div>
-<pre><code><span><span class="co">##   absolute.loss        ARD       PRD        ARC</span></span>
-<span><span class="co">## 1      1.322411 0.07778887 0.5972003 -0.5989906</span></span></code></pre>
+<code class="sourceCode R"><span><span class="va">decline</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/declineForecast.html">declineForecast</a></span><span class="op">(</span><span class="va">mangrove.2000</span>,   <span class="co"># ecosystem at time 1</span></span>
+<span>                           <span class="va">mangrove.2017</span>,   <span class="co"># ecosystem at time 2</span></span>
+<span>                           t1 <span class="op">=</span> <span class="fl">2000</span>,       <span class="co"># year of time 1</span></span>
+<span>                           year_diff <span class="op">=</span> <span class="fl">17</span>,  <span class="co"># difference between time 1 and time 2 in years</span></span>
+<span>                           forecast_year <span class="op">=</span> <span class="fl">2050</span><span class="op">)</span>  <span class="co"># year of desired forecast, defaults to t1+50</span></span>
+<span><span class="va">decline</span></span></code></pre></div>
+<pre><code><span><span class="co">## [[1]]</span></span>
+<span><span class="co">##   value  area.x  area.y area_diff percent_diff</span></span>
+<span><span class="co">## 1     1 13.6557 12.3336   -1.3221    -9.681671</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]</span></span>
+<span><span class="co">##   value method        rate forecast.year forecast.area area.change pct.change</span></span>
+<span><span class="co">## 1     1    ARC -0.59899866          2050     10.121458   -3.534242  -25.88108</span></span>
+<span><span class="co">## 2     1    ARD  0.07777059          2050      9.767171   -3.888529  -28.47550</span></span>
+<span><span class="co">## 3     1    PRD  0.59720824          2050     10.121458   -3.534242  -25.88108</span></span></code></pre>
 <p>Each method represent a different shape of decline. For further
 information about the choice of each of these methods to extrapolate
 refer to the IUCN Red List of Ecosystems guidelines (<a href="https://doi.org/10.2305/CJDF9122" class="external-link">IUCN 2024</a>).</p>
-<p>Now, it is possible to extrapolate, using only two estimates of an
-ecosystems’ area, to the full 50 year period required for a Red List of
-Ecosystems assessment.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">extrapolated.area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/futureAreaEstimate.html">futureAreaEstimate</a></span><span class="op">(</span><span class="va">a.2000</span><span class="op">$</span><span class="va">area</span>, year.t1 <span class="op">=</span> <span class="fl">2000</span>, </span>
-<span>                                        ARD <span class="op">=</span> <span class="va">decline.stats</span><span class="op">$</span><span class="va">ARD</span>, </span>
-<span>                                        PRD <span class="op">=</span> <span class="va">decline.stats</span><span class="op">$</span><span class="va">PRD</span>, </span>
-<span>                                        ARC <span class="op">=</span> <span class="va">decline.stats</span><span class="op">$</span><span class="va">ARC</span>, </span>
-<span>                                        nYears <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in futureAreaEstimate(a.2000$area, year.t1 = 2000, ARD = decline.stats$ARD, : 'futureAreaEstimate' is deprecated.</span></span>
-<span><span class="co">## Use 'extrapolateEstimate' instead.</span></span>
-<span><span class="co">## See help("Deprecated") and help("redlistr-deprecated").</span></span></code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">extrapolated.area</span></span></code></pre></div>
-<pre><code><span><span class="co">##     forecast.year forecast.area</span></span>
-<span><span class="co">## ARD          2050      9.769641</span></span>
-<span><span class="co">## PRD          2050     10.124007</span></span>
-<span><span class="co">## ARC          2050     10.124007</span></span></code></pre>
-<p>50 years from our first estimate is the year 2050, 2050, 2050.</p>
-<p>As we included all three methods of calculating rate of decline
-currently included in the package, the results produced shows three
-estimated areas under the various decline scenarios. It is important to
+<p>The results produced shows three estimated areas and estimated
+percent declines under the three estimation methods. It is important to
 note that this relatively simple exercise is founded on assumptions that
 should be fully understood before submitting your ecosystem assessment
 to the IUCN Red List of Ecosystems Committee for Scientific Standards.
@@ -290,13 +275,6 @@ Furthermore, the guidelines suggest using area estimates from more than
 two time points to estimate change, and providing a measure of
 uncertainty if possible. Please see the guidelines (<a href="https://doi.org/10.2305/CJDF9122" class="external-link">IUCN 2024</a>) for more
 information.</p>
-<p>If we were to use the Proportional Rate of Decline (PRD) for our
-example assessment, our results here will be suitable for criterion A2b
-(Any 50 year period), and the percent loss of area is:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">predicted.percent.loss</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">extrapolated.area</span><span class="op">$</span><span class="va">A.PRD.t3</span> <span class="op">-</span> <span class="va">a.2000</span><span class="op">$</span><span class="va">area</span><span class="op">)</span><span class="op">/</span><span class="va">a.2000</span><span class="op">$</span><span class="va">area</span> <span class="op">*</span> <span class="fl">100</span></span>
-<span><span class="va">predicted.percent.loss</span></span></code></pre></div>
-<pre><code><span><span class="co">## numeric(0)</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -323,21 +301,17 @@ the guidelines (<a href="https://doi.org/10.2305/CJDF9122" class="external-link"
 <p>For subcriterion B1, we will need to calculate the extent of
 occurrence (EOO) of our data. We begin by creating the minimum convex
 polygon enclosing all occurrences of our focal ecosystem.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">EOO.polygon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getEOO.html">getEOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span><span class="op">)</span></span></code></pre></div>
 <p>There are some handy summary functions for the EOO object that is
 returned. We can also extract the area of the EOO polygon.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#summarise and plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">EOO.polygon</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">EOO.polygon</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#area</span></span>
 <span><span class="va">EOO.area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAreaEOO.html">getAreaEOO</a></span><span class="op">(</span><span class="va">EOO.polygon</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">#or, alternately, extract the EOO directly from the object. </span></span>
-<span><span class="va">EOO.area</span> <span class="op">&lt;-</span> <span class="va">EOO.polygon</span><span class="op">@</span><span class="va">EOO</span></span>
-<span></span>
 <span><span class="va">EOO.area</span></span></code></pre></div>
 <p>This result can then be combined with additional information required
 under B1(a-c) to assess the ecosystem under subcriteria B1.</p>
@@ -346,31 +320,36 @@ under B1(a-c) to assess the ecosystem under subcriteria B1.</p>
 <h3 id="subcriterion-b2-calculating-aoo">Subcriterion B2 (calculating AOO)<a class="anchor" aria-label="anchor" href="#subcriterion-b2-calculating-aoo"></a>
 </h3>
 <p>For subcriterion B2, we will need to calculate the number of 10x10 km
-grid cells occupied by our distribution. The <code><a href="../reference/getAOO.html">getAOO()</a></code>
-function uses a random grid search to find the optimal grid with the
-fewest cells. For ecosystems that are contained in more than 100 grid
-cells, the default grid is used, as a random grid search is unlikely to
-yield results near the IUCN Criteria thresholds.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+grid cells occupied by our distribution.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">AOO.grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, cell_size <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span></code></pre></div>
 <p>Once more, the output object has some handy summary functions
 defined:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># summary</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">AOO.grid</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># handy plotting function</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">AOO.grid</span><span class="op">)</span></span></code></pre></div>
 <p>Both the <code><a href="../reference/getEOO.html">getEOO()</a></code> and <code><a href="../reference/getAOO.html">getAOO()</a></code> functions
-work on polygons too.</p>
+work on points and polygons too.</p>
+<div class="section level4">
+<h4 id="random-grid-search">Random grid search<a class="anchor" aria-label="anchor" href="#random-grid-search"></a>
+</h4>
+<p>The <code><a href="../reference/getAOO.html">getAOO()</a></code> function uses a random grid search
+(“jitter”) to find the optimal grid with the fewest cells. By default,
+the random grid search is omitted for ecosystems that are contained in
+more than 150 grid cells, because it is unlikely to yield results near
+the IUCN Criteria thresholds. However this option can be adjusted using
+the <code>jitter</code> argument (see below).</p>
 <p>We can run some diagnostics to ensure we have the best grid. The
-jitter-plot (jplot) shows how the number of cells decreased as the
-random search iterations increased. The plot should fall to the minimum
-number early and stay flat. You can also plot a histogram of the AOO
-values generated with the random grid search iterations, and this should
-look like a bell curve in most cases, unless the number of grid cells is
-very low.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+jitter-plot (jplot) shows how the minimum number of cells decreased as
+the random search iterations increased. The plot should fall to the
+minimum number early and stay flat. You can also plot a histogram of the
+AOO values generated with the random grid search iterations, and this
+should look like a bell curve in most cases, unless the number of grid
+cells is very low.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># jplot</span></span>
 <span><span class="fu"><a href="../reference/jplot.html">jplot</a></span><span class="op">(</span><span class="va">AOO.grid</span><span class="op">)</span></span>
 <span></span>
@@ -379,16 +358,21 @@ very low.</p>
 <p>If these plots look unconvincing, you can increase the number of
 iterations with the argument <code>n_jitter</code> directly in the
 <code><a href="../reference/getAOO.html">getAOO()</a></code> function.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># increase the number of iterations, if desired</span></span>
 <span><span class="va">AOO.grid_n150</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, cell_size <span class="op">=</span> <span class="fl">10000</span>, n_jitter <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># You can rerun diagnostics here to check for improvement</span></span>
-<span><span class="co"># jplot</span></span>
 <span><span class="fu"><a href="../reference/jplot.html">jplot</a></span><span class="op">(</span><span class="va">AOO.grid_n150</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># histogram of AOO values generated with iterations</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">AOO.grid_n150</span><span class="op">)</span></span></code></pre></div>
+<p>You can also change the <code>jitter</code> argument to set the AOO
+threshold under which the grid is jittered. For a fast approximation,
+turn off jitter (jitter = 0); to find a slower but more accurate
+solution, turn it on (jitter = 1) and to save time on larger datasets
+that are not near any threshold while maintaining accuracy for smaller
+datasets, set a custom threshold for the random grid search (defaults to
+jitter = 150).</p>
+</div>
 <div class="section level4">
 <h4 id="one-percent-rule">One percent rule<a class="anchor" aria-label="anchor" href="#one-percent-rule"></a>
 </h4>
@@ -404,13 +388,13 @@ changed using the <code>percent</code> argument. For assessments
 involving species, for instance, this option should be turned off.</p>
 <p>Here, we demonstrate the differences between including or not
 including the one percent rule and changing the percent parameter:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">AOO.grid.keep.all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, cell_size <span class="op">=</span> <span class="fl">10000</span>, </span>
 <span>                            bottom_1pct_rule <span class="op">=</span> <span class="cn">F</span>, n_jitter <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span>
 <span><span class="va">AOO.grid.5.pct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAOO.html">getAOO</a></span><span class="op">(</span><span class="va">mangrove.2017</span>, cell_size <span class="op">=</span> <span class="fl">10000</span>, </span>
 <span>                         bottom_1pct_rule <span class="op">=</span> <span class="cn">T</span>, n_jitter <span class="op">=</span> <span class="fl">150</span>, percent <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <p>Let’s compare the results:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">AOO.grid.keep.all</span>, title <span class="op">=</span> <span class="st">"Keep all"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">AOO.grid_n150</span>, title <span class="op">=</span> <span class="st">"Remove bottom 1% (default)"</span><span class="op">)</span></span>
@@ -426,10 +410,10 @@ including the one percent rule and changing the percent parameter:</p>
 assessing an example ecosystem under the RLE. The methods outlined here
 can easily be adapted for the Red List of Threatened Species as well,
 with slight adjustments in the parameters (specifically the cell_size
-parameter for <code>getAOO</code> or <code>gridUncertainty</code>). We
-hope that with this package, we help ensure a consistent implementation
-for both red lists criteria, minimising any misclassification as a
-result of using different software and methods.</p>
+parameter for <code>getAOO</code>). We hope that with this package, we
+help ensure a consistent implementation for both red lists criteria,
+minimising any misclassification as a result of using different software
+and methods.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

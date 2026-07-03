@@ -11,7 +11,7 @@ for different subcriteria of RLE and RLTS.
 
 | Metrics | main `redlistr` function | RLE subcriteria | RLTS subcriteria |
 |----|----|----|----|
-| Declines in distribution | `getDeclineStats` | A1, A2, A3 | A1c, A2c, A3c, A4c |
+| Declines in distribution | `declineForecast` | A1, A2, A3 | A1c, A2c, A3c, A4c |
 | Extent of Occurrence (EOO) | `getEOO` | B1 | B1 |
 | Area of Occupancy (AOO) | `getAOO` | B2 | B2, D2 |
 
