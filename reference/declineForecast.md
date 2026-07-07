@@ -46,7 +46,7 @@ declineForecast(
 
 - year_diff:
 
-  numeric year difference bewteen x and y inputs
+  numeric year difference between x and y inputs
 
 - forecast_year:
 

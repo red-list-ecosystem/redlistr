@@ -23,7 +23,7 @@ top_pct(v, pct = 99)
 
 ## Value
 
-a numeric vector indicating the indeces of the elements to keep.
+a numeric vector indicating the indices of the elements to keep.
 
 ## References
 

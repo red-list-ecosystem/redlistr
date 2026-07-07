@@ -23,9 +23,9 @@ surface and muted brown, black and grey undersides.
 
 This species is known only from a small number of sites east of
 Bathurst. Its distribution is believed to be restricted by abiotic
-factos (locations above 900m elevation) and biotic interactions with a
+factors (locations above 900m elevation) and biotic interactions with a
 specific host plant (*Bursaria spinosa*) and attendant ant
-(*Anonychomyrma itinerans*.
+(*Anonychomyrma itinerans*).
 
 Adults fly from late September to late November. Eggs are laid singly or
 in small groups. Eggs hatch in 14-17 days and the larval period lasts
@@ -205,8 +205,8 @@ by errors introducing during and after digitalisation of the record.
 
 In real life cases, there should be a comprehensive verification from
 the source of the raw data to the digital record to flag and correct
-errors. For this excercise we will restrict ourselves to the filtering
-of spatial outliers that we classify as dubious records.
+errors. For this exercise we will restrict ourselves to the filtering of
+spatial outliers that we classify as dubious records.
 
 We can visualise the records and check for obvious outliers. With the
 interactive interface of `mapview` we can click on suspicious points and
