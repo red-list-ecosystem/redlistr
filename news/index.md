@@ -1,5 +1,12 @@
 # Changelog
 
+## redlistr 2.1.0
+
+- Improved plotting functions including interactive maps
+- New change functions to simplify forecasting
+- Synthesis functions perform multiple analyses in one step
+- Increased user control of jitter functionality in getAOO
+
 ## redlistr 2.0.0
 
 - Create SpatRaster and sf methods for getAOO
