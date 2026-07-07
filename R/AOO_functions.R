@@ -36,7 +36,7 @@ createGrid <- function(input_data, cell_size = 10000){
 #'
 #' @param v A numeric vector.
 #' @param pct percent of area to drop
-#' @return a numeric vector indicating the indeces of the elements to keep.
+#' @return a numeric vector indicating the indices of the elements to keep.
 #' @author Aniko B. Toth \email{anikobtoth@@gmail.com}
 #' @family AOO functions
 #' @references IUCN (2024). Guidelines for the application of IUCN Red

@@ -663,7 +663,7 @@ sequentialExtrapolate <- function(A.t1, year.t1, nYears, ARD = NA, PRD = NA, ARC
 #'
 #' @inheritParams getAreaChange
 #' @param t1 numeric year of earliest dataset, corresponding to x
-#' @param year_diff numeric year difference bewteen x and y inputs
+#' @param year_diff numeric year difference between x and y inputs
 #' @param forecast_year the desired year to which to forecast (or hindcast) change.
 #'
 #' @return returns a list of two elements: a table of areas and change in areas and

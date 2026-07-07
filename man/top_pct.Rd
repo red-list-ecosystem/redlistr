@@ -12,7 +12,7 @@ top_pct(v, pct = 99)
 \item{pct}{percent of area to drop}
 }
 \value{
-a numeric vector indicating the indeces of the elements to keep.
+a numeric vector indicating the indices of the elements to keep.
 }
 \description{
 \code{top_pct} returns the vector positions of the largest elements

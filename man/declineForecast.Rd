@@ -31,7 +31,7 @@ y is a raster. names_from_x used if not provided.}
 
 \item{t1}{numeric year of earliest dataset, corresponding to x}
 
-\item{year_diff}{numeric year difference bewteen x and y inputs}
+\item{year_diff}{numeric year difference between x and y inputs}
 
 \item{forecast_year}{the desired year to which to forecast (or hindcast) change.}
 }
