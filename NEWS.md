@@ -1,3 +1,5 @@
+# redlistr 2.1.0
+
 # redlistr 2.0.0
 * Create SpatRaster and sf methods for getAOO
 * Deprecate raster and sp usage
