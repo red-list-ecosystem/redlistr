@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 `redlistr` is an R package that contains functions for calculating the
 metrics required for making risk assessments of species and ecosystems
 according to the IUCN Red List of Threatened Species and the IUCN Red
-List of Ecosystems categories and criteria.The paper describing
+List of Ecosystems categories and criteria.The paper describing the original release of 
 `redlistr` has been published on Ecography and is available
 [here](https://onlinelibrary.wiley.com/doi/full/10.1111/ecog.04143).
 
@@ -44,7 +44,7 @@ compound interest law to determine the instantaneous rate of change
 is also included.
 
 Also included are the two standard measures of the size of an
-ecosystems’ geographic distribution specified in the Red List of
+ecosystem's geographic distribution specified in the Red List of
 Ecosystems guidelines ([IUCN 2024](https://doi.org/10.2305/CJDF9122)) and the Red List of Threatened Species guidelines ([IUCN Standards and Petitions Committee 2024](https://www.iucnredlist.org/resources/redlistguidelines)). 
 These are the Extent of Occurrence (EOO) and Area of Occupancy (AOO). 
 
@@ -87,7 +87,7 @@ You can install the development version from GitHub.
 devtools::install_github("red-list-ecosystem/redlistr")
 ```
 
-An older version of `redlistr` is available on CRAN (v 1.0.4). The plan is to release the new version in CRAN during 2026.
+An new version of `redlistr` has been submitted to CRAN (v 2.1.0), as of July 2026.
 
 ```{r, eval = FALSE}
 install.packages("redlistr")
