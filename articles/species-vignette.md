@@ -135,8 +135,6 @@ ala_records <- galah_call() |>
         atlas_occurrences()
 ```
 
-    ## ----
-
 We want to check that were working with valid presence records:
 
 ``` r

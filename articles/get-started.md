@@ -88,6 +88,6 @@ subcriteria.
 
 | Example | Distribution data | Input format | Red list subcriteria |
 |----|----|----|----|
-| [Mangroves in Victoria, Australia](http://red-list-ecosystem.github.io/redlistr/articles/articles/redlistr-vignette.md) | Ecosystem distribution in 2000 and 2017 | Raster: GeoTiff | RLE A1, B1 and B2 |
-| [Purple Copper butterfly, Australia](http://red-list-ecosystem.github.io/redlistr/articles/articles/species-vignette.md) | Species occurrences | Vector (Points) from biodiversity portal | RLTS B1 and B2 |
+| [Mangroves in Victoria, Australia](http://red-list-ecosystem.github.io/redlistr/articles/vignettes/redlistr-vignette.md) | Ecosystem distribution in 2000 and 2017 | Raster: GeoTiff | RLE A1, B1 and B2 |
+| [Purple Copper butterfly, Australia](http://red-list-ecosystem.github.io/redlistr/articles/vignettes/articles/species-vignette.md) | Species occurrences | Vector (Points) from biodiversity portal | RLTS B1 and B2 |
 | Tropical glaciers, Ecuador (in prep.) | Ecosystem distribution in year 2000 | Vector (Polygons): Geopackage | RLE B1 and B2 |

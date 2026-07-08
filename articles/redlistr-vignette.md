@@ -182,10 +182,7 @@ area.change <- getAreaChange(a.2000, a.2017, value)
 ```
 
 The `getAreaTrend` can be used to work with multiple maps representing
-different ecosystem types and time frames. See vignette [Scaling up Red
-List of Ecosystem
-assessments](http://red-list-ecosystem.github.io/redlistr/articles/scaling-up-assessments.md)
-for instruction on how to work with multiple ecosystem maps.
+different ecosystem types and time frames.
 
 ### Rate of change
 
@@ -362,11 +359,12 @@ hist(AOO.grid_n150)
 ```
 
 You can also change the `jitter` argument to set the AOO threshold under
-which the grid is jittered. For a fast approximation, turn off jitter
-(jitter = 0); to find a slower but more accurate solution, turn it on
-(jitter = 1) and to save time on larger datasets that are not near any
-threshold while maintaining accuracy for smaller datasets, set a custom
-threshold for the random grid search (defaults to jitter = 150).
+which the random grid search is performed. For a fast approximation,
+turn off jitter (jitter = 0); to find a slower but more accurate
+solution, turn it on (jitter = 1) and to save time on larger datasets
+that are not near any threshold while maintaining accuracy for smaller
+datasets, set a custom threshold for the random grid search (defaults to
+jitter = 150).
 
 #### One percent rule
 

@@ -226,9 +226,7 @@ order as the input datasets.</p>
 <span></span>
 <span><span class="va">area.change</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getAreaChange.html">getAreaChange</a></span><span class="op">(</span><span class="va">a.2000</span>, <span class="va">a.2017</span>, <span class="va">value</span><span class="op">)</span> </span></code></pre></div>
 <p>The <code>getAreaTrend</code> can be used to work with multiple maps
-representing different ecosystem types and time frames. See vignette <a href="scaling-up-assessments.html">Scaling up Red List of Ecosystem
-assessments</a> for instruction on how to work with multiple ecosystem
-maps.</p>
+representing different ecosystem types and time frames.</p>
 </div>
 <div class="section level3">
 <h3 id="rate-of-change">Rate of change<a class="anchor" aria-label="anchor" href="#rate-of-change"></a>
@@ -366,12 +364,12 @@ iterations with the argument <code>n_jitter</code> directly in the
 <span><span class="fu"><a href="../reference/jplot.html">jplot</a></span><span class="op">(</span><span class="va">AOO.grid_n150</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">AOO.grid_n150</span><span class="op">)</span></span></code></pre></div>
 <p>You can also change the <code>jitter</code> argument to set the AOO
-threshold under which the grid is jittered. For a fast approximation,
-turn off jitter (jitter = 0); to find a slower but more accurate
-solution, turn it on (jitter = 1) and to save time on larger datasets
-that are not near any threshold while maintaining accuracy for smaller
-datasets, set a custom threshold for the random grid search (defaults to
-jitter = 150).</p>
+threshold under which the random grid search is performed. For a fast
+approximation, turn off jitter (jitter = 0); to find a slower but more
+accurate solution, turn it on (jitter = 1) and to save time on larger
+datasets that are not near any threshold while maintaining accuracy for
+smaller datasets, set a custom threshold for the random grid search
+(defaults to jitter = 150).</p>
 </div>
 <div class="section level4">
 <h4 id="one-percent-rule">One percent rule<a class="anchor" aria-label="anchor" href="#one-percent-rule"></a>
@@ -426,7 +424,7 @@ and methods.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
