@@ -109,7 +109,7 @@ galah_call() |>
     ## # A tibble: 10 × 2
     ##    dataResourceName                                  count
     ##    <chr>                                             <int>
-    ##  1 NSW BioNet Atlas                                    957
+    ##  1 NSW BioNet Atlas                                    956
     ##  2 iNaturalist Australia                                54
     ##  3 Butterflies Australia                                27
     ##  4 Museum of Comparative Zoology, Harvard University    17
@@ -135,6 +135,8 @@ ala_records <- galah_call() |>
         atlas_occurrences()
 ```
 
+    ## ----
+
 We want to check that were working with valid presence records:
 
 ``` r
@@ -147,7 +149,7 @@ ala_records |>
     ## # A tibble: 1 × 3
     ##   basisOfRecord     occurrenceStatus `n()`
     ##   <chr>             <chr>            <int>
-    ## 1 HUMAN_OBSERVATION PRESENT            827
+    ## 1 HUMAN_OBSERVATION PRESENT            826
 
 That looks fine, we are ready for the next step.
 
@@ -167,7 +169,7 @@ information:
 glimpse(ala_records)
 ```
 
-    ## Rows: 827
+    ## Rows: 826
     ## Columns: 9
     ## $ recordID         <chr> "000f1f2c-8005-48ee-a85f-306ff2f360cd", "0027d150-6e9…
     ## $ scientificName   <chr> "Paralucia spinifera", "Paralucia spinifera", "Paralu…
