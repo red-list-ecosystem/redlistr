@@ -104,7 +104,7 @@ installed.</p>
 vignette, we will be using two example distributions included with the
 package. They are mangrove distributions from the northern regions of
 Western Port Bay, Victoria, Australia. The first distribution is from
-Giri et al., (<a href="https://onlinelibrary.wiley.com/doi/10.1111/j.1466-8238.2010.00584.x/abstract" class="external-link">2011</a>),
+Giri et al., (<a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1466-8238.2010.00584.x" class="external-link">2011</a>),
 and represents mangrove distribution in 2000. The second distribution is
 a classification map generated using the <code>XGBoost</code> package
 and data from Landsat 8, and represents mangrove distribution in 2017.
@@ -194,9 +194,10 @@ areas for both layers at once by combining them into a raster stack:</p>
 <p>The IUCN Red List of Ecosystems criterion A requires estimates of the
 magnitude of change over time. This is typically calculated over a 50
 year time period (past, present or future) or against a historical
-baseline (<a href="https://doi.org/10.2305/CJDF9122" class="external-link">IUCN 2024</a>). The
-first step towards achieving this change estimate over a fixed time
-frame is to assess the amount of change observed in your data.</p>
+baseline (<a href="https://portals.iucn.org/library/node/51533" class="external-link">IUCN
+2024</a>). The first step towards achieving this change estimate over a
+fixed time frame is to assess the amount of change observed in your
+data.</p>
 <div class="section level3">
 <h3 id="area-change">Area change<a class="anchor" aria-label="anchor" href="#area-change"></a>
 </h3>
@@ -233,12 +234,13 @@ representing different ecosystem types and time frames.</p>
 </h3>
 <p>In the Red List of Ecosystems, two methods are suggested to determine
 the rate of decline of an ecosystem, each of which assumes a different
-functional form of the decline (<a href="https://doi.org/10.2305/CJDF9122" class="external-link">IUCN 2024</a>). The proportional
-rate of decline (PRD) is a fraction of the previous year’s remaining
-area, while the absolute rate of decline (ARD) is a constant fraction of
-the area of the ecosystem at the beginning of the decline (<a href="https://doi.org/10.2305/CJDF9122" class="external-link">IUCN 2024</a>). These rates of
-decline allow the use of two or more data points to extrapolate to the
-full 50 year timeframe required in an assessment.</p>
+functional form of the decline (<a href="https://portals.iucn.org/library/node/51533" class="external-link">IUCN 2024</a>). The
+proportional rate of decline (PRD) is a fraction of the previous year’s
+remaining area, while the absolute rate of decline (ARD) is a constant
+fraction of the area of the ecosystem at the beginning of the decline
+(<a href="https://portals.iucn.org/library/node/51533" class="external-link">IUCN 2024</a>).
+These rates of decline allow the use of two or more data points to
+extrapolate to the full 50 year timeframe required in an assessment.</p>
 <p>The annual rate of change (ARC) uses a compound interest law to
 determine the instantaneous rate of change (<a href="https://www.sciencedirect.com/science/article/pii/S0378112702003353" class="external-link">Puyravaud
 2003</a>).</p>
@@ -263,7 +265,7 @@ forecasted estimates of change in area using extrapolation, we use the
 <span><span class="co">## 3     1    PRD  0.59720824          2050     10.121458   -3.534242  -25.88108</span></span></code></pre>
 <p>Each method represent a different shape of decline. For further
 information about the choice of each of these methods to extrapolate
-refer to the IUCN Red List of Ecosystems guidelines (<a href="https://doi.org/10.2305/CJDF9122" class="external-link">IUCN 2024</a>).</p>
+refer to the IUCN Red List of Ecosystems guidelines (<a href="https://portals.iucn.org/library/node/51533" class="external-link">IUCN 2024</a>).</p>
 <p>The results produced shows three estimated areas and estimated
 percent declines under the three estimation methods. It is important to
 note that this relatively simple exercise is founded on assumptions that
@@ -271,8 +273,8 @@ should be fully understood before submitting your ecosystem assessment
 to the IUCN Red List of Ecosystems Committee for Scientific Standards.
 Furthermore, the guidelines suggest using area estimates from more than
 two time points to estimate change, and providing a measure of
-uncertainty if possible. Please see the guidelines (<a href="https://doi.org/10.2305/CJDF9122" class="external-link">IUCN 2024</a>) for more
-information.</p>
+uncertainty if possible. Please see the guidelines (<a href="https://portals.iucn.org/library/node/515332" class="external-link">IUCN 2024</a>) for
+more information.</p>
 </div>
 </div>
 <div class="section level2">
@@ -281,18 +283,18 @@ information.</p>
 <p>Criterion B utilizes measures of the geographic distribution of an
 ecosystem type to identify ecosystems that are at risk from catastrophic
 disturbances. This is done using two standardized metrics: the extent of
-occurrence (EOO) and the area of occupancy (AOO) <a href="https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2664.2008.01596.x/full" class="external-link">(Gaston
+occurrence (EOO) and the area of occupancy (AOO) <a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2664.2008.01596.x" class="external-link">(Gaston
 and Fuller, (2009)</a>, <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0062111" class="external-link">Keith
 et al., (2013)</a>). It must be emphasised that EOO and AOO are not used
 to estimate the mapped area of an ecosystem like the methods we used in
 Criterion A; they are simply spatial metrics that allow us to
 standardise an estimate of risk due to spatially explicit catastrophes
-<a href="https://onlinelibrary.wiley.com/doi/10.1111/ddi.12533/abstract" class="external-link">(Murray
+<a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/ddi.12533" class="external-link">(Murray
 et al., (2017)</a>. Thus, it is critical that these measures are used
 consistently across all assessments, and the use of non-standard
 measures invalidates comparison against the thresholds. Please refer to
-the guidelines (<a href="https://doi.org/10.2305/CJDF9122" class="external-link">IUCN
-2024</a>) for more information on AOO and EOO.</p>
+the guidelines (<a href="https://portals.iucn.org/library/node/51533" class="external-link">IUCN 2024</a>) for
+more information on AOO and EOO.</p>
 <div class="section level3">
 <h3 id="subcriterion-b1-calculating-eoo">Subcriterion B1 (calculating EOO)<a class="anchor" aria-label="anchor" href="#subcriterion-b1-calculating-eoo"></a>
 </h3>
@@ -374,10 +376,10 @@ smaller datasets, set a custom threshold for the random grid search
 <div class="section level4">
 <h4 id="one-percent-rule">One percent rule<a class="anchor" aria-label="anchor" href="#one-percent-rule"></a>
 </h4>
-<p>As per the Red List of Ecosystems guidelines (<a href="https://doi.org/10.2305/CJDF9122" class="external-link">IUCN 2024</a>), the cells
-containing the smallest areas of the ecosystem, and collectively adding
-to less than 1% of the ecosystem’s total area, could be excluded from
-the AOO calculation if their contribution to risk spreading is
+<p>As per the Red List of Ecosystems guidelines (<a href="https://portals.iucn.org/library/node/51533" class="external-link">IUCN 2024</a>), the
+cells containing the smallest areas of the ecosystem, and collectively
+adding to less than 1% of the ecosystem’s total area, could be excluded
+from the AOO calculation if their contribution to risk spreading is
 negligible. This prevents tiny, far-flung fragments of an ecosystem from
 inflating the AOO.</p>
 <p>This option is set per default but can be turned off using the
