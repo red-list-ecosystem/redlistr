@@ -207,7 +207,7 @@ to the IUCN Red List of Ecosystems Committee for Scientific Standards.
 Furthermore, the guidelines suggest using area estimates from more than
 two time points to estimate change, and providing a measure of
 uncertainty if possible. Please see the guidelines ([IUCN
-2024](https://portals.iucn.org/library/node/515332)) for more information.
+2024](https://portals.iucn.org/library/node/51533)) for more information.
 
 ## 4. Assessing Criterion B (distribution size)
 
