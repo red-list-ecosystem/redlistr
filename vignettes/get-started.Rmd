@@ -83,8 +83,8 @@ The examples use different types of input data and focus on different subcriteri
 
 | Example | Distribution data | Input format | Red list subcriteria |
 | ------------- | -------------  | -------------  | ------------- | 
-| [Mangroves in Victoria, Australia](vignettes/redlistr-vignette.html) | Ecosystem distribution in 2000 and 2017 | Raster: GeoTiff | RLE A1, B1 and B2 |
-| [Purple Copper butterfly, Australia](vignettes/articles/species-vignette.html) | Species occurrences | Vector (Points) from biodiversity portal | RLTS B1 and B2 |
+| [Mangroves in Victoria, Australia](redlistr-vignette.html) | Ecosystem distribution in 2000 and 2017 | Raster: GeoTiff | RLE A1, B1 and B2 |
+| [Purple Copper butterfly, Australia](https://red-list-ecosystem.github.io/redlistr/articles/species-vignette.html) | Species occurrences | Vector (Points) from biodiversity portal | RLTS B1 and B2 |
 | Tropical glaciers, Ecuador (in prep.)| Ecosystem distribution in year 2000 | Vector (Polygons): Geopackage | RLE B1 and B2 |
 
 </p>

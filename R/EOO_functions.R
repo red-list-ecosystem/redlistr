@@ -19,7 +19,6 @@
 #'   J.R., Ghoraba, S.M.M., Henriksen, S., Monyeki, M., Murray, N.J., Nicholson,
 #'   E., Rowland, J., Skowno, A., Slingsby, J.A., Storeng, A.B., Valderrábano, M.
 #'   & Zager, I. (Eds.) Gland, Switzerland: IUCN. ix + 94pp.
-#'   <https://doi.org/10.2305/CJDF9122>
 #' @examples
 #' if (requireNamespace("terra", quietly = TRUE)) {
 #'   ok <- try({
